@@ -48,16 +48,14 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { slug = 'home' } = await paramsPromise
   const url = '/' + slug
 
-  let page: RequiredDataFromCollectionSlug<'pages'> | null
-
-  page = await queryPageBySlug({
+  const page: RequiredDataFromCollectionSlug<'pages'> | null = await queryPageBySlug({
     slug,
   })
 
-  // Remove this code once your website is seeded
-  if (!page && slug === 'home') {
-    page = homeStatic
-  }
+  // // Remove this code once your website is seeded
+  // if (!page && slug === 'home') {
+  //   page = homeStatic
+  // }
 
   if (!page) {
     return <PayloadRedirects url={url} />
@@ -66,7 +64,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pt-16 pb-24">
+    <article className="py-8">
       <PageClient />
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />

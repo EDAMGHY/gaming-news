@@ -14,7 +14,7 @@ export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: CardPostData
-  relationTo?: 'posts'
+  relationTo?: 'posts' | 'articles'
   showCategories?: boolean
   title?: string
 }> = (props) => {
@@ -23,7 +23,6 @@ export const Card: React.FC<{
 
   const { slug, categories, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
-
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
