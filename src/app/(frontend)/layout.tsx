@@ -26,7 +26,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body>
+      <body className="relative min-h-screen">
+        {/* Global background pattern */}
+        <div
+          aria-hidden="true"
+          className="global-pattern pointer-events-none fixed inset-0 -z-10 opacity-20"
+          style={{
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'top left',
+            backgroundSize: 'cover',
+          }}
+        />
+
         <Providers>
           <AdminBar
             adminBarProps={{

@@ -12,6 +12,11 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Articles } from './collections/Articles'
+import { Games } from './collections/Games'
+import { Reviews } from './collections/Reviews'
+import { Genres } from './collections/Genres'
+import { GameLengths } from './collections/GameLengths'
+import { NarrativeTags } from './collections/NarrativeTags'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
@@ -63,7 +68,19 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Articles],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Articles,
+    Games,
+    Reviews,
+    Genres,
+    GameLengths,
+    NarrativeTags,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

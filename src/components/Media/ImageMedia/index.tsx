@@ -20,7 +20,7 @@ const placeholderBlur =
 export const ImageMedia: React.FC<MediaProps> = (props) => {
   const {
     alt: altFromProps,
-    fill,
+    fill: fillFromProps,
     pictureClassName,
     imgClassName,
     priority,
@@ -28,25 +28,36 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     size: sizeFromProps,
     src: srcFromProps,
     loading: loadingFromProps,
+    addClasses = false,
   } = props
 
   let width: number | undefined
   let height: number | undefined
   let alt = altFromProps
-  let src: StaticImageData | string = srcFromProps || ''
+  let src: StaticImageData | string | undefined = srcFromProps
+  let isPlaceholder = false
 
+  // If no src passed, try resource
   if (!src && resource && typeof resource === 'object') {
-    const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
+    const { alt: altFromResource, height: fullHeight, url, width: fullWidth, updatedAt } = resource
 
-    width = fullWidth!
-    height = fullHeight!
-    alt = altFromResource || ''
+    width = fullWidth ?? undefined
+    height = fullHeight ?? undefined
+    alt = altFromResource || alt
 
-    const cacheTag = resource.updatedAt
-
-    src = getMediaUrl(url, cacheTag)
+    if (url) {
+      src = getMediaUrl(url, updatedAt)
+    }
   }
 
+  // Fallback to placeholder image if still nothing
+  if (!src) {
+    src = '/assets/placeholder.webp'
+    isPlaceholder = true
+  }
+
+  // If we use fill, wrapper must define sizing (height/aspect)
+  const fill = fillFromProps ?? isPlaceholder // default fill for placeholder only if not provided
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -57,10 +68,17 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         .join(', ')
 
   return (
-    <picture className={cn(pictureClassName)}>
+    <picture
+      className={cn(
+        pictureClassName, // ensure fill has a box
+        fill && addClasses && 'relative block w-full aspect-video',
+        // give placeholder a height; adjust to your design needs
+        isPlaceholder && addClasses && 'aspect-[16/9]',
+      )}
+    >
       <NextImage
         alt={alt || ''}
-        className={cn(imgClassName)}
+        className={cn(imgClassName, isPlaceholder && 'object-cover')}
         fill={fill}
         height={!fill ? height : undefined}
         placeholder="blur"

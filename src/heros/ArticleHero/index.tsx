@@ -1,10 +1,10 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
 
 import type { Article } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
+import { formatRelativeDate } from '@/utilities/date'
 
 export const ArticleHero: React.FC<{
   article: Article
@@ -13,7 +13,7 @@ export const ArticleHero: React.FC<{
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
-  console.log('articlearticlearticle', article)
+
   return (
     <div className="relative -mt-[10.4rem] flex items-end">
       <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
@@ -56,7 +56,7 @@ export const ArticleHero: React.FC<{
               <div className="flex flex-col gap-1">
                 <p className="text-sm">Date Published</p>
 
-                <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
+                <time dateTime={publishedAt}>{formatRelativeDate(publishedAt)}</time>
               </div>
             )}
           </div>

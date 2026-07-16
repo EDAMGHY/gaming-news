@@ -73,6 +73,11 @@ export interface Config {
     categories: Category;
     users: User;
     articles: Article;
+    games: Game;
+    reviews: Review;
+    genres: Genre;
+    gameLengths: GameLength;
+    narrativeTags: NarrativeTag;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -90,6 +95,11 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    games: GamesSelect<false> | GamesSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    genres: GenresSelect<false> | GenresSelect<true>;
+    gameLengths: GameLengthsSelect<false> | GameLengthsSelect<true>;
+    narrativeTags: NarrativeTagsSelect<false> | NarrativeTagsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -180,6 +190,18 @@ export interface Page {
               | ({
                   relationTo: 'posts';
                   value: string | Post;
+                } | null)
+              | ({
+                  relationTo: 'articles';
+                  value: string | Article;
+                } | null)
+              | ({
+                  relationTo: 'games';
+                  value: string | Game;
+                } | null)
+              | ({
+                  relationTo: 'reviews';
+                  value: string | Review;
                 } | null);
             url?: string | null;
             label: string;
@@ -199,8 +221,11 @@ export interface Page {
     | MediaBlock
     | ArchiveBlock
     | FormBlock
-    | IGridLayoutBlock
     | IFeaturedArticlesBlock
+    | IFeaturedReviewsBlock
+    | ITopReviewsBlock
+    | IGridBlocksBlock
+    | IUpcomingGamesBlock
   )[];
   meta?: {
     title?: string | null;
@@ -404,6 +429,201 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: string;
+  title: string;
+  /**
+   * If checked, the article will be featured on the home page
+   */
+  isFeatured?: boolean | null;
+  heroImage?: (string | null) | Media;
+  primaryCategory: string | Category;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  relatedArticles?: (string | Article)[] | null;
+  categories?: (string | Category)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (string | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games".
+ */
+export interface Game {
+  id: string;
+  title: string;
+  coverImage?: (string | null) | Media;
+  releaseDate?: string | null;
+  platforms?: ('pc' | 'ps5' | 'ps4' | 'xbox-series' | 'xbox-one' | 'switch' | 'switch-2' | 'mobile')[] | null;
+  genres?: (string | Genre)[] | null;
+  narrativeTags?: (string | NarrativeTag)[] | null;
+  length?: (string | null) | GameLength;
+  developer?: string | null;
+  publisher?: string | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genres".
+ */
+export interface Genre {
+  id: string;
+  name: string;
+  description?: string | null;
+  /**
+   * Optional icon for UI
+   */
+  icon?: (string | null) | Media;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "narrativeTags".
+ */
+export interface NarrativeTag {
+  id: string;
+  name: string;
+  description?: string | null;
+  /**
+   * Optional hex color for badges (e.g. #f43f5e)
+   */
+  color?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gameLengths".
+ */
+export interface GameLength {
+  id: string;
+  label: string;
+  minHours?: number | null;
+  maxHours?: number | null;
+  description?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: string;
+  title: string;
+  game: string | Game;
+  heroImage?: (string | null) | Media;
+  /**
+   * Short summary shown on listing cards (optional).
+   */
+  excerpt?: string | null;
+  rating: number;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  pros?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  cons?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  authors?: (string | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
+  relatedReviews?: (string | Review)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  categories?: (string | Category)[] | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CallToActionBlock".
  */
 export interface CallToActionBlock {
@@ -435,6 +655,18 @@ export interface CallToActionBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'articles';
+                value: string | Article;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: string | Game;
+              } | null)
+            | ({
+                relationTo: 'reviews';
+                value: string | Review;
               } | null);
           url?: string | null;
           label: string;
@@ -485,6 +717,18 @@ export interface ContentBlock {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'articles';
+                value: string | Article;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: string | Game;
+              } | null)
+            | ({
+                relationTo: 'reviews';
+                value: string | Review;
               } | null);
           url?: string | null;
           label: string;
@@ -746,11 +990,16 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "IGridLayoutBlock".
+ * via the `definition` "IFeaturedArticlesBlock".
  */
-export interface IGridLayoutBlock {
-  media: string | Media;
-  title: string;
+export interface IFeaturedArticlesBlock {
+  /**
+   * Optional heading shown above the featured articles
+   */
+  title?: string | null;
+  /**
+   * Optional short text under the heading
+   */
   description?: {
     root: {
       type: string;
@@ -766,73 +1015,64 @@ export interface IGridLayoutBlock {
     };
     [k: string]: unknown;
   } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'grid';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "IFeaturedArticlesBlock".
- */
-export interface IFeaturedArticlesBlock {
-  articles: {
-    media: string | Media;
-    title: string;
-    description?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    links?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: string | Page;
-                } | null)
-              | ({
-                  relationTo: 'posts';
-                  value: string | Post;
-                } | null);
-            url?: string | null;
-            label: string;
-            /**
-             * Choose how the link should be rendered.
-             */
-            appearance?: ('default' | 'outline') | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-    id?: string | null;
-  }[];
+  /**
+   * Optional URL (e.g. /articles)
+   */
+  link?: string | null;
+  /**
+   * Select articles to feature in this block
+   */
+  articles?: (string | Article)[] | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'featured-articles';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles".
+ * via the `definition` "IFeaturedReviewsBlock".
  */
-export interface Article {
-  id: string;
-  title: string;
-  heroImage?: (string | null) | Media;
-  primaryCategory: string | Category;
-  content: {
+export interface IFeaturedReviewsBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Optional URL (e.g. /reviews)
+   */
+  link?: string | null;
+  reviews?: (string | Review)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'featuredReviews';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ITopReviewsBlock".
+ */
+export interface ITopReviewsBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Optional URL (e.g. /reviews)
+   */
+  link?: string | null;
+  limit?: number | null;
+  minRating?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'topReviews';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IGridBlocksBlock".
+ */
+export interface IGridBlocksBlock {
+  /**
+   * Optional heading shown above the featured articles
+   */
+  title?: string | null;
+  /**
+   * Optional short text under the heading
+   */
+  description?: {
     root: {
       type: string;
       children: {
@@ -846,30 +1086,66 @@ export interface Article {
       version: number;
     };
     [k: string]: unknown;
-  };
-  relatedArticles?: (string | Article)[] | null;
-  categories?: (string | Category)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  authors?: (string | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
+  } | null;
+  /**
+   * Optional URL (e.g. /articles)
+   */
+  link?: string | null;
+  blocks?:
+    | (
+        | ArchiveBlock
+        | CallToActionBlock
+        | ContentBlock
+        | FormBlock
+        | MediaBlock
+        | IFeaturedArticlesBlock
+        | IFeaturedReviewsBlock
+        | ITopReviewsBlock
+        | IUpcomingGamesBlock
+      )[]
     | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'grid-blocks';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IUpcomingGamesBlock".
+ */
+export interface IUpcomingGamesBlock {
+  /**
+   * Optional heading shown above the upcoming games
+   */
+  title?: string | null;
+  /**
+   * Optional short text under the heading
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optional URL (e.g. /upcoming-games)
+   */
+  link?: string | null;
+  limit?: number | null;
+  rangePreset?: ('30d' | '90d' | '180d' | '365d' | 'custom') | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'upcoming-games';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1069,6 +1345,26 @@ export interface PayloadLockedDocument {
         value: string | Article;
       } | null)
     | ({
+        relationTo: 'games';
+        value: string | Game;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: string | Review;
+      } | null)
+    | ({
+        relationTo: 'genres';
+        value: string | Genre;
+      } | null)
+    | ({
+        relationTo: 'gameLengths';
+        value: string | GameLength;
+      } | null)
+    | ({
+        relationTo: 'narrativeTags';
+        value: string | NarrativeTag;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: string | Redirect;
       } | null)
@@ -1166,8 +1462,11 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
-        grid?: T | IGridLayoutBlockSelect<T>;
         'featured-articles'?: T | IFeaturedArticlesBlockSelect<T>;
+        featuredReviews?: T | IFeaturedReviewsBlockSelect<T>;
+        topReviews?: T | ITopReviewsBlockSelect<T>;
+        'grid-blocks'?: T | IGridBlocksBlockSelect<T>;
+        'upcoming-games'?: T | IUpcomingGamesBlockSelect<T>;
       };
   meta?:
     | T
@@ -1269,43 +1568,77 @@ export interface FormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "IGridLayoutBlock_select".
+ * via the `definition` "IFeaturedArticlesBlock_select".
  */
-export interface IGridLayoutBlockSelect<T extends boolean = true> {
-  media?: T;
+export interface IFeaturedArticlesBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  link?: T;
+  articles?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "IFeaturedArticlesBlock_select".
+ * via the `definition` "IFeaturedReviewsBlock_select".
  */
-export interface IFeaturedArticlesBlockSelect<T extends boolean = true> {
-  articles?:
+export interface IFeaturedReviewsBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  link?: T;
+  reviews?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ITopReviewsBlock_select".
+ */
+export interface ITopReviewsBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  link?: T;
+  limit?: T;
+  minRating?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IGridBlocksBlock_select".
+ */
+export interface IGridBlocksBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  link?: T;
+  blocks?:
     | T
     | {
-        media?: T;
-        title?: T;
-        description?: T;
-        links?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    appearance?: T;
-                  };
-              id?: T;
-            };
-        id?: T;
+        archive?: T | ArchiveBlockSelect<T>;
+        cta?: T | CallToActionBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        formBlock?: T | FormBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        'featured-articles'?: T | IFeaturedArticlesBlockSelect<T>;
+        featuredReviews?: T | IFeaturedReviewsBlockSelect<T>;
+        topReviews?: T | ITopReviewsBlockSelect<T>;
+        'upcoming-games'?: T | IUpcomingGamesBlockSelect<T>;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IUpcomingGamesBlock_select".
+ */
+export interface IUpcomingGamesBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  link?: T;
+  limit?: T;
+  rangePreset?: T;
+  startDate?: T;
+  endDate?: T;
   id?: T;
   blockName?: T;
 }
@@ -1482,6 +1815,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
+  isFeatured?: T;
   heroImage?: T;
   primaryCategory?: T;
   content?: T;
@@ -1507,6 +1841,119 @@ export interface ArticlesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games_select".
+ */
+export interface GamesSelect<T extends boolean = true> {
+  title?: T;
+  coverImage?: T;
+  releaseDate?: T;
+  platforms?: T;
+  genres?: T;
+  narrativeTags?: T;
+  length?: T;
+  developer?: T;
+  publisher?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  title?: T;
+  game?: T;
+  heroImage?: T;
+  excerpt?: T;
+  rating?: T;
+  content?: T;
+  pros?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  cons?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  authors?: T;
+  populatedAuthors?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+      };
+  relatedReviews?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  categories?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "genres_select".
+ */
+export interface GenresSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  icon?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gameLengths_select".
+ */
+export interface GameLengthsSelect<T extends boolean = true> {
+  label?: T;
+  minHours?: T;
+  maxHours?: T;
+  description?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "narrativeTags_select".
+ */
+export interface NarrativeTagsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  color?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1782,6 +2229,18 @@ export interface Header {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'articles';
+                value: string | Article;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: string | Game;
+              } | null)
+            | ({
+                relationTo: 'reviews';
+                value: string | Review;
               } | null);
           url?: string | null;
           label: string;
@@ -1811,6 +2270,18 @@ export interface Footer {
             | ({
                 relationTo: 'posts';
                 value: string | Post;
+              } | null)
+            | ({
+                relationTo: 'articles';
+                value: string | Article;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: string | Game;
+              } | null)
+            | ({
+                relationTo: 'reviews';
+                value: string | Review;
               } | null);
           url?: string | null;
           label: string;
@@ -1887,6 +2358,14 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'articles';
           value: string | Article;
+        } | null)
+      | ({
+          relationTo: 'games';
+          value: string | Game;
+        } | null)
+      | ({
+          relationTo: 'reviews';
+          value: string | Review;
         } | null);
     global?: string | null;
     user?: (string | null) | User;

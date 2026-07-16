@@ -27,8 +27,6 @@ export default async function Page() {
     },
   })
 
-  console.log('articlesarticlesarticles', articles)
-
   return (
     <div className="pt-24 pb-24">
       <PageClient />

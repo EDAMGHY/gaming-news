@@ -38,11 +38,11 @@ const config = {
         xl: '2rem',
       },
       screens: {
-        '2xl': '86rem',
+        '2xl': '78rem',
         lg: '64rem',
         md: '48rem',
         sm: '40rem',
-        xl: '80rem',
+        xl: '70rem',
       },
     },
     extend: {
@@ -92,6 +92,20 @@ const config = {
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
+        brand: {
+          DEFAULT: '#004fd4',
+          50: '#ecf9ff',
+          100: '#d4efff',
+          200: '#b2e5ff',
+          300: '#7dd6ff',
+          400: '#40bcff',
+          500: '#1499ff',
+          600: '#0077ff',
+          700: '#005fff',
+          800: '#004fd4', // DEFAULT
+          900: '#0844a0',
+          950: '#0a2a61',
+        },
       },
       fontFamily: {
         mono: ['var(--font-geist-mono)'],

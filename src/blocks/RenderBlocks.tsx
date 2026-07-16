@@ -7,8 +7,11 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
-import { GridLayoutBlock } from '@/blocks/GridLayout/Component'
 import { FeaturedArticlesBlock } from './Home/FeaturedArticles/Component'
+import { FeaturedReviewsBlock } from './Home/FeaturedReviews/Component'
+import { TopReviewsBlock } from './Home/TopReviews/Component'
+import { GridBlocks } from './Home/GridBlocks/Component'
+import { UpcomingGamesBlock } from './Home/UpcomingGames/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -16,8 +19,11 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
-  grid: GridLayoutBlock,
   'featured-articles': FeaturedArticlesBlock,
+  topReviews: TopReviewsBlock,
+  featuredReviews: FeaturedReviewsBlock,
+  'grid-blocks': GridBlocks,
+  'upcoming-games': UpcomingGamesBlock,
 }
 
 export const RenderBlocks: React.FC<{

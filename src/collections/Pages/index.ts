@@ -20,8 +20,11 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { GridLayout } from '@/blocks/GridLayout/config'
 import { FeaturedArticles } from '@/blocks/Home/FeaturedArticles/config'
+import { FeaturedReviews } from '@/blocks/Home/FeaturedReviews/config'
+import { TopReviews } from '@/blocks/Home/TopReviews/config'
+import { GridBlocks } from '@/blocks/Home/GridBlocks/config'
+import { UpcomingGames } from '@/blocks/Home/UpcomingGames/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -83,8 +86,11 @@ export const Pages: CollectionConfig<'pages'> = {
                 MediaBlock,
                 Archive,
                 FormBlock,
-                GridLayout,
                 FeaturedArticles,
+                FeaturedReviews,
+                TopReviews,
+                GridBlocks,
+                UpcomingGames,
               ],
               required: true,
               admin: {

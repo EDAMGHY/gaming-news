@@ -101,3 +101,10 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+html[data-theme='light'] .global-pattern {
+  background-image: url(/assets/dark-pattern.svg);
+}
+html[data-theme='dark'] .global-pattern {
+  background-image: url(/assets/pattern.svg);
+}

@@ -42,6 +42,8 @@ export const Articles: CollectionConfig<'articles'> = {
     title: true,
     slug: true,
     categories: true,
+    primaryCategory: true,
+    content: true,
     meta: {
       image: true,
       description: true,
@@ -75,6 +77,15 @@ export const Articles: CollectionConfig<'articles'> = {
       required: true,
     },
     {
+      name: 'isFeatured',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'If checked, the article will be featured on the home page',
+        position: 'sidebar',
+      },
+    },
+    {
       type: 'tabs',
       tabs: [
         {
@@ -92,15 +103,18 @@ export const Articles: CollectionConfig<'articles'> = {
               admin: { position: 'sidebar' },
               hooks: {
                 beforeChange: [
-                  ({ data }) => {
-                    const primary = data?.primaryCategory
-                    const cats = Array.isArray(data?.categories) ? data.categories : []
+                  ({ value, siblingData }) => {
+                    const primary = value
+                    const cats = Array.isArray(siblingData?.categories)
+                      ? siblingData.categories
+                      : []
 
                     if (primary && !cats.includes(primary)) {
-                      data.categories = [primary, ...cats]
+                      siblingData.categories = [primary, ...cats]
                     }
 
-                    return data
+                    // IMPORTANT: field hooks must return the FIELD value
+                    return value
                   },
                 ],
               },
