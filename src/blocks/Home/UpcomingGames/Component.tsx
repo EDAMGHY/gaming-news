@@ -35,14 +35,17 @@ export const UpcomingGamesBlock: React.FC<IUpcomingGamesBlock> = async (block) =
   const games = res?.docs || []
 
   return (
-    <div className="space-y-4">
-      <Header title={block.title} description={block.description} link={block.link} />
+    <section className="container py-16 lg:py-20">
+      <div className="mb-10 pb-8 border-b-2 border-brand/20">
+        <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3 mb-2"><span className="h-12 w-1 rounded-full bg-brand" />{block.title || 'Upcoming Releases'}</h2>
+        {block.description && <p className="text-muted-foreground max-w-2xl ml-4">{block.description}</p>}
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {games.map((game) => (
           <UpcomingGame key={game.id} game={game} />
         ))}
       </div>
-    </div>
+    </section>
   )
 }

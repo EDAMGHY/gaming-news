@@ -102,9 +102,109 @@ html[data-theme='light'] {
   opacity: initial;
 }
 
-html[data-theme='light'] .global-pattern {
-  background-image: url(/assets/dark-pattern.svg);
+/* Gaming Header Styles */
+.gaming-nav {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
-html[data-theme='dark'] .global-pattern {
-  background-image: url(/assets/pattern.svg);
+
+.gaming-nav-item {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.gaming-nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.gaming-nav-item:hover::before {
+  transform: translateX(100%);
+}
+
+.gaming-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #06b6d4, #a855f7);
+  transition: width 0.3s ease;
+}
+
+.gaming-nav-item:hover::after {
+  width: 100%;
+}
+
+.gaming-header-stuck {
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+}
+
+/* Glow animation */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+  }
+}
+
+@keyframes neon-glow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.8), 0 0 30px rgba(168, 85, 247, 0.4);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.animate-neon-glow {
+  animation: neon-glow 2s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
 }

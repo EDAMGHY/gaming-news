@@ -28,10 +28,13 @@ export const TopReviewsBlock: React.FC<ITopReviewsBlock> = async ({
   const reviews = res?.docs || []
 
   return (
-    <section className="space-y-4">
-      <Header title={title} description={description} link={link} />
+    <section className="container py-16 lg:py-20">
+      <div className="mb-10 pb-8 border-b-2 border-brand/20">
+        <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3 mb-2"><span className="h-12 w-1 rounded-full bg-brand" />{title || 'Top Rated Reviews'}</h2>
+        {description && <p className="text-muted-foreground max-w-2xl ml-4">{description}</p>}
+      </div>
 
-      <div className="divide-y-2 divide-border">
+      <div className="grid grid-cols-1 gap-3">
         {reviews.map((r) => (
           <TopReviewItem key={r.id} {...r} />
         ))}

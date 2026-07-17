@@ -1,21 +1,25 @@
 import type { Media, User } from '@/payload-types'
 import { RequiredDataFromCollectionSlug } from 'payload'
 
-export type PostArgs = {
+export type ArticleArgs = {
   heroImage: Media
   blockImage: Media
   author: User
+  primaryCategory: string
 }
 
-export const post1: (args: PostArgs) => RequiredDataFromCollectionSlug<'posts'> = ({
+export const article1: (args: ArticleArgs) => RequiredDataFromCollectionSlug<'articles'> = ({
   heroImage,
   blockImage,
   author,
+  primaryCategory,
 }) => {
   return {
     slug: 'digital-horizons',
     _status: 'published',
     authors: [author],
+    primaryCategory,
+    isFeatured: true,
     content: {
       root: {
         type: 'root',
@@ -66,7 +70,7 @@ export const post1: (args: PostArgs) => RequiredDataFromCollectionSlug<'posts'> 
                           format: 0,
                           mode: 'normal',
                           style: '',
-                          text: ' This content is fabricated and for demonstration purposes only. To edit this post, ',
+                          text: ' This content is fabricated and for demonstration purposes only. To edit this article, ',
                           version: 1,
                         },
                         {
@@ -309,7 +313,7 @@ export const post1: (args: PostArgs) => RequiredDataFromCollectionSlug<'posts'> 
       image: heroImage.id,
       title: 'Digital Horizons: A Glimpse into Tomorrow',
     },
-    relatedPosts: [], // this is populated by the seed script
+    relatedArticles: [], // this is populated by the seed script
     title: 'Digital Horizons: A Glimpse into Tomorrow',
   }
 }

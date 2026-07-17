@@ -11,22 +11,27 @@ import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
-import { Page, Post } from '@/payload-types'
+import { Page, Article, Review, Game } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { siteConfig } from '@/config/site'
 
-const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+const generateTitle: GenerateTitle<Article | Page | Review | Game> = ({ doc }) => {
+  return doc?.title ? `${doc.title} | ${siteConfig.name}` : siteConfig.name
 }
 
-const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
+const generateURL: GenerateURL<Article | Page | Review | Game> = ({ doc, collectionConfig }) => {
   const url = getServerSideURL()
 
-  return doc?.slug ? `${url}/${doc.slug}` : url
+  if (doc?.slug) {
+    const prefix = collectionConfig?.slug === 'articles' ? '/articles' : collectionConfig?.slug === 'reviews' ? '/reviews' : collectionConfig?.slug === 'games' ? '/games' : ''
+    return `${url}${prefix}/${doc.slug}`
+  }
+  return url
 }
 
 export const plugins: Plugin[] = [
   redirectsPlugin({
-    collections: ['pages', 'posts'],
+    collections: ['pages', 'articles'],
     overrides: {
       // @ts-expect-error - This is a valid override, mapped fields don't resolve to the same type
       fields: ({ defaultFields }) => {
@@ -82,7 +87,7 @@ export const plugins: Plugin[] = [
     },
   }),
   searchPlugin({
-    collections: ['posts'],
+    collections: ['articles', 'reviews'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
       fields: ({ defaultFields }) => {

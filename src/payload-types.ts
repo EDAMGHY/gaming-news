@@ -68,7 +68,6 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
-    posts: Post;
     media: Media;
     categories: Category;
     users: User;
@@ -90,7 +89,6 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -188,10 +186,6 @@ export interface Page {
                   value: string | Page;
                 } | null)
               | ({
-                  relationTo: 'posts';
-                  value: string | Post;
-                } | null)
-              | ({
                   relationTo: 'articles';
                   value: string | Article;
                 } | null)
@@ -244,12 +238,17 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "articles".
  */
-export interface Post {
+export interface Article {
   id: string;
   title: string;
+  /**
+   * If checked, the article will be featured on the home page
+   */
+  isFeatured?: boolean | null;
   heroImage?: (string | null) | Media;
+  primaryCategory: string | Category;
   content: {
     root: {
       type: string;
@@ -265,7 +264,7 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (string | Post)[] | null;
+  relatedArticles?: (string | Article)[] | null;
   categories?: (string | Category)[] | null;
   meta?: {
     title?: string | null;
@@ -426,58 +425,6 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles".
- */
-export interface Article {
-  id: string;
-  title: string;
-  /**
-   * If checked, the article will be featured on the home page
-   */
-  isFeatured?: boolean | null;
-  heroImage?: (string | null) | Media;
-  primaryCategory: string | Category;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  relatedArticles?: (string | Article)[] | null;
-  categories?: (string | Category)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  authors?: (string | User)[] | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-      }[]
-    | null;
-  slug?: string | null;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -653,10 +600,6 @@ export interface CallToActionBlock {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null)
-            | ({
                 relationTo: 'articles';
                 value: string | Article;
               } | null)
@@ -715,10 +658,6 @@ export interface ContentBlock {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null)
-            | ({
                 relationTo: 'articles';
                 value: string | Article;
               } | null)
@@ -775,14 +714,33 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  relationTo?: ('articles' | 'reviews' | 'games') | null;
   categories?: (string | Category)[] | null;
   limit?: number | null;
-  selectedDocs?:
+  where?:
     | {
-        relationTo: 'posts';
-        value: string | Post;
-      }[]
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  selectedDocs?:
+    | (
+        | {
+            relationTo: 'articles';
+            value: string | Article;
+          }
+        | {
+            relationTo: 'reviews';
+            value: string | Review;
+          }
+        | {
+            relationTo: 'games';
+            value: string | Game;
+          }
+      )[]
     | null;
   id?: string | null;
   blockName?: string | null;
@@ -1165,8 +1123,8 @@ export interface Redirect {
           value: string | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: string | Post;
+          relationTo: 'articles';
+          value: string | Article;
         } | null);
     url?: string | null;
   };
@@ -1200,10 +1158,16 @@ export interface Search {
   id: string;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: string | Post;
-  };
+  doc:
+    | {
+        relationTo: 'articles';
+        value: string | Article;
+      }
+    | {
+        relationTo: 'reviews';
+        value: string | Review;
+      };
+  relationTo?: string | null;
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -1323,10 +1287,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: string | Page;
-      } | null)
-    | ({
-        relationTo: 'posts';
-        value: string | Post;
       } | null)
     | ({
         relationTo: 'media';
@@ -1551,6 +1511,7 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   relationTo?: T;
   categories?: T;
   limit?: T;
+  where?: T;
   selectedDocs?: T;
   id?: T;
   blockName?: T;
@@ -1641,37 +1602,6 @@ export interface IUpcomingGamesBlockSelect<T extends boolean = true> {
   endDate?: T;
   id?: T;
   blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
- */
-export interface PostsSelect<T extends boolean = true> {
-  title?: T;
-  heroImage?: T;
-  content?: T;
-  relatedPosts?: T;
-  categories?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
-  publishedAt?: T;
-  authors?: T;
-  populatedAuthors?:
-    | T
-    | {
-        id?: T;
-        name?: T;
-      };
-  slug?: T;
-  slugLock?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2128,6 +2058,7 @@ export interface SearchSelect<T extends boolean = true> {
   title?: T;
   priority?: T;
   doc?: T;
+  relationTo?: T;
   slug?: T;
   meta?:
     | T
@@ -2227,10 +2158,6 @@ export interface Header {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null)
-            | ({
                 relationTo: 'articles';
                 value: string | Article;
               } | null)
@@ -2266,10 +2193,6 @@ export interface Footer {
             | ({
                 relationTo: 'pages';
                 value: string | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: string | Post;
               } | null)
             | ({
                 relationTo: 'articles';
@@ -2350,10 +2273,6 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'pages';
           value: string | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: string | Post;
         } | null)
       | ({
           relationTo: 'articles';

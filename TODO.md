@@ -1,10 +1,7 @@
 # TODO
 
-- [ ] Switch to Articles/News/Reviews for gaming stuff
-- [ ] Create Pages :
-  - [ ] About
-  - [ ] Contact
-  - [ ] Other pages
-- [ ] Move on the MVP
-- [ ] Add Released at to the Game Collection
-  - [ ] Add Section for the soon to be released games (This month/ 3 months / 6 months )
+- [x] Remove posts and use articles as main editorial content
+- [ ] Follow the detailed roadmap in `docs/roadmap/00-overview.md`
+- [ ] Complete MVP tasks in `docs/roadmap/01-mvp.md`
+- [ ] Add growth features from `docs/roadmap/02-growth.md` after MVP
+- [ ] Add monetization features from `docs/roadmap/03-monetization.md` last

@@ -1,7 +1,9 @@
 import { PayloadRequest, CollectionSlug } from 'payload'
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
-  posts: '/posts',
+  articles: '/articles',
+  reviews: '/reviews',
+  games: '/games',
   pages: '',
 }
 

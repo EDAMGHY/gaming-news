@@ -9,16 +9,13 @@ import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
 import type { Review } from '@/payload-types'
-import { format } from 'date-fns'
 
 import { ReviewHero } from '@/heros/ReviewHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Bookmark, Calendar, Gamepad2, Share2 } from 'lucide-react'
-import { formatRelativeDate } from '@/utilities/date'
+import Link from 'next/link'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -40,12 +37,6 @@ export async function generateStaticParams() {
   return params
 }
 
-const platformLabels: Record<string, string> = {
-  pc: 'PC',
-  ps5: 'PlayStation 5',
-  'xbox-series': 'Xbox Series X|S',
-}
-
 type Args = {
   params: Promise<{
     slug?: string
@@ -59,9 +50,8 @@ export default async function Review({ params: paramsPromise }: Args) {
   const review = await queryReviewBySlug({ slug })
 
   if (!review) return <PayloadRedirects url={url} />
-  console.log('gamegamegame', review.game)
   return (
-    <article className="pt-16 pb-16">
+    <article className="pb-16">
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
@@ -71,60 +61,46 @@ export default async function Review({ params: paramsPromise }: Args) {
 
       <ReviewHero review={review} />
 
-      {/* Floating Badge */}
-
-      <div className="max-w-[48rem] flex flex-col items-center gap-4  mx-auto">
+      <div className="max-w-[48rem] flex flex-col items-center gap-8 mx-auto pt-12">
+        {/* Game Info Card - Simplified to avoid duplication */}
         {review.game && typeof review.game === 'object' && (
-          <div className="border-x border-b border-border rounded-b-xl p-4 space-y-4">
-            <div className="flex gap-5">
-              <div className="relative w-24 h-24">
-                <Image
-                  src={review.game.meta.image.thumbnailURL}
-                  alt={`${review.game.title} cover image`}
-                  fill
-                  className="rounded-full  object-cover"
-                />
-              </div>
-              <div className="flex mt-4 gap-2">
-                {review.game.releaseDate && (
-                  <div>
-                    <p className="text-slate-400 text-sm mb-3">Release Date</p>
-                    <p className="text-sm font-semibold flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-brand-700" />
-                      {format(new Date(review.game.releaseDate), 'PPP')}
-                    </p>
-                  </div>
-                )}
-
-                <div>
-                  {review.game.platforms && review.game.platforms.length > 0 && (
-                    <>
-                      <p className="text-slate-400 text-sm mb-3">Platforms</p>
-                      <div className="flex flex-wrap gap-2">
-                        {review.game.platforms.map((platform) => (
-                          <span
-                            key={platform}
-                            className="inline-flex items-center gap-2 dark:bg-slate-800 bg-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs font-medium dark:text-slate-200 text-slate-800  hover:border-brand-800/50 transition-colors"
-                          >
-                            <Gamepad2 className="w-4 h-4 text-brand-600" />
-                            {platformLabels[platform]}
-                          </span>
-                        ))}
-                      </div>
-                    </>
+          <Link href={`/games/${review.game.slug}`}>
+            <div className="w-full border border-brand/20 rounded-xl p-6 space-y-4 hover:bg-brand/5 hover:border-brand/60 transition-all group">
+              <div className="flex gap-4 items-start">
+                {review.game.meta?.image &&
+                  typeof review.game.meta.image !== 'string' &&
+                  review.game.meta.image.thumbnailURL && (
+                    <div className="relative w-20 h-20 flex-shrink-0">
+                      <Image
+                        src={review.game.meta.image.thumbnailURL}
+                        alt={`${review.game.title} cover`}
+                        fill
+                        className="rounded-lg object-cover group-hover:shadow-md transition-shadow"
+                      />
+                    </div>
                   )}
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg text-foreground group-hover:text-brand transition-colors">
+                    {review.game.title}
+                  </h3>
+                  <p className="text-xs text-brand font-semibold uppercase tracking-wide mt-1">
+                    View Full Game Details →
+                  </p>
                 </div>
               </div>
+
+              {review.game.meta?.description && (
+                <div className="pt-2 border-t border-border">
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                    {review.game.meta.description}
+                  </p>
+                </div>
+              )}
             </div>
-            <div className="pt-4">
-              <p className="text-muted-foreground text-sm mb-2">About This Game</p>
-              <p className="text-card-foreground text-sm leading-relaxed">
-                {review.game.meta.description}
-              </p>
-            </div>
-          </div>
+          </Link>
         )}
 
+        {/* Review Content */}
         <RichText data={review.content} enableGutter={false} />
         {review.relatedReviews && review.relatedReviews.length > 0 && (
           <RelatedReviews

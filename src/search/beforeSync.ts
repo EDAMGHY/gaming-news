@@ -9,6 +9,7 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
 
   const modifiedDoc: DocToSync = {
     ...searchDoc,
+    relationTo: collection,
     slug,
     meta: {
       ...meta,

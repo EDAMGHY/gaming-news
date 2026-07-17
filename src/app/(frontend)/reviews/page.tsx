@@ -7,6 +7,9 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
+import { siteConfig } from '@/config/site'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -28,11 +31,18 @@ export default async function Page() {
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="">
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>Reviews</h1>
+      <div className="bg-gradient-to-br from-brand/10 via-brand/5 to-transparent border-b border-brand/20 py-16 mb-16">
+        <div className="container">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="h-1 w-12 rounded-full bg-brand" />
+              <p className="text-brand font-semibold uppercase text-sm tracking-wide">Critical Analysis</p>
+            </div>
+            <h1 className="text-5xl lg:text-6xl font-bold text-foreground">Game Reviews</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl">Expert reviews with detailed scores, pros, cons, and honest verdicts on the latest games.</p>
+          </div>
         </div>
       </div>
 
@@ -52,12 +62,19 @@ export default async function Page() {
           <Pagination page={reviews.page} totalPages={reviews.totalPages} />
         )}
       </div>
+      <div className="pb-24" />
     </div>
   )
 }
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Reviews`,
+    title: `Reviews | ${siteConfig.name}`,
+    description: 'Read our latest game reviews with detailed scores, pros, and cons.',
+    openGraph: mergeOpenGraph({
+      title: `Reviews | ${siteConfig.name}`,
+      description: 'Read our latest game reviews with detailed scores, pros, and cons.',
+      url: `${getServerSideURL()}/reviews`,
+    }),
   }
 }

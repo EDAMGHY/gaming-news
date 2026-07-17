@@ -4,17 +4,17 @@ import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
 import React, { Fragment } from 'react'
 
-import type { Post } from '@/payload-types'
+import type { Article } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<Article, 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
   className?: string
   doc?: CardPostData
-  relationTo?: 'posts' | 'articles' | 'reviews'
+  relationTo?: 'articles' | 'reviews' | 'games'
   showCategories?: boolean
   title?: string
 }> = (props) => {
@@ -31,52 +31,45 @@ export const Card: React.FC<{
   return (
     <article
       className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
+        'border border-border rounded-xl overflow-hidden bg-card hover:cursor-pointer transition-all duration-300 hover:border-brand/60 hover:shadow-lg hover:-translate-y-1 group',
         className,
       )}
       ref={card.ref}
     >
-      <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+      <div className="relative w-full h-48 overflow-hidden bg-muted">
+        {!metaImage && <div className="flex items-center justify-center h-full text-muted-foreground">No image</div>}
+        {metaImage && typeof metaImage !== 'string' && (
+          <Media resource={metaImage} size="33vw" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        )}
       </div>
-      <div className="p-4">
+      <div className="p-4 space-y-3">
         {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
+          <div className="flex flex-wrap gap-2">
+            {categories?.map((category, index) => {
+              if (typeof category === 'object') {
+                const { title: titleFromCategory } = category
+                const categoryTitle = titleFromCategory || 'Untitled category'
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
-              </div>
-            )}
+                return (
+                  <span key={index} className="inline-block bg-brand/20 text-brand text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
+                    {categoryTitle}
+                  </span>
+                )
+              }
+              return null
+            })}
           </div>
         )}
         {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
+          <div>
+            <Link href={href} ref={link.ref} className="group/link">
+              <h3 className="font-bold text-lg text-foreground group-hover/link:text-brand transition-colors line-clamp-2">
                 {titleToUse}
-              </Link>
-            </h3>
+              </h3>
+            </Link>
           </div>
         )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
+        {description && <p className="text-sm text-muted-foreground line-clamp-2">{sanitizedDescription}</p>}
       </div>
     </article>
   )

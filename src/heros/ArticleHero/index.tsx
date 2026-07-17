@@ -15,58 +15,62 @@ export const ArticleHero: React.FC<{
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
-      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
-        <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6">
-            {categories?.map((category, index) => {
-              if (typeof category === 'object' && category !== null) {
-                const { title: categoryTitle } = category
+    <div className="relative">
+      {/* Full-width hero image */}
+      <div className="w-full h-[70vh] md:h-[85vh] relative overflow-hidden group">
+        {heroImage && typeof heroImage !== 'string' && (
+          <Media fill priority imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500" resource={heroImage} />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+      </div>
 
-                const titleToUse = categoryTitle || 'Untitled category'
+      {/* Content overlay */}
+      <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
+        <div className="container pb-16 text-white space-y-6 pointer-events-auto">
+          <div className="space-y-4">
+            {/* Categories with brand styling */}
+            {categories && categories.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {categories?.map((category, index) => {
+                  if (typeof category === 'object' && category !== null) {
+                    const { title: categoryTitle } = category
+                    const titleToUse = categoryTitle || 'Untitled category'
 
-                const isLast = index === categories.length - 1
+                    return (
+                      <span key={index} className="inline-block bg-brand text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        {titleToUse}
+                      </span>
+                    )
+                  }
+                  return null
+                })}
+              </div>
+            )}
 
-                return (
-                  <React.Fragment key={index}>
-                    {titleToUse}
-                    {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
-                  </React.Fragment>
-                )
-              }
-              return null
-            })}
+            {/* Title */}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight">{title}</h1>
           </div>
 
-          <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16">
+          {/* Metadata */}
+          <div className="flex flex-col md:flex-row gap-8 text-sm md:text-base">
             {hasAuthors && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">Author</p>
-
-                  <p>{formatAuthors(populatedAuthors)}</p>
+              <div className="flex items-center gap-3 border-l-2 border-brand pl-4">
+                <div>
+                  <p className="text-white/70 text-xs uppercase tracking-wide">By</p>
+                  <p className="font-semibold">{formatAuthors(populatedAuthors)}</p>
                 </div>
               </div>
             )}
             {publishedAt && (
-              <div className="flex flex-col gap-1">
-                <p className="text-sm">Date Published</p>
-
-                <time dateTime={publishedAt}>{formatRelativeDate(publishedAt)}</time>
+              <div className="flex items-center gap-3 border-l-2 border-brand pl-4">
+                <div>
+                  <p className="text-white/70 text-xs uppercase tracking-wide">Published</p>
+                  <time dateTime={publishedAt} className="font-semibold">{formatRelativeDate(publishedAt)}</time>
+                </div>
               </div>
             )}
           </div>
         </div>
-      </div>
-      <div className="min-h-[80vh] select-none">
-        {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />
-        )}
-        <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent" />
       </div>
     </div>
   )

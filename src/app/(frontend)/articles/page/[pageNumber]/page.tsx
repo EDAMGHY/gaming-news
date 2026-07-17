@@ -8,6 +8,9 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
+import { siteConfig } from '@/config/site'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export const revalidate = 600
 
@@ -65,7 +68,13 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
   return {
-    title: `Payload Website Template Articles Page ${pageNumber || ''}`,
+    title: `Articles - Page ${pageNumber || ''} | ${siteConfig.name}`,
+    description: 'Browse all gaming articles, news, and features.',
+    openGraph: mergeOpenGraph({
+      title: `Articles - Page ${pageNumber || ''} | ${siteConfig.name}`,
+      description: 'Browse all gaming articles, news, and features.',
+      url: `${getServerSideURL()}/articles/page/${pageNumber}`,
+    }),
   }
 }
 

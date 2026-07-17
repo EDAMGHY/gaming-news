@@ -7,17 +7,21 @@ import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
+import { siteConfig } from '@/config/site'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { getServerSideURL } from '@/utilities/getURL'
 
 type Args = {
   searchParams: Promise<{
     q: string
   }>
 }
+
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
   const { q: query } = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
-  const posts = await payload.find({
+  const results = await payload.find({
     collection: 'search',
     depth: 1,
     limit: 12,
@@ -26,8 +30,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       slug: true,
       categories: true,
       meta: true,
+      relationTo: true,
     },
-    // pagination: false reduces overhead if you don't need totalDocs
     pagination: false,
     ...(query
       ? {
@@ -72,8 +76,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
         </div>
       </div>
 
-      {posts.totalDocs > 0 ? (
-        <CollectionArchive posts={posts.docs as CardPostData[]} />
+      {results.totalDocs > 0 ? (
+        <CollectionArchive articles={results.docs as unknown as (CardPostData & { relationTo: string })[]} />
       ) : (
         <div className="container">No results found.</div>
       )}
@@ -83,6 +87,12 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
 
 export function generateMetadata(): Metadata {
   return {
-    title: `Payload Website Template Search`,
+    title: `Search | ${siteConfig.name}`,
+    description: 'Search articles, reviews, and games on our gaming news site.',
+    openGraph: mergeOpenGraph({
+      title: `Search | ${siteConfig.name}`,
+      description: 'Search articles, reviews, and games on our gaming news site.',
+      url: `${getServerSideURL()}/search`,
+    }),
   }
 }

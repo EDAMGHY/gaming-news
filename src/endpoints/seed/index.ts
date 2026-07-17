@@ -6,15 +6,25 @@ import { home } from './home'
 import { image1 } from './image-1'
 import { image2 } from './image-2'
 import { imageHero1 } from './image-hero-1'
-import { post1 } from './post-1'
-import { post2 } from './post-2'
-import { post3 } from './post-3'
+import { article1 } from './article-1'
+import { article2 } from './article-2'
+import { article3 } from './article-3'
+import { game1 } from './game-1'
+import { game2 } from './game-2'
+import { review1 } from './review-1'
+import { review2 } from './review-2'
+import { review3 } from './review-3'
 
 const collections: CollectionSlug[] = [
   'categories',
   'media',
   'pages',
-  'posts',
+  'articles',
+  'games',
+  'reviews',
+  'genres',
+  'gameLengths',
+  'narrativeTags',
   'forms',
   'form-submissions',
   'search',
@@ -95,7 +105,14 @@ export const seed = async ({
     ),
   ])
 
-  const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
+  const [
+    demoAuthor,
+    image1Doc,
+    image2Doc,
+    image3Doc,
+    imageHomeDoc,
+    technologyCategory,
+  ] = await Promise.all([
     payload.create({
       collection: 'users',
       data: {
@@ -203,59 +220,145 @@ export const seed = async ({
     }),
   ])
 
-  payload.logger.info(`— Seeding posts...`)
+  payload.logger.info(`— Seeding articles...`)
 
-  // Do not create posts with `Promise.all` because we want the posts to be created in order
+  // Do not create articles with `Promise.all` because we want the articles to be created in order
   // This way we can sort them by `createdAt` or `publishedAt` and they will be in the expected order
-  const post1Doc = await payload.create({
-    collection: 'posts',
+  const article1Doc = await payload.create({
+    collection: 'articles',
     depth: 0,
     context: {
       disableRevalidate: true,
     },
-    data: post1({ heroImage: image1Doc, blockImage: image2Doc, author: demoAuthor }),
+    data: article1({
+      heroImage: image1Doc,
+      blockImage: image2Doc,
+      author: demoAuthor,
+      primaryCategory: technologyCategory.id,
+    }),
   })
 
-  const post2Doc = await payload.create({
-    collection: 'posts',
+  const article2Doc = await payload.create({
+    collection: 'articles',
     depth: 0,
     context: {
       disableRevalidate: true,
     },
-    data: post2({ heroImage: image2Doc, blockImage: image3Doc, author: demoAuthor }),
+    data: article2({
+      heroImage: image2Doc,
+      blockImage: image3Doc,
+      author: demoAuthor,
+      primaryCategory: technologyCategory.id,
+    }),
   })
 
-  const post3Doc = await payload.create({
-    collection: 'posts',
+  const article3Doc = await payload.create({
+    collection: 'articles',
     depth: 0,
     context: {
       disableRevalidate: true,
     },
-    data: post3({ heroImage: image3Doc, blockImage: image1Doc, author: demoAuthor }),
+    data: article3({
+      heroImage: image3Doc,
+      blockImage: image1Doc,
+      author: demoAuthor,
+      primaryCategory: technologyCategory.id,
+    }),
   })
 
-  // update each post with related posts
+  // update each article with related articles
   await payload.update({
-    id: post1Doc.id,
-    collection: 'posts',
+    id: article1Doc.id,
+    collection: 'articles',
     data: {
-      relatedPosts: [post2Doc.id, post3Doc.id],
+      relatedArticles: [article2Doc.id, article3Doc.id],
     },
   })
   await payload.update({
-    id: post2Doc.id,
-    collection: 'posts',
+    id: article2Doc.id,
+    collection: 'articles',
     data: {
-      relatedPosts: [post1Doc.id, post3Doc.id],
+      relatedArticles: [article1Doc.id, article3Doc.id],
     },
   })
   await payload.update({
-    id: post3Doc.id,
-    collection: 'posts',
+    id: article3Doc.id,
+    collection: 'articles',
     data: {
-      relatedPosts: [post1Doc.id, post2Doc.id],
+      relatedArticles: [article1Doc.id, article2Doc.id],
     },
   })
+
+  payload.logger.info(`— Seeding genres and game metadata...`)
+
+  const [_rpgGenre, _actionGenre, _adventureGenre] = await Promise.all([
+    payload.create({
+      collection: 'genres',
+      data: { name: 'RPG' },
+    }),
+    payload.create({
+      collection: 'genres',
+      data: { name: 'Action' },
+    }),
+    payload.create({
+      collection: 'genres',
+      data: { name: 'Adventure' },
+    }),
+  ])
+
+  const _gameLengthMedium = await payload.create({
+    collection: 'gameLengths',
+    data: { label: 'Medium (10-30 hours)' },
+  })
+
+  payload.logger.info(`— Seeding games...`)
+
+  const game1Doc = await payload.create({
+    collection: 'games',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: game1({ coverImage: image1Doc }),
+  })
+
+  const game2Doc = await payload.create({
+    collection: 'games',
+    depth: 0,
+    context: {
+      disableRevalidate: true,
+    },
+    data: game2({ coverImage: image2Doc }),
+  })
+
+  payload.logger.info(`— Seeding reviews...`)
+
+  await Promise.all([
+    payload.create({
+      collection: 'reviews',
+      depth: 0,
+      context: {
+        disableRevalidate: true,
+      },
+      data: review1({ heroImage: image3Doc, game: game1Doc.id }),
+    }),
+    payload.create({
+      collection: 'reviews',
+      depth: 0,
+      context: {
+        disableRevalidate: true,
+      },
+      data: review2({ heroImage: image1Doc, game: game2Doc.id }),
+    }),
+    payload.create({
+      collection: 'reviews',
+      depth: 0,
+      context: {
+        disableRevalidate: true,
+      },
+      data: review3({ heroImage: image2Doc, game: game1Doc.id }),
+    }),
+  ])
 
   payload.logger.info(`— Seeding contact form...`)
 
@@ -290,8 +393,22 @@ export const seed = async ({
           {
             link: {
               type: 'custom',
-              label: 'Posts',
-              url: '/posts',
+              label: 'Articles',
+              url: '/articles',
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'Reviews',
+              url: '/reviews',
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'Games',
+              url: '/games',
             },
           },
           {
