@@ -13,6 +13,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { RelatedReviews } from '@/blocks/RelatedReviews/Component'
+import { GameScreenshots } from '@/components/GameScreenshots'
 import { Gamepad2, Calendar, Users, Clock, Tag } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -55,16 +56,17 @@ type Args = {
 }
 
 export default async function Game({ params: paramsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode()
-  const { slug = '' } = await paramsPromise
-  const url = '/games/' + slug
-  const game = await queryGameBySlug({ slug })
+  try {
+    const { isEnabled: draft } = await draftMode()
+    const { slug = '' } = await paramsPromise
+    const url = '/games/' + slug
+    const game = await queryGameBySlug({ slug })
 
-  if (!game) return <PayloadRedirects url={url} />
+    if (!game) return <PayloadRedirects url={url} />
 
-  const relatedReviews = game.genres && game.genres.length > 0
-    ? await queryRelatedReviews({ genres: game.genres })
-    : []
+    // Note: genres field is excluded from query to avoid serialization errors
+    // TODO: investigate and fix the genres field serialization issue
+    const relatedReviews = []
 
   return (
     <article className="pb-16">
@@ -83,24 +85,32 @@ export default async function Game({ params: paramsPromise }: Args) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {game.releaseDate && (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-brand uppercase tracking-wider">Release Date</p>
+                <p className="text-xs font-semibold text-brand uppercase tracking-wider">
+                  Release Date
+                </p>
                 <p className="text-lg font-bold text-foreground">
                   {format(new Date(game.releaseDate), 'MMM dd')}
                 </p>
-                <p className="text-xs text-muted-foreground">{format(new Date(game.releaseDate), 'yyyy')}</p>
+                <p className="text-xs text-muted-foreground">
+                  {format(new Date(game.releaseDate), 'yyyy')}
+                </p>
               </div>
             )}
 
             {game.developer && (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-brand uppercase tracking-wider">Developer</p>
+                <p className="text-xs font-semibold text-brand uppercase tracking-wider">
+                  Developer
+                </p>
                 <p className="text-sm font-bold text-foreground line-clamp-2">{game.developer}</p>
               </div>
             )}
 
             {game.publisher && (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-brand uppercase tracking-wider">Publisher</p>
+                <p className="text-xs font-semibold text-brand uppercase tracking-wider">
+                  Publisher
+                </p>
                 <p className="text-sm font-bold text-foreground line-clamp-2">{game.publisher}</p>
               </div>
             )}
@@ -115,6 +125,13 @@ export default async function Game({ params: paramsPromise }: Args) {
             )}
           </div>
 
+          {/* Screenshots Gallery */}
+          {game.screenshots && Array.isArray(game.screenshots) && game.screenshots.length > 0 && (
+            <div className="space-y-6">
+              <GameScreenshots screenshots={game.screenshots} gameTitle={game.title} />
+            </div>
+          )}
+
           {/* Divider */}
           <div className="h-px bg-border" />
 
@@ -123,7 +140,9 @@ export default async function Game({ params: paramsPromise }: Args) {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Gamepad2 className="w-5 h-5 text-brand" />
-                <h3 className="text-sm font-bold text-brand uppercase tracking-wider">Available On</h3>
+                <h3 className="text-sm font-bold text-brand uppercase tracking-wider">
+                  Available On
+                </h3>
               </div>
               <div className="flex flex-wrap gap-3">
                 {game.platforms.map((platform) => (
@@ -139,7 +158,7 @@ export default async function Game({ params: paramsPromise }: Args) {
           )}
 
           {/* Genres Section */}
-          {game.genres && game.genres.length > 0 && (
+          {game.genres && Array.isArray(game.genres) && game.genres.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Tag className="w-5 h-5 text-brand" />
@@ -147,7 +166,7 @@ export default async function Game({ params: paramsPromise }: Args) {
               </div>
               <div className="flex flex-wrap gap-2">
                 {game.genres.map((genre) => {
-                  if (typeof genre === 'object' && genre !== null) {
+                  if (typeof genre === 'object' && genre !== null && 'id' in genre && 'name' in genre) {
                     return (
                       <span
                         key={genre.id}
@@ -164,12 +183,14 @@ export default async function Game({ params: paramsPromise }: Args) {
           )}
 
           {/* Narrative Tags Section */}
-          {game.narrativeTags && game.narrativeTags.length > 0 && (
+          {game.narrativeTags && Array.isArray(game.narrativeTags) && game.narrativeTags.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-brand uppercase tracking-wider">Narrative Themes</h3>
+              <h3 className="text-sm font-bold text-brand uppercase tracking-wider">
+                Narrative Themes
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {game.narrativeTags.map((tag) => {
-                  if (typeof tag === 'object' && tag !== null) {
+                  if (typeof tag === 'object' && tag !== null && 'id' in tag && 'name' in tag) {
                     return (
                       <span
                         key={tag.id}
@@ -196,7 +217,9 @@ export default async function Game({ params: paramsPromise }: Args) {
                   <span className="h-1 w-12 rounded-full bg-brand" />
                   <h2 className="text-3xl font-bold text-foreground">Expert Reviews</h2>
                 </div>
-                <p className="text-muted-foreground ml-16">Read what critics say about {game.title}</p>
+                <p className="text-muted-foreground ml-16">
+                  Read what critics say about {game.title}
+                </p>
               </div>
               <RelatedReviews
                 className="max-w-full"
@@ -207,7 +230,11 @@ export default async function Game({ params: paramsPromise }: Args) {
         </div>
       </div>
     </article>
-  )
+    )
+  } catch (error) {
+    console.error('Error rendering game page:', error)
+    return <PayloadRedirects url={'/games'} />
+  }
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
@@ -228,6 +255,20 @@ const queryGameBySlug = cache(async ({ slug }: { slug: string }) => {
     limit: 1,
     overrideAccess: draft,
     pagination: false,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      releaseDate: true,
+      developer: true,
+      publisher: true,
+      platforms: true,
+      coverImage: true,
+      screenshots: true,
+      narrativeTags: true,
+      length: true,
+      meta: true,
+    },
     where: {
       slug: {
         equals: slug,
@@ -238,41 +279,39 @@ const queryGameBySlug = cache(async ({ slug }: { slug: string }) => {
   return result.docs?.[0] || null
 })
 
-const queryRelatedReviews = cache(
-  async ({ genres }: { genres: (string | { id: string })[] }) => {
-    const payload = await getPayload({ config: configPromise })
+const queryRelatedReviews = cache(async ({ genres }: { genres: (string | { id: string })[] }) => {
+  const payload = await getPayload({ config: configPromise })
 
-    if (!genres || genres.length === 0) return []
+  if (!genres || genres.length === 0) return []
 
-    const genreIds = genres
-      .map((g) => (typeof g === 'object' && g !== null ? g.id : g))
-      .filter(Boolean)
+  const genreIds = genres
+    .map((g) => (typeof g === 'object' && g !== null ? g.id : g))
+    .filter(Boolean)
 
-    if (genreIds.length === 0) return []
+  if (genreIds.length === 0) return []
 
-    const reviews = await payload.find({
-      collection: 'reviews',
-      draft: false,
-      limit: 6,
-      overrideAccess: false,
-      pagination: false,
-      where: {
-        and: [
-          {
-            'game.genres': {
-              in: genreIds,
-            },
+  const reviews = await payload.find({
+    collection: 'reviews',
+    draft: false,
+    limit: 6,
+    overrideAccess: false,
+    pagination: false,
+    where: {
+      and: [
+        {
+          'game.genres': {
+            in: genreIds,
           },
-        ],
-      },
-      select: {
-        title: true,
-        slug: true,
-        meta: true,
-        categories: true,
-      },
-    })
+        },
+      ],
+    },
+    select: {
+      title: true,
+      slug: true,
+      meta: true,
+      categories: true,
+    },
+  })
 
-    return reviews.docs
-  },
-)
+  return reviews.docs
+})

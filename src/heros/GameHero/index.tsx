@@ -20,6 +20,8 @@ const platformLabels: Record<string, string> = {
 export const GameHero: React.FC<{
   game: Game
 }> = ({ game }) => {
+  if (!game) return null
+
   const { coverImage, releaseDate, title, platforms, developer, publisher } = game
 
   return (
@@ -47,7 +49,7 @@ export const GameHero: React.FC<{
 
           {/* Metadata Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 pt-4">
-            {releaseDate && (
+            {releaseDate && typeof releaseDate === 'string' && (
               <div className="border-l-2 border-brand pl-4">
                 <p className="text-white/70 text-xs uppercase tracking-wide mb-1">Release Date</p>
                 <time dateTime={releaseDate} className="text-lg font-semibold">
