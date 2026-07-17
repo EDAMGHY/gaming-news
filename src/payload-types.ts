@@ -434,6 +434,10 @@ export interface Game {
   id: string;
   title: string;
   coverImage?: (string | null) | Media;
+  /**
+   * Game screenshots and images
+   */
+  screenshots?: (string | Media)[] | null;
   releaseDate?: string | null;
   platforms?: ('pc' | 'ps5' | 'ps4' | 'xbox-series' | 'xbox-one' | 'switch' | 'switch-2' | 'mobile')[] | null;
   genres?: (string | Genre)[] | null;
@@ -441,6 +445,14 @@ export interface Game {
   length?: (string | null) | GameLength;
   developer?: string | null;
   publisher?: string | null;
+  /**
+   * Brief description of the game
+   */
+  synopsis?: string | null;
+  /**
+   * Games similar to this one
+   */
+  relatedGames?: (string | Game)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -1779,6 +1791,7 @@ export interface ArticlesSelect<T extends boolean = true> {
 export interface GamesSelect<T extends boolean = true> {
   title?: T;
   coverImage?: T;
+  screenshots?: T;
   releaseDate?: T;
   platforms?: T;
   genres?: T;
@@ -1786,6 +1799,8 @@ export interface GamesSelect<T extends boolean = true> {
   length?: T;
   developer?: T;
   publisher?: T;
+  synopsis?: T;
+  relatedGames?: T;
   meta?:
     | T
     | {

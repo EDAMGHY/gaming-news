@@ -37,10 +37,15 @@ export default async function Page() {
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <span className="h-1 w-12 rounded-full bg-brand" />
-              <p className="text-brand font-semibold uppercase text-sm tracking-wide">Game Database</p>
+              <p className="text-brand font-semibold uppercase text-sm tracking-wide">
+                Game Database
+              </p>
             </div>
             <h1 className="text-5xl lg:text-6xl font-bold text-foreground">Games Catalogue</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">Explore our comprehensive game database with detailed information, platforms, and release dates.</p>
+            <p className="text-lg text-muted-foreground max-w-2xl">
+              Explore our comprehensive game database with detailed information, platforms, and
+              release dates.
+            </p>
           </div>
         </div>
       </div>
@@ -69,10 +74,12 @@ export default async function Page() {
 export function generateMetadata(): Metadata {
   return {
     title: `Games | ${siteConfig.name}`,
-    description: 'Explore our comprehensive game database with reviews, releases, platforms, and more.',
+    description:
+      'Explore our comprehensive game database with reviews, releases, platforms, and more.',
     openGraph: mergeOpenGraph({
       title: `Games | ${siteConfig.name}`,
-      description: 'Explore our comprehensive game database with reviews, releases, platforms, and more.',
+      description:
+        'Explore our comprehensive game database with reviews, releases, platforms, and more.',
       url: `${getServerSideURL()}/games`,
     }),
   }

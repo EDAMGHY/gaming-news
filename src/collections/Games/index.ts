@@ -44,8 +44,10 @@ export const Games: CollectionConfig<'games'> = {
     title: true,
     slug: true,
     coverImage: true,
+    screenshots: true,
     releaseDate: true,
     platforms: true,
+    synopsis: true,
     meta: {
       image: true,
       description: true,
@@ -53,6 +55,7 @@ export const Games: CollectionConfig<'games'> = {
     genres: true,
     narrativeTags: true,
     length: true,
+    relatedGames: true,
   },
 
   fields: [
@@ -62,6 +65,16 @@ export const Games: CollectionConfig<'games'> = {
       name: 'coverImage',
       type: 'upload',
       relationTo: 'media',
+    },
+
+    {
+      name: 'screenshots',
+      type: 'relationship',
+      relationTo: 'media',
+      hasMany: true,
+      admin: {
+        description: 'Game screenshots and images',
+      },
     },
 
     {
@@ -110,6 +123,25 @@ export const Games: CollectionConfig<'games'> = {
     // Optional metadata (helps later)
     { name: 'developer', type: 'text', admin: { position: 'sidebar' } },
     { name: 'publisher', type: 'text', admin: { position: 'sidebar' } },
+
+    {
+      name: 'synopsis',
+      type: 'textarea',
+      admin: {
+        description: 'Brief description of the game',
+        rows: 4,
+      },
+    },
+
+    {
+      name: 'relatedGames',
+      type: 'relationship',
+      relationTo: 'games',
+      hasMany: true,
+      admin: {
+        description: 'Games similar to this one',
+      },
+    },
 
     {
       name: 'meta',
