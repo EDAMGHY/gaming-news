@@ -197,6 +197,33 @@ html[data-theme='light'] {
   }
 }
 
+@keyframes border-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-border-spin {
+  animation: border-spin 6s linear infinite;
+}
+
+.animate-shimmer-move {
+  background-size: 200% 200%;
+  animation: shimmer-move 6s ease infinite;
+}
+
 .animate-glow {
   animation: glow-pulse 3s ease-in-out infinite;
 }

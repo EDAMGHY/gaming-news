@@ -12,6 +12,11 @@ import { FeaturedReviewsBlock } from './Home/FeaturedReviews/Component'
 import { TopReviewsBlock } from './Home/TopReviews/Component'
 import { GridBlocks } from './Home/GridBlocks/Component'
 import { UpcomingGamesBlock } from './Home/UpcomingGames/Component'
+import { AboutHeroBlock } from './About/Hero/Component'
+import { AboutStatsBlock } from './About/Stats/Component'
+import { AboutStoryBlock } from './About/Story/Component'
+import { AboutFeaturesBlock } from './About/Features/Component'
+import { AboutTeamBlock } from './About/Team/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -24,6 +29,11 @@ const blockComponents = {
   featuredReviews: FeaturedReviewsBlock,
   'grid-blocks': GridBlocks,
   'upcoming-games': UpcomingGamesBlock,
+  'about-hero': AboutHeroBlock,
+  'about-stats': AboutStatsBlock,
+  'about-story': AboutStoryBlock,
+  'about-features': AboutFeaturesBlock,
+  'about-team': AboutTeamBlock,
 }
 
 export const RenderBlocks: React.FC<{

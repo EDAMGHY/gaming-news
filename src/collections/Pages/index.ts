@@ -23,6 +23,11 @@ import {
 import { FeaturedArticles } from '@/blocks/Home/FeaturedArticles/config'
 import { FeaturedReviews } from '@/blocks/Home/FeaturedReviews/config'
 import { TopReviews } from '@/blocks/Home/TopReviews/config'
+import { AboutHero } from '@/blocks/About/Hero/config'
+import { AboutStats } from '@/blocks/About/Stats/config'
+import { AboutStory } from '@/blocks/About/Story/config'
+import { AboutFeatures } from '@/blocks/About/Features/config'
+import { AboutTeam } from '@/blocks/About/Team/config'
 import { GridBlocks } from '@/blocks/Home/GridBlocks/config'
 import { UpcomingGames } from '@/blocks/Home/UpcomingGames/config'
 
@@ -91,6 +96,11 @@ export const Pages: CollectionConfig<'pages'> = {
                 TopReviews,
                 GridBlocks,
                 UpcomingGames,
+                AboutHero,
+                AboutStats,
+                AboutStory,
+                AboutFeatures,
+                AboutTeam,
               ],
               required: true,
               admin: {

@@ -220,6 +220,11 @@ export interface Page {
     | ITopReviewsBlock
     | IGridBlocksBlock
     | IUpcomingGamesBlock
+    | IAboutHeroBlock
+    | IAboutStatsBlock
+    | IAboutStoryBlock
+    | IAboutFeaturesBlock
+    | IAboutTeamBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1119,6 +1124,185 @@ export interface IUpcomingGamesBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutHeroBlock".
+ */
+export interface IAboutHeroBlock {
+  /**
+   * Small pill label above the heading
+   */
+  badge?: string | null;
+  /**
+   * First part of the heading (normal color)
+   */
+  headingLead: string;
+  /**
+   * Highlighted (gradient) part of the heading
+   */
+  headingHighlight: string;
+  subheading?: string | null;
+  buttons?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: string | Page;
+              } | null)
+            | ({
+                relationTo: 'articles';
+                value: string | Article;
+              } | null)
+            | ({
+                relationTo: 'games';
+                value: string | Game;
+              } | null)
+            | ({
+                relationTo: 'reviews';
+                value: string | Review;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about-hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutStatsBlock".
+ */
+export interface IAboutStatsBlock {
+  /**
+   * Automatically fill the first three stats with live published counts of Games, Reviews and Articles. Uncheck to use the manual values below for every stat.
+   */
+  autoCounts?: boolean | null;
+  /**
+   * When "auto counts" is on, the first three items use live data and only their labels are used.
+   */
+  stats?:
+    | {
+        /**
+         * e.g. 120+ or 100%
+         */
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about-stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutStoryBlock".
+ */
+export interface IAboutStoryBlock {
+  eyebrow?: string | null;
+  heading: string;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optional pull-quote shown in the card
+   */
+  quote?: string | null;
+  quoteAuthor?: string | null;
+  quoteRole?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about-story';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutFeaturesBlock".
+ */
+export interface IAboutFeaturesBlock {
+  heading: string;
+  subheading?: string | null;
+  /**
+   * Card style suits "what we cover"; row style suits "what we stand for".
+   */
+  style?: ('card' | 'row') | null;
+  items?:
+    | {
+        icon?:
+          | (
+              | 'gamepad'
+              | 'newspaper'
+              | 'star'
+              | 'trophy'
+              | 'shield'
+              | 'sparkles'
+              | 'users'
+              | 'zap'
+              | 'target'
+              | 'heart'
+              | 'rocket'
+              | 'award'
+              | 'eye'
+              | 'message'
+            )
+          | null;
+        title: string;
+        description: string;
+        /**
+         * Optional link (card style only), e.g. /reviews
+         */
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about-features';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutTeamBlock".
+ */
+export interface IAboutTeamBlock {
+  heading: string;
+  subheading?: string | null;
+  members?:
+    | {
+        name: string;
+        role: string;
+        bio?: string | null;
+        /**
+         * Optional. Falls back to the member’s initials.
+         */
+        avatar?: (string | null) | Media;
+        /**
+         * Avatar gradient used when there is no photo.
+         */
+        accent?: ('brand' | 'fuchsia' | 'amber' | 'emerald') | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about-team';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1439,6 +1623,11 @@ export interface PagesSelect<T extends boolean = true> {
         topReviews?: T | ITopReviewsBlockSelect<T>;
         'grid-blocks'?: T | IGridBlocksBlockSelect<T>;
         'upcoming-games'?: T | IUpcomingGamesBlockSelect<T>;
+        'about-hero'?: T | IAboutHeroBlockSelect<T>;
+        'about-stats'?: T | IAboutStatsBlockSelect<T>;
+        'about-story'?: T | IAboutStoryBlockSelect<T>;
+        'about-features'?: T | IAboutFeaturesBlockSelect<T>;
+        'about-team'?: T | IAboutTeamBlockSelect<T>;
       };
   meta?:
     | T
@@ -1612,6 +1801,102 @@ export interface IUpcomingGamesBlockSelect<T extends boolean = true> {
   rangePreset?: T;
   startDate?: T;
   endDate?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutHeroBlock_select".
+ */
+export interface IAboutHeroBlockSelect<T extends boolean = true> {
+  badge?: T;
+  headingLead?: T;
+  headingHighlight?: T;
+  subheading?: T;
+  buttons?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutStatsBlock_select".
+ */
+export interface IAboutStatsBlockSelect<T extends boolean = true> {
+  autoCounts?: T;
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutStoryBlock_select".
+ */
+export interface IAboutStoryBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  body?: T;
+  quote?: T;
+  quoteAuthor?: T;
+  quoteRole?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutFeaturesBlock_select".
+ */
+export interface IAboutFeaturesBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  style?: T;
+  items?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        href?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IAboutTeamBlock_select".
+ */
+export interface IAboutTeamBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  members?:
+    | T
+    | {
+        name?: T;
+        role?: T;
+        bio?: T;
+        avatar?: T;
+        accent?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
