@@ -40,24 +40,6 @@ export const Games: CollectionConfig<'games'> = {
         req,
       }),
   },
-  defaultPopulate: {
-    title: true,
-    slug: true,
-    coverImage: true,
-    screenshots: true,
-    releaseDate: true,
-    platforms: true,
-    synopsis: true,
-    meta: {
-      image: true,
-      description: true,
-    },
-    genres: true,
-    narrativeTags: true,
-    length: true,
-    relatedGames: true,
-  },
-
   fields: [
     { name: 'title', type: 'text', required: true },
 

@@ -28,6 +28,8 @@ export const Card: React.FC<{
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
+  console.log('docdocdoc', doc)
+
   return (
     <article
       className={cn(
@@ -37,9 +39,17 @@ export const Card: React.FC<{
       ref={card.ref}
     >
       <div className="relative w-full h-48 overflow-hidden bg-muted">
-        {!metaImage && <div className="flex items-center justify-center h-full text-muted-foreground">No image</div>}
+        {!metaImage && (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            No image
+          </div>
+        )}
         {metaImage && typeof metaImage !== 'string' && (
-          <Media resource={metaImage} size="33vw" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          <Media
+            resource={metaImage}
+            size="33vw"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         )}
       </div>
       <div className="p-4 space-y-3">
@@ -51,7 +61,10 @@ export const Card: React.FC<{
                 const categoryTitle = titleFromCategory || 'Untitled category'
 
                 return (
-                  <span key={index} className="inline-block bg-brand/20 text-brand text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
+                  <span
+                    key={index}
+                    className="inline-block bg-brand/20 text-brand text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide"
+                  >
                     {categoryTitle}
                   </span>
                 )
@@ -69,7 +82,9 @@ export const Card: React.FC<{
             </Link>
           </div>
         )}
-        {description && <p className="text-sm text-muted-foreground line-clamp-2">{sanitizedDescription}</p>}
+        {description && (
+          <p className="text-sm text-muted-foreground line-clamp-2">{sanitizedDescription}</p>
+        )}
       </div>
     </article>
   )

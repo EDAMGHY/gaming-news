@@ -1,0 +1,7 @@
+export { SearchInput } from './SearchInput'
+export { GamesFilters } from './GamesFilters'
+export { ArticlesFilters } from './ArticlesFilters'
+export { GamesSearchAndFilter } from './GamesSearchAndFilter'
+export { ArticlesSearchAndFilter } from './ArticlesSearchAndFilter'
+export type { GameDoc } from './GamesSearchAndFilter'
+export type { ArticleDoc } from './ArticlesSearchAndFilter'

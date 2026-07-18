@@ -10,7 +10,7 @@ const RAWG_API_KEY = process.env.RAWG_API_KEY || ''
 const SIZE_NUMBER = Number(process.env.SIZE_NUMBER) || 10 // Games per page
 const START_PAGE = Number(process.env.START_PAGE) || 1
 const END_PAGE = Number(process.env.END_PAGE) || 1
-const AUTO_PUBLISH = process.env.AUTO_PUBLISH !== 'false' // Default to true
+const PUBLISHED = process.env.AUTO_PUBLISH ? 'published' : 'draft' // Default to true
 
 interface RAWGGame {
   id: number
@@ -177,83 +177,83 @@ async function seedGames() {
       console.log(`Found ${games.length} games on page ${currentPage}`)
 
       for (const rawgGame of games) {
-      try {
-        // Map platforms
-        const platforms: PlatformValue[] = []
-        for (const platformObj of rawgGame.platforms || []) {
-          const platformName = platformObj.platform.name
-          const mapped = platformMap[platformName]
-          if (mapped) {
-            platforms.push(...(mapped as PlatformValue[]))
+        try {
+          // Map platforms
+          const platforms: PlatformValue[] = []
+          for (const platformObj of rawgGame.platforms || []) {
+            const platformName = platformObj.platform.name
+            const mapped = platformMap[platformName]
+            if (mapped) {
+              platforms.push(...(mapped as PlatformValue[]))
+            }
           }
-        }
 
-        // Ensure unique platforms
-        const uniquePlatforms = [...new Set(platforms)]
+          // Ensure unique platforms
+          const uniquePlatforms = [...new Set(platforms)]
 
-        // Get or create genres
-        const genreNames = rawgGame.genres.map((g) => g.name)
-        const genreIds = await getOrCreateGenres(genreNames)
+          // Get or create genres
+          const genreNames = rawgGame.genres.map((g) => g.name)
+          const genreIds = await getOrCreateGenres(genreNames)
 
-        // Create slug from title
-        const slug = rawgGame.name
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .slice(0, 50)
+          // Create slug from title
+          const slug = rawgGame.name
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .slice(0, 50)
 
-        // Upload cover image
-        const coverImageId = await uploadCoverImage(rawgGame.name, rawgGame.background_image)
+          // Upload cover image
+          const coverImageId = await uploadCoverImage(rawgGame.name, rawgGame.background_image)
 
-        // Upload screenshots
-        const screenshotUrls = (rawgGame.short_screenshots || [])
-          .filter((s) => s.image)
-          .map((s) => s.image)
-        const screenshotIds = await uploadScreenshots(rawgGame.name, screenshotUrls)
+          // Upload screenshots
+          const screenshotUrls = (rawgGame.short_screenshots || [])
+            .filter((s) => s.image)
+            .map((s) => s.image)
+          const screenshotIds = await uploadScreenshots(rawgGame.name, screenshotUrls)
 
-        // Extract synopsis from description
-        const synopsis = rawgGame.description_raw
-          ? rawgGame.description_raw.replace(/<[^>]*>/g, '').slice(0, 500)
-          : rawgGame.description
-            ? rawgGame.description.slice(0, 500)
-            : `A game released on ${rawgGame.released}`
+          // Extract synopsis from description
+          const synopsis = rawgGame.description_raw
+            ? rawgGame.description_raw.replace(/<[^>]*>/g, '').slice(0, 500)
+            : rawgGame.description
+              ? rawgGame.description.slice(0, 500)
+              : `A game released on ${rawgGame.released}`
 
-        // Create game record
-        console.log(`🎮 Creating game: ${rawgGame.name}`)
+          // Create game record
+          console.log(`🎮 Creating game: ${rawgGame.name}`)
 
-        const createdGame = await payload.create({
-          collection: 'games',
-          data: {
-            title: rawgGame.name,
-            slug,
-            releaseDate: rawgGame.released || undefined,
-            platforms: uniquePlatforms,
-            genres: genreIds,
-            coverImage: coverImageId,
-            screenshots: screenshotIds,
-            synopsis: synopsis.trim(),
-            published: AUTO_PUBLISH,
-            meta: {
+          const createdGame = await payload.create({
+            collection: 'games',
+            data: {
               title: rawgGame.name,
-              description: synopsis.trim(),
-              image: coverImageId,
+              slug,
+              releaseDate: rawgGame.released || undefined,
+              platforms: uniquePlatforms,
+              genres: genreIds,
+              coverImage: coverImageId,
+              screenshots: screenshotIds,
+              synopsis: synopsis.trim(),
+              _status: PUBLISHED,
+              meta: {
+                title: rawgGame.name,
+                description: synopsis.trim(),
+                image: coverImageId,
+              },
             },
-          },
-        })
+          })
 
-        // Store created game info for later linking
-        createdGames.push({
-          id: createdGame.id,
-          title: createdGame.title,
-          genres: genreIds,
-        })
+          // Store created game info for later linking
+          createdGames.push({
+            id: createdGame.id,
+            title: createdGame.title,
+            genres: genreIds,
+          })
 
-        totalGamesSeeded++
-        const publishStatus = AUTO_PUBLISH ? '✅ (Published)' : '⏳ (Draft)'
-        console.log(`  ${publishStatus} ${rawgGame.name}`)
-      } catch (error) {
-        console.error(`Error creating game "${rawgGame.name}":`, error)
-      }
+          totalGamesSeeded++
+          const publishStatus = PUBLISHED === 'published' ? '✅ (Published)' : '⏳ (Draft)'
+          console.log(`  ${publishStatus} ${rawgGame.name}`)
+        } catch (error) {
+          console.error(`Error creating game "${rawgGame.name}":`, error)
+        }
       }
     } // End of page loop
 
@@ -288,7 +288,8 @@ async function seedGames() {
       }
     }
 
-    const publishInfo = AUTO_PUBLISH ? '(All games published)' : '(All games in draft mode)'
+    const publishInfo =
+      PUBLISHED === 'published' ? '(All games published)' : '(All games in draft mode)'
     console.log(`✅ Seeding complete! ${publishInfo}`)
 
     // Cleanup temp images

@@ -1,12 +1,9 @@
 import type { Metadata } from 'next/types'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-import PageClient from './page.client'
+import ArticlesPageClient from './page.client'
 import { siteConfig } from '@/config/site'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -20,9 +17,10 @@ export default async function Page() {
   const articles = await payload.find({
     collection: 'articles',
     depth: 1,
-    limit: 12,
+    limit: 1000,
     overrideAccess: false,
     select: {
+      id: true,
       title: true,
       slug: true,
       categories: true,
@@ -32,7 +30,6 @@ export default async function Page() {
 
   return (
     <div className="">
-      <PageClient />
       <div className="bg-gradient-to-br from-brand/10 via-brand/5 to-transparent border-b border-brand/20 py-16 mb-16">
         <div className="container">
           <div className="space-y-3">
@@ -46,22 +43,8 @@ export default async function Page() {
         </div>
       </div>
 
-      <div className="container mb-8">
-        <PageRange
-          collection="articles"
-          currentPage={articles.page}
-          limit={12}
-          totalDocs={articles.totalDocs}
-        />
-      </div>
+      <ArticlesPageClient articles={articles.docs as any} />
 
-      <CollectionArchive articles={articles.docs} />
-
-      <div className="container">
-        {articles.totalPages > 1 && articles.page && (
-          <Pagination page={articles.page} totalPages={articles.totalPages} />
-        )}
-      </div>
       <div className="pb-24" />
     </div>
   )
