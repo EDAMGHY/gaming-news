@@ -13,14 +13,14 @@ import {
 import { ChevronDown, X } from 'lucide-react'
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 
-interface ArticlesFiltersProps {
+interface ReviewsFiltersProps {
   categories: Array<{ id: string; name: string; count?: number }>
   selectedCategories: string[]
   onCategoryToggle: (category: string) => void
   onClearAll: () => void
 }
 
-export const ArticlesFilters: React.FC<ArticlesFiltersProps> = ({
+export const ReviewsFilters: React.FC<ReviewsFiltersProps> = ({
   categories,
   selectedCategories,
   onCategoryToggle,

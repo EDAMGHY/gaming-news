@@ -14,7 +14,8 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { RelatedReviews } from '@/blocks/RelatedReviews/Component'
 import { GameScreenshots } from '@/components/GameScreenshots'
-import { Gamepad2, Tag } from 'lucide-react'
+import { ArrowLeft, Gamepad2, Tag } from 'lucide-react'
+import Link from 'next/link'
 import { format } from 'date-fns'
 
 const platformLabels: Record<string, string> = {
@@ -79,6 +80,17 @@ export default async function Game({ params: paramsPromise }: Args) {
       <GameHero game={game} />
 
       <div className="container max-w-4xl mx-auto pt-16 pb-8">
+        {/* Back to Listings */}
+        <Link
+          href="/games"
+          className="group inline-flex items-center gap-2 mb-10 pl-2 pr-4 py-2 rounded-full border border-border bg-card text-sm font-semibold text-muted-foreground hover:text-brand hover:border-brand/50 hover:bg-brand/5 transition-all duration-300"
+        >
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand transition-transform duration-300 group-hover:-translate-x-0.5">
+            <ArrowLeft className="w-4 h-4" />
+          </span>
+          Back to all games
+        </Link>
+
         {/* Synopsis Section */}
         {game.synopsis && (
           <div className="mb-12 p-6 bg-card border border-border rounded-lg">

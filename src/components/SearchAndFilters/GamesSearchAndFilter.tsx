@@ -1,152 +1,117 @@
 'use client'
 
-import React, { useMemo, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { SearchInput } from './SearchInput'
 import { GamesFilters } from './GamesFilters'
-import { useSearchAndFilter } from '@/hooks/useSearchAndFilter'
 
-export interface GameDoc {
+export interface PlatformOption {
+  value: string
+  label: string
+  count?: number
+}
+
+export interface NamedOption {
   id: string
-  title: string
-  slug: string
-  platforms?: string[]
-  genres?: Array<string | { id: string; name: string }>
-  narrativeTags?: Array<string | { id: string; name: string }>
-  meta?: {
-    image?: any
-    description?: string
-  }
+  name: string
+  count?: number
 }
 
 interface GamesSearchAndFilterProps {
-  games: GameDoc[]
-  onFilter: (filteredGames: GameDoc[]) => void
+  platforms: PlatformOption[]
+  genres: NamedOption[]
+  narrativeTags: NamedOption[]
 }
 
-export const GamesSearchAndFilter: React.FC<GamesSearchAndFilterProps> = ({ games, onFilter }) => {
-  const options = useMemo(
-    () => ({
-      searchFields: ['title'],
-      filterGetters: {
-        platforms: (item: GameDoc) => item.platforms,
-        genres: (item: GameDoc) => item.genres?.map((g: any) => (typeof g === 'string' ? g : g.id)),
-        narrativeTags: (item: GameDoc) =>
-          item.narrativeTags?.map((t: any) => (typeof t === 'string' ? t : t.id)),
-      },
-    }),
-    [],
+/**
+ * URL-driven search + filters for games. Updates `search` / `platform` / `genre`
+ * / `tag` query params (resetting `page`) so the server can paginate and filter.
+ */
+export const GamesSearchAndFilter: React.FC<GamesSearchAndFilterProps> = ({
+  platforms,
+  genres,
+  narrativeTags,
+}) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const currentSearch = searchParams.get('search') ?? ''
+  const selectedPlatforms = searchParams.getAll('platform')
+  const selectedGenres = searchParams.getAll('genre')
+  const selectedNarrativeTags = searchParams.getAll('tag')
+
+  const [searchValue, setSearchValue] = useState(currentSearch)
+
+  // Keep the input in sync if the URL changes externally (e.g. back/forward).
+  useEffect(() => {
+    setSearchValue(currentSearch)
+  }, [currentSearch])
+
+  const pushParams = useCallback(
+    (params: URLSearchParams) => {
+      // Any filter/search change returns to the first page.
+      params.delete('page')
+      const qs = params.toString()
+      router.push(qs ? `${pathname}?${qs}` : pathname)
+    },
+    [pathname, router],
   )
 
-  console.log('gamesgames', games)
-
-  const { searchQuery, setSearchQuery, filters, toggleFilter, clearAllFilters, filteredItems } =
-    useSearchAndFilter(games, options)
-
-  // Compute available filter options with counts
-  const platforms = useMemo(() => {
-    const platformMap = new Map<string, { label: string; count: number }>()
-    const platformLabels: Record<string, string> = {
-      pc: 'PC',
-      ps5: 'PS5',
-      ps4: 'PS4',
-      'xbox-series': 'Xbox Series',
-      'xbox-one': 'Xbox One',
-      switch: 'Nintendo Switch',
-      'switch-2': 'Nintendo Switch 2',
-      mobile: 'Mobile',
-    }
-
-    games.forEach((game) => {
-      game.platforms?.forEach((platform) => {
-        const count = platformMap.get(platform)?.count || 0
-        platformMap.set(platform, {
-          label: platformLabels[platform] || platform,
-          count: count + 1,
-        })
-      })
-    })
-
-    return Array.from(platformMap.entries()).map(([value, { label, count }]) => ({
-      value,
-      label,
-      count,
-    }))
-  }, [games])
-
-  const genres = useMemo(() => {
-    const genreMap = new Map<string, { name: string; count: number }>()
-
-    games.forEach((game) => {
-      game.genres?.forEach((genre) => {
-        const genreId = typeof genre === 'string' ? genre : genre.id
-        const genreName = typeof genre === 'string' ? genre : genre.name
-        const count = genreMap.get(genreId)?.count || 0
-        genreMap.set(genreId, {
-          name: genreName,
-          count: count + 1,
-        })
-      })
-    })
-
-    return Array.from(genreMap.entries()).map(([id, { name, count }]) => ({
-      id,
-      name,
-      count,
-    }))
-  }, [games])
-
-  const narrativeTags = useMemo(() => {
-    const tagMap = new Map<string, { name: string; count: number }>()
-
-    games.forEach((game) => {
-      game.narrativeTags?.forEach((tag) => {
-        const tagId = typeof tag === 'string' ? tag : tag.id
-        const tagName = typeof tag === 'string' ? tag : tag.name
-        const count = tagMap.get(tagId)?.count || 0
-        tagMap.set(tagId, {
-          name: tagName,
-          count: count + 1,
-        })
-      })
-    })
-
-    return Array.from(tagMap.entries()).map(([id, { name, count }]) => ({
-      id,
-      name,
-      count,
-    }))
-  }, [games])
-
+  // Debounce search input before writing it to the URL.
   useEffect(() => {
-    onFilter(filteredItems)
-  }, [filteredItems, onFilter])
+    if (searchValue === currentSearch) return
+    const handler = setTimeout(() => {
+      const params = new URLSearchParams(Array.from(searchParams.entries()))
+      if (searchValue) params.set('search', searchValue)
+      else params.delete('search')
+      pushParams(params)
+    }, 350)
+    return () => clearTimeout(handler)
+  }, [searchValue, currentSearch, searchParams, pushParams])
+
+  const toggleParam = useCallback(
+    (key: string, value: string) => {
+      const params = new URLSearchParams(Array.from(searchParams.entries()))
+      const current = params.getAll(key)
+      params.delete(key)
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value]
+      next.forEach((v) => params.append(key, v))
+      pushParams(params)
+    },
+    [searchParams, pushParams],
+  )
+
+  const clearAll = useCallback(() => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
+    params.delete('platform')
+    params.delete('genre')
+    params.delete('tag')
+    pushParams(params)
+  }, [searchParams, pushParams])
 
   return (
-    <div className="mb-8">
-      <div className="flex flex-col gap-4 mb-6">
-        <SearchInput
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search games by title..."
-        />
-      </div>
+    <div className="mb-6 flex gap-4 justify-start items-start">
+      <SearchInput
+        value={searchValue}
+        onChange={setSearchValue}
+        placeholder="Search games by title..."
+      />
 
       <GamesFilters
         platforms={platforms}
         genres={genres}
         narrativeTags={narrativeTags}
-        selectedPlatforms={filters.platforms || []}
-        selectedGenres={filters.genres || []}
-        selectedNarrativeTags={filters.narrativeTags || []}
-        onPlatformToggle={(platform) => toggleFilter('platforms', platform)}
-        onGenreToggle={(genre) => toggleFilter('genres', genre)}
-        onNarrativeTagToggle={(tag) => toggleFilter('narrativeTags', tag)}
-        onClearAll={clearAllFilters}
+        selectedPlatforms={selectedPlatforms}
+        selectedGenres={selectedGenres}
+        selectedNarrativeTags={selectedNarrativeTags}
+        onPlatformToggle={(platform) => toggleParam('platform', platform)}
+        onGenreToggle={(genre) => toggleParam('genre', genre)}
+        onNarrativeTagToggle={(tag) => toggleParam('tag', tag)}
+        onClearAll={clearAll}
       />
-
-      <div className="text-sm text-muted-foreground">
-        Showing {filteredItems.length} of {games.length} games
-      </div>
     </div>
   )
 }

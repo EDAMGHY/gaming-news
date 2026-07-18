@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { anyone } from '../../access/anyone'
 import { slugField } from '@/fields/slug'
 
 export const NarrativeTags: CollectionConfig = {
@@ -9,7 +9,7 @@ export const NarrativeTags: CollectionConfig = {
     create: authenticated,
     update: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: anyone,
   },
   admin: {
     useAsTitle: 'name',

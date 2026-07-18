@@ -14,6 +14,8 @@ import { ArticleHero } from '@/heros/ArticleHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -62,6 +64,17 @@ export default async function Article({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4 pt-12">
         <div className="container">
+          <div className="max-w-[48rem] mx-auto mb-10">
+            <Link
+              href="/articles"
+              className="group inline-flex items-center gap-2 pl-2 pr-4 py-2 rounded-full border border-border bg-card text-sm font-semibold text-muted-foreground hover:text-brand hover:border-brand/50 hover:bg-brand/5 transition-all duration-300"
+            >
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand transition-transform duration-300 group-hover:-translate-x-0.5">
+                <ArrowLeft className="w-4 h-4" />
+              </span>
+              Back to all articles
+            </Link>
+          </div>
           <RichText className="max-w-[48rem] mx-auto" data={article.content} enableGutter={false} />
           {article.relatedArticles && article.relatedArticles.length > 0 && (
             <RelatedArticles

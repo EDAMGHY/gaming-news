@@ -3,18 +3,23 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { SearchInput } from './SearchInput'
-import { ArticlesFilters } from './ArticlesFilters'
-import type { CategoryOption } from './ReviewsSearchAndFilter'
+import { ReviewsFilters } from './ReviewsFilters'
 
-interface ArticlesSearchAndFilterProps {
+export interface CategoryOption {
+  id: string
+  name: string
+  count?: number
+}
+
+interface ReviewsSearchAndFilterProps {
   categories: CategoryOption[]
 }
 
 /**
- * URL-driven search + category filter for articles. Updates `search` / `category`
+ * URL-driven search + category filter for reviews. Updates `search` / `category`
  * query params (resetting `page`) so the server can paginate and filter.
  */
-export const ArticlesSearchAndFilter: React.FC<ArticlesSearchAndFilterProps> = ({ categories }) => {
+export const ReviewsSearchAndFilter: React.FC<ReviewsSearchAndFilterProps> = ({ categories }) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -56,7 +61,9 @@ export const ArticlesSearchAndFilter: React.FC<ArticlesSearchAndFilterProps> = (
       const params = new URLSearchParams(Array.from(searchParams.entries()))
       const current = params.getAll('category')
       params.delete('category')
-      const next = current.includes(id) ? current.filter((c) => c !== id) : [...current, id]
+      const next = current.includes(id)
+        ? current.filter((c) => c !== id)
+        : [...current, id]
       next.forEach((c) => params.append('category', c))
       pushParams(params)
     },
@@ -70,19 +77,21 @@ export const ArticlesSearchAndFilter: React.FC<ArticlesSearchAndFilterProps> = (
   }, [searchParams, pushParams])
 
   return (
-    <div className="mb-6 flex gap-4 justify-start items-start">
-      <SearchInput
-        value={searchValue}
-        onChange={setSearchValue}
-        placeholder="Search articles by title..."
-      />
+    <div className="mb-8">
+      <div className="mb-6 flex gap-4 justify-start items-start">
+        <SearchInput
+          value={searchValue}
+          onChange={setSearchValue}
+          placeholder="Search reviews by title..."
+        />
 
-      <ArticlesFilters
-        categories={categories}
-        selectedCategories={selectedCategories}
-        onCategoryToggle={toggleCategory}
-        onClearAll={clearAllCategories}
-      />
+        <ReviewsFilters
+          categories={categories}
+          selectedCategories={selectedCategories}
+          onCategoryToggle={toggleCategory}
+          onClearAll={clearAllCategories}
+        />
+      </div>
     </div>
   )
 }

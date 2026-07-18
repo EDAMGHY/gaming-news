@@ -1,0 +1,8 @@
+export { AboutHero } from './AboutHero'
+export { StatsBand } from './StatsBand'
+export type { Stat } from './StatsBand'
+export { MissionSection } from './MissionSection'
+export { CoverageSection } from './CoverageSection'
+export { ValuesSection } from './ValuesSection'
+export { TeamSection } from './TeamSection'
+export { CTASection } from './CTASection'

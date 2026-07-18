@@ -46,7 +46,7 @@ export const GamesFilters: React.FC<GamesFiltersProps> = ({
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
         <div className="flex gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
                 Platforms <ChevronDown className="w-4 h-4" />
               </Button>
@@ -72,7 +72,7 @@ export const GamesFilters: React.FC<GamesFiltersProps> = ({
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
                 Genres <ChevronDown className="w-4 h-4" />
               </Button>
@@ -96,7 +96,7 @@ export const GamesFilters: React.FC<GamesFiltersProps> = ({
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
                 Narrative Tags <ChevronDown className="w-4 h-4" />
               </Button>

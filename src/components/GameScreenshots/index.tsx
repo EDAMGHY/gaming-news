@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, X, Maximize2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react'
 import type { Media } from '@/payload-types'
+import { Lightbox } from '@/components/Lightbox'
 
 interface GameScreenshotsProps {
   screenshots?: (string | Media)[]
@@ -60,7 +61,12 @@ export function GameScreenshots({ screenshots, gameTitle }: GameScreenshotsProps
 
         {/* Main Image Viewer */}
         <div className="relative group">
-          <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setIsFullscreen(true)}
+            className="relative aspect-video w-full bg-black rounded-xl overflow-hidden cursor-zoom-in"
+            aria-label="View screenshot fullscreen"
+          >
             <Image
               src={currentImage}
               alt={`${gameTitle} screenshot ${selectedIndex + 1}`}
@@ -69,7 +75,7 @@ export function GameScreenshots({ screenshots, gameTitle }: GameScreenshotsProps
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 800px"
             />
-          </div>
+          </button>
 
           {/* Navigation Buttons */}
           {imageUrls.length > 1 && (
@@ -125,54 +131,14 @@ export function GameScreenshots({ screenshots, gameTitle }: GameScreenshotsProps
       </div>
 
       {/* Fullscreen Modal */}
-      {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
-          <button
-            onClick={() => setIsFullscreen(false)}
-            className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
-            aria-label="Close fullscreen"
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
-
-          <div className="relative w-full h-full flex items-center justify-center">
-            <Image
-              src={currentImage}
-              alt={`${gameTitle} screenshot ${selectedIndex + 1} fullscreen`}
-              fill
-              className="object-contain"
-              priority
-              sizes="100vw"
-            />
-
-            {imageUrls.length > 1 && (
-              <>
-                <button
-                  onClick={handlePrevious}
-                  className="absolute left-4 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all"
-                  aria-label="Previous screenshot"
-                >
-                  <ChevronLeft className="w-8 h-8 text-white" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="absolute right-4 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all"
-                  aria-label="Next screenshot"
-                >
-                  <ChevronRight className="w-8 h-8 text-white" />
-                </button>
-              </>
-            )}
-
-            {/* Counter */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 rounded-full">
-              <p className="text-white text-sm font-semibold">
-                {selectedIndex + 1} / {imageUrls.length}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <Lightbox
+        images={imageUrls}
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        index={selectedIndex}
+        onIndexChange={setSelectedIndex}
+        alt={`${gameTitle} screenshot`}
+      />
     </>
   )
 }

@@ -16,6 +16,7 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -62,6 +63,17 @@ export default async function Review({ params: paramsPromise }: Args) {
       <ReviewHero review={review} />
 
       <div className="max-w-[48rem] flex flex-col items-center gap-8 mx-auto pt-12">
+        {/* Back to Listings */}
+        <Link
+          href="/reviews"
+          className="group inline-flex items-center gap-2 self-start pl-2 pr-4 py-2 rounded-full border border-border bg-card text-sm font-semibold text-muted-foreground hover:text-brand hover:border-brand/50 hover:bg-brand/5 transition-all duration-300"
+        >
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand transition-transform duration-300 group-hover:-translate-x-0.5">
+            <ArrowLeft className="w-4 h-4" />
+          </span>
+          Back to all reviews
+        </Link>
+
         {/* Game Info Card - Simplified to avoid duplication */}
         {review.game && typeof review.game === 'object' && (
           <Link href={`/games/${review.game.slug}`}>
