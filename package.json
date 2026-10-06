@@ -16,6 +16,7 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "seed:games": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-games.ts",
+    "seed:content": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-content.ts",
     "seed:about": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-about.ts",
     "clean:duplicates": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/remove-duplicates.ts",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",

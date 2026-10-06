@@ -2,15 +2,11 @@ import React from 'react'
 
 import type { IUpcomingGamesBlock } from '@/payload-types'
 
-import RichText from '@/components/RichText'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { getPayload } from 'payload'
-import { format } from 'date-fns'
 import configPromise from '@payload-config'
 import { resolveWindow } from '@/utilities/utils'
-import { Header } from '@/components/Header/Header'
 import { UpcomingGame } from './UpcomingGame'
+import RichText from '@/components/RichText'
 
 export const UpcomingGamesBlock: React.FC<IUpcomingGamesBlock> = async (block) => {
   const payload = await getPayload({ config: configPromise })
@@ -32,7 +28,23 @@ export const UpcomingGamesBlock: React.FC<IUpcomingGamesBlock> = async (block) =
     },
   })
 
-  const games = res?.docs || []
+  let games = res?.docs || []
+
+  // Fallback: if nothing falls inside the configured window, show the next
+  // published games releasing from today onward so the section is never blank.
+  if (games.length === 0) {
+    const fallback = await payload.find({
+      collection: 'games',
+      depth: 2,
+      limit,
+      sort: 'releaseDate',
+      where: {
+        _status: { equals: 'published' },
+        releaseDate: { greater_than_equal: new Date().toISOString() },
+      },
+    })
+    games = fallback?.docs || []
+  }
 
   return (
     <section className="container py-6 lg:py-12">
@@ -42,13 +54,21 @@ export const UpcomingGamesBlock: React.FC<IUpcomingGamesBlock> = async (block) =
           {block.title || 'Upcoming Releases'}
         </h2>
         {block.description && (
-          <p className="text-muted-foreground max-w-2xl ml-4">{block.description}</p>
+          <RichText
+            className="text-muted-foreground max-w-2xl ml-4"
+            data={block.description}
+            enableGutter={false}
+          />
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {games.map((game) => (
-          <UpcomingGame key={game.id} game={game} />
+      <div className="grid grid-flow-dense grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[14rem] lg:auto-rows-[15rem] gap-6">
+        {games.map((game, index) => (
+          <UpcomingGame
+            key={game.id}
+            game={game}
+            featured={index % 6 === 0 || index % 6 === 4}
+          />
         ))}
       </div>
     </section>

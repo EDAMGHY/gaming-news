@@ -30,6 +30,8 @@ import { AboutFeatures } from '@/blocks/About/Features/config'
 import { AboutTeam } from '@/blocks/About/Team/config'
 import { GridBlocks } from '@/blocks/Home/GridBlocks/config'
 import { UpcomingGames } from '@/blocks/Home/UpcomingGames/config'
+import { LatestArticles } from '@/blocks/Home/LatestArticles/config'
+import { CategoryBrowse } from '@/blocks/Home/CategoryBrowse/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -96,6 +98,8 @@ export const Pages: CollectionConfig<'pages'> = {
                 TopReviews,
                 GridBlocks,
                 UpcomingGames,
+                LatestArticles,
+                CategoryBrowse,
                 AboutHero,
                 AboutStats,
                 AboutStory,

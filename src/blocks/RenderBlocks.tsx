@@ -12,6 +12,8 @@ import { FeaturedReviewsBlock } from './Home/FeaturedReviews/Component'
 import { TopReviewsBlock } from './Home/TopReviews/Component'
 import { GridBlocks } from './Home/GridBlocks/Component'
 import { UpcomingGamesBlock } from './Home/UpcomingGames/Component'
+import { LatestArticlesBlock } from './Home/LatestArticles/Component'
+import { CategoryBrowseBlock } from './Home/CategoryBrowse/Component'
 import { AboutHeroBlock } from './About/Hero/Component'
 import { AboutStatsBlock } from './About/Stats/Component'
 import { AboutStoryBlock } from './About/Story/Component'
@@ -29,6 +31,8 @@ const blockComponents = {
   featuredReviews: FeaturedReviewsBlock,
   'grid-blocks': GridBlocks,
   'upcoming-games': UpcomingGamesBlock,
+  'latest-articles': LatestArticlesBlock,
+  'category-browse': CategoryBrowseBlock,
   'about-hero': AboutHeroBlock,
   'about-stats': AboutStatsBlock,
   'about-story': AboutStoryBlock,
@@ -54,7 +58,12 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="my-8" key={index}>
+                <div
+                  className="my-8"
+                  key={index}
+                  data-block-type={blockType}
+                  data-block-id={block.id}
+                >
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>

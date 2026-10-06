@@ -220,6 +220,8 @@ export interface Page {
     | ITopReviewsBlock
     | IGridBlocksBlock
     | IUpcomingGamesBlock
+    | ILatestArticlesBlock
+    | ICategoryBrowseBlock
     | IAboutHeroBlock
     | IAboutStatsBlock
     | IAboutStoryBlock
@@ -1124,6 +1126,45 @@ export interface IUpcomingGamesBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ILatestArticlesBlock".
+ */
+export interface ILatestArticlesBlock {
+  /**
+   * Optional heading (defaults to "Latest News")
+   */
+  title?: string | null;
+  /**
+   * Optional short text under the heading
+   */
+  description?: string | null;
+  /**
+   * Optional URL for the "View all" button (e.g. /articles)
+   */
+  link?: string | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'latest-articles';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ICategoryBrowseBlock".
+ */
+export interface ICategoryBrowseBlock {
+  /**
+   * Optional heading (defaults to "Browse by Category")
+   */
+  title?: string | null;
+  /**
+   * Optional short text under the heading
+   */
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'category-browse';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "IAboutHeroBlock".
  */
 export interface IAboutHeroBlock {
@@ -1623,6 +1664,8 @@ export interface PagesSelect<T extends boolean = true> {
         topReviews?: T | ITopReviewsBlockSelect<T>;
         'grid-blocks'?: T | IGridBlocksBlockSelect<T>;
         'upcoming-games'?: T | IUpcomingGamesBlockSelect<T>;
+        'latest-articles'?: T | ILatestArticlesBlockSelect<T>;
+        'category-browse'?: T | ICategoryBrowseBlockSelect<T>;
         'about-hero'?: T | IAboutHeroBlockSelect<T>;
         'about-stats'?: T | IAboutStatsBlockSelect<T>;
         'about-story'?: T | IAboutStoryBlockSelect<T>;
@@ -1801,6 +1844,28 @@ export interface IUpcomingGamesBlockSelect<T extends boolean = true> {
   rangePreset?: T;
   startDate?: T;
   endDate?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ILatestArticlesBlock_select".
+ */
+export interface ILatestArticlesBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  link?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ICategoryBrowseBlock_select".
+ */
+export interface ICategoryBrowseBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
   id?: T;
   blockName?: T;
 }
