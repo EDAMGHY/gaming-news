@@ -1,26 +1,10 @@
 import React from 'react'
 import RichText from '../RichText'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
 interface HeaderProps {
   title?: string | null
-  description?:
-    | {
-        root: {
-          type: string
-          children: {
-            type: string
-            version: number
-            [k: string]: unknown
-          }[]
-          direction: ('ltr' | 'rtl') | null
-          format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
-          indent: number
-          version: number
-        }
-        [k: string]: unknown
-      }
-    | string
-    | null
+  description?: SerializedEditorState | string | null
   link?: string | null
 }
 

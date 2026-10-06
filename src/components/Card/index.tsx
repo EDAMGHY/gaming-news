@@ -2,9 +2,9 @@
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import React from 'react'
 
-import type { Article } from '@/payload-types'
+import type { Article, Media as MediaType } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
@@ -33,8 +33,18 @@ export const Card: React.FC<{
 
   // Fall back to the content's own image (reviews use heroImage, games use coverImage)
   // when the SEO meta image is not populated. `<Media>` renders a placeholder if all are empty.
-  const isMediaObject = (v: unknown): v is object => !!v && typeof v === 'object'
-  const imageResource = [metaImage, heroImage, coverImage].find(isMediaObject)
+  const isMediaResource = (value: unknown): value is MediaType => {
+    if (!value || typeof value !== 'object') return false
+
+    const resource = value as Partial<MediaType>
+
+    return (
+      typeof resource.id === 'string' &&
+      typeof resource.createdAt === 'string' &&
+      typeof resource.updatedAt === 'string'
+    )
+  }
+  const imageResource = [metaImage, heroImage, coverImage].find(isMediaResource)
 
   return (
     <article

@@ -93,7 +93,7 @@ export const GamesSearchAndFilter: React.FC<GamesSearchAndFilterProps> = ({
   }, [searchParams, pushParams])
 
   return (
-    <div className="mb-6 flex gap-4 justify-start items-start">
+    <div className="mb-6 flex flex-col items-stretch gap-4 md:flex-row md:items-start">
       <SearchInput
         value={searchValue}
         onChange={setSearchValue}

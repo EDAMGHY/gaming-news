@@ -78,7 +78,7 @@ export const ReviewsSearchAndFilter: React.FC<ReviewsSearchAndFilterProps> = ({ 
 
   return (
     <div className="mb-8">
-      <div className="mb-6 flex gap-4 justify-start items-start">
+      <div className="mb-6 flex flex-col items-stretch gap-4 sm:flex-row sm:items-start">
         <SearchInput
           value={searchValue}
           onChange={setSearchValue}

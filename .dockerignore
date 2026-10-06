@@ -1,0 +1,23 @@
+.git
+.github
+.next
+.codex
+.agents
+.claude
+.vscode
+
+node_modules
+playwright-report
+test-results
+coverage
+
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+
+# Uploaded media and generated sitemap files are runtime artifacts, not image inputs.
+public/media
+public/robots.txt
+public/sitemap*.xml

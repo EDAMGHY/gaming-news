@@ -16,7 +16,7 @@ export const revalidateReview: CollectionAfterChangeHook<Review> = ({
       payload.logger.info(`Revalidating review at path: ${path}`)
 
       revalidatePath(path)
-      revalidateTag('reviews-sitemap')
+      revalidateTag('reviews-sitemap', 'max')
     }
 
     // If the review was previously published, we need to revalidate the old path
@@ -26,7 +26,7 @@ export const revalidateReview: CollectionAfterChangeHook<Review> = ({
       payload.logger.info(`Revalidating old review at path: ${oldPath}`)
 
       revalidatePath(oldPath)
-      revalidateTag('reviews-sitemap')
+      revalidateTag('reviews-sitemap', 'max')
     }
   }
   return doc
@@ -37,7 +37,7 @@ export const revalidateDelete: CollectionAfterDeleteHook<Review> = ({ doc, req: 
     const path = `/reviews/${doc?.slug}`
 
     revalidatePath(path)
-    revalidateTag('reviews-sitemap')
+    revalidateTag('reviews-sitemap', 'max')
   }
 
   return doc
