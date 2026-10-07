@@ -17,4 +17,15 @@ describe('API', () => {
     })
     expect(users).toBeDefined()
   })
+
+  it.each(['articles', 'reviews', 'games'] as const)('queries published %s', async (collection) => {
+    const result = await payload.find({
+      collection,
+      limit: 1,
+      overrideAccess: false,
+    })
+
+    expect(result.docs).toBeInstanceOf(Array)
+    expect(result.totalDocs).toBeGreaterThanOrEqual(0)
+  })
 })

@@ -40,11 +40,11 @@ export const GamesFilters: React.FC<GamesFiltersProps> = ({
 }) => {
   const hasActiveFilters =
     selectedPlatforms.length > 0 || selectedGenres.length > 0 || selectedNarrativeTags.length > 0
-  console.log('filtersfiltersfiltersfilters', { platforms, genres, narrativeTags })
+
   return (
-    <div className="flex flex-col gap-4 mb-8">
+    <div className="flex w-full flex-col gap-4 mb-8 md:w-auto">
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">

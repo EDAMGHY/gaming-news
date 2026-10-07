@@ -16,7 +16,7 @@ export const revalidateArticle: CollectionAfterChangeHook<Article> = ({
       payload.logger.info(`Revalidating article at path: ${path}`)
 
       revalidatePath(path)
-      revalidateTag('articles-sitemap')
+      revalidateTag('articles-sitemap', 'max')
     }
 
     // If the article was previously published, we need to revalidate the old path
@@ -26,7 +26,7 @@ export const revalidateArticle: CollectionAfterChangeHook<Article> = ({
       payload.logger.info(`Revalidating old article at path: ${oldPath}`)
 
       revalidatePath(oldPath)
-      revalidateTag('articles-sitemap')
+      revalidateTag('articles-sitemap', 'max')
     }
   }
   return doc
@@ -37,7 +37,7 @@ export const revalidateDelete: CollectionAfterDeleteHook<Article> = ({ doc, req:
     const path = `/articles/${doc?.slug}`
 
     revalidatePath(path)
-    revalidateTag('articles-sitemap')
+    revalidateTag('articles-sitemap', 'max')
   }
 
   return doc

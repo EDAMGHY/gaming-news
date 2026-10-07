@@ -1,10 +1,14 @@
 # Phase 3: Monetization
 
+Last reviewed against the codebase: **2026-10-06**
+
 ## Goal
 
 Add revenue features after the MVP has stable content, search, SEO, and enough traffic to justify monetization work.
 
 Do not prioritize monetization before the site feels trustworthy and useful.
+
+Do not begin this phase while P0/P1 items remain open in `current-state-and-issues.md`, or before the MVP acceptance criteria in `01-mvp.md` are verified.
 
 ## 1. Best Early Monetization Paths
 

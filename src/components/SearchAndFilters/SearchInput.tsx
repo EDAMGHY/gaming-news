@@ -34,7 +34,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   }
 
   return (
-    <div className="relative flex-1">
+    <div className="relative min-w-0 w-full flex-1">
       <Input
         type="text"
         value={searchValue}
