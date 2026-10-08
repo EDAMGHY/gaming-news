@@ -17,7 +17,12 @@ export const review3: (args: ReviewArgs) => RequiredDataFromCollectionSlug<'revi
     heroImage: heroImage.id,
     game: game,
     rating: 4,
-    excerpt: 'Palworld captures the spirit of creature collection with modern gameplay mechanics, creating an addictive and engaging experience that fans of the genre will love.',
+    platformTested: 'pc',
+    hoursPlayed: 36,
+    testedVersion: 'PC launch build',
+    disclosure: 'The review copy was purchased by the publication.',
+    excerpt:
+      'Palworld captures the spirit of creature collection with modern gameplay mechanics, creating an addictive and engaging experience that fans of the genre will love.',
     content: {
       root: {
         type: 'root',
@@ -73,13 +78,11 @@ export const review3: (args: ReviewArgs) => RequiredDataFromCollectionSlug<'revi
       { text: 'Fun multiplayer experiences' },
       { text: 'Steady content updates' },
     ],
-    cons: [
-      { text: 'Some performance optimization issues' },
-      { text: 'Can feel grindy at times' },
-    ],
+    cons: [{ text: 'Some performance optimization issues' }, { text: 'Can feel grindy at times' }],
     meta: {
       title: 'Palworld Review - A Fresh Take on Creature Collection',
-      description: 'Discover why Palworld is capturing the hearts of millions of players worldwide in our comprehensive review.',
+      description:
+        'Discover why Palworld is capturing the hearts of millions of players worldwide in our comprehensive review.',
       image: heroImage.id,
     },
   }

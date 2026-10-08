@@ -22,6 +22,12 @@ export async function queryReviewsByGame({ gameId, payload }: QueryReviewsByGame
     select: {
       title: true,
       slug: true,
+      rating: true,
+      excerpt: true,
+      heroImage: true,
+      game: true,
+      platformTested: true,
+      hoursPlayed: true,
       meta: true,
       categories: true,
     },

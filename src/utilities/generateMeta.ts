@@ -27,9 +27,8 @@ export const generateMeta = async (args: {
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ` | ${siteConfig.name}`
-    : siteConfig.name
+  const editorialTitle = doc?.meta?.title?.replace(/\s*\|\s*Payload Website Template/gi, '').trim()
+  const title = editorialTitle ? editorialTitle + ` | ${siteConfig.name}` : siteConfig.name
 
   return {
     description: doc?.meta?.description,

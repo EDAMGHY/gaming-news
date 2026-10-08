@@ -61,7 +61,7 @@ const config = {
           foreground: 'hsl(var(--accent-foreground))',
         },
         background: 'hsl(var(--background))',
-        border: 'hsla(var(--border))',
+        border: 'hsl(var(--border) / <alpha-value>)',
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
@@ -93,7 +93,8 @@ const config = {
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
         brand: {
-          DEFAULT: '#004fd4',
+          DEFAULT: 'hsl(var(--brand))',
+          foreground: 'hsl(var(--brand-foreground))',
           50: '#ecf9ff',
           100: '#d4efff',
           200: '#b2e5ff',
@@ -105,6 +106,11 @@ const config = {
           800: '#004fd4', // DEFAULT
           900: '#0844a0',
           950: '#0a2a61',
+        },
+        ink: '#0B1020',
+        quest: {
+          DEFAULT: 'hsl(var(--quest))',
+          foreground: 'hsl(var(--quest-foreground))',
         },
       },
       fontFamily: {

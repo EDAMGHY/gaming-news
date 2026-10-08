@@ -2,9 +2,8 @@ import React from 'react'
 import type { Review, IFeaturedReviewsBlock } from '@/payload-types'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { FeaturedReview } from './FeaturedReview'
+import { ReviewCard } from '@/components/ContentCard'
+import { ContentSectionHeader } from '@/components/ContentSectionHeader'
 
 function isReview(v: Review | string | null | undefined): v is Review {
   return !!v && typeof v === 'object' && 'id' in v
@@ -33,35 +32,20 @@ export const FeaturedReviewsBlock: React.FC<IFeaturedReviewsBlock> = async ({
     docs = ids.map((id) => byId.get(String(id))).filter(Boolean) as Review[]
   }
 
+  if (docs.length === 0) return null
+
   return (
     <section className="container py-6 lg:py-12">
-      {(title || description || link) && (
-        <header className="mb-10 flex items-start justify-between gap-6 pb-8 border-b-2 border-brand/20">
-          <div className="space-y-3 flex-1">
-            {title && (
-              <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3">
-                <span className="h-12 w-1 rounded-full bg-brand" />
-                {title}
-              </h2>
-            )}
-            {description && (
-              <p className="mt-2 text-muted-foreground max-w-2xl ml-4">{description}</p>
-            )}
-          </div>
-          {link && (
-            <Button
-              className="shrink-0 bg-brand hover:bg-brand/90 text-white font-semibold px-6 py-2 rounded-lg transition-all hover:shadow-lg"
-              asChild
-            >
-              <Link href={link}>View all</Link>
-            </Button>
-          )}
-        </header>
-      )}
+      <ContentSectionHeader
+        actionHref={link}
+        description={description}
+        eyebrow="Tested, finished, scored"
+        title={title || 'Featured reviews'}
+      />
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {docs.map((r) => (
-          <FeaturedReview key={r.id} {...r} />
+          <ReviewCard key={r.id} review={r} />
         ))}
       </div>
     </section>

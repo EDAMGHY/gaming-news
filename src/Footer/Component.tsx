@@ -13,14 +13,14 @@ export async function Footer() {
   const navItems = footerData?.navItems || []
 
   return (
-    <footer className="mt-auto border-t-2 border-brand/20 bg-gradient-to-b from-background via-background to-brand/5 dark:to-brand/10">
+    <footer className="mt-auto border-t border-border bg-card/70">
       <div className="container py-12 gap-12 flex flex-col md:flex-row md:items-start md:justify-between">
         <div className="shrink-0 space-y-4">
           <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
             <Logo />
           </Link>
-          <p className="text-sm text-muted-foreground max-w-xs">
-            Your ultimate source for gaming news, reviews, and upcoming releases.
+          <p className="text-sm text-muted-foreground max-w-xs leading-6">
+            Clear gaming news, tested reviews, and the release details worth keeping.
           </p>
         </div>
 
@@ -30,7 +30,10 @@ export async function Footer() {
             <ul className="flex flex-col gap-2">
               {navItems.slice(0, Math.ceil(navItems.length / 2)).map(({ link }, i) => (
                 <li key={i}>
-                  <CMSLink className="text-sm text-muted-foreground hover:text-brand transition-colors" {...link} />
+                  <CMSLink
+                    className="text-sm text-muted-foreground hover:text-brand transition-colors"
+                    {...link}
+                  />
                 </li>
               ))}
             </ul>
@@ -40,7 +43,10 @@ export async function Footer() {
             <ul className="flex flex-col gap-2">
               {navItems.slice(Math.ceil(navItems.length / 2)).map(({ link }, i) => (
                 <li key={i}>
-                  <CMSLink className="text-sm text-muted-foreground hover:text-brand transition-colors" {...link} />
+                  <CMSLink
+                    className="text-sm text-muted-foreground hover:text-brand transition-colors"
+                    {...link}
+                  />
                 </li>
               ))}
             </ul>
@@ -48,7 +54,7 @@ export async function Footer() {
         </nav>
       </div>
 
-      <div className="border-t border-brand/10 py-6">
+      <div className="border-t border-border py-6">
         <div className="container text-center text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} Gaming News. All rights reserved.</p>
         </div>

@@ -105,120 +105,114 @@ export const seed = async ({
     ),
   ])
 
-  const [
-    demoAuthor,
-    image1Doc,
-    image2Doc,
-    image3Doc,
-    imageHomeDoc,
-    technologyCategory,
-  ] = await Promise.all([
-    payload.create({
-      collection: 'users',
-      data: {
-        name: 'Demo Author',
-        email: 'demo-author@example.com',
-        password: 'password',
-      },
-    }),
-    payload.create({
-      collection: 'media',
-      data: image1,
-      file: image1Buffer,
-    }),
-    payload.create({
-      collection: 'media',
-      data: image2,
-      file: image2Buffer,
-    }),
-    payload.create({
-      collection: 'media',
-      data: image2,
-      file: image3Buffer,
-    }),
-    payload.create({
-      collection: 'media',
-      data: imageHero1,
-      file: hero1Buffer,
-    }),
+  const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc, technologyCategory] =
+    await Promise.all([
+      payload.create({
+        collection: 'users',
+        data: {
+          name: 'Demo Author',
+          email: 'demo-author@example.com',
+          password: 'password',
+        },
+      }),
+      payload.create({
+        collection: 'media',
+        data: image1,
+        file: image1Buffer,
+      }),
+      payload.create({
+        collection: 'media',
+        data: image2,
+        file: image2Buffer,
+      }),
+      payload.create({
+        collection: 'media',
+        data: image2,
+        file: image3Buffer,
+      }),
+      payload.create({
+        collection: 'media',
+        data: imageHero1,
+        file: hero1Buffer,
+      }),
 
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'Technology',
-        breadcrumbs: [
-          {
-            label: 'Technology',
-            url: '/technology',
-          },
-        ],
-      },
-    }),
+      payload.create({
+        collection: 'categories',
+        data: {
+          title: 'Technology',
+          breadcrumbs: [
+            {
+              label: 'Technology',
+              url: '/technology',
+            },
+          ],
+        },
+      }),
 
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'News',
-        breadcrumbs: [
-          {
-            label: 'News',
-            url: '/news',
-          },
-        ],
-      },
-    }),
+      payload.create({
+        collection: 'categories',
+        data: {
+          title: 'News',
+          breadcrumbs: [
+            {
+              label: 'News',
+              url: '/news',
+            },
+          ],
+        },
+      }),
 
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'Finance',
-        breadcrumbs: [
-          {
-            label: 'Finance',
-            url: '/finance',
-          },
-        ],
-      },
-    }),
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'Design',
-        breadcrumbs: [
-          {
-            label: 'Design',
-            url: '/design',
-          },
-        ],
-      },
-    }),
+      payload.create({
+        collection: 'categories',
+        data: {
+          title: 'Finance',
+          breadcrumbs: [
+            {
+              label: 'Finance',
+              url: '/finance',
+            },
+          ],
+        },
+      }),
+      payload.create({
+        collection: 'categories',
+        data: {
+          title: 'Design',
+          breadcrumbs: [
+            {
+              label: 'Design',
+              url: '/design',
+            },
+          ],
+        },
+      }),
 
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'Software',
-        breadcrumbs: [
-          {
-            label: 'Software',
-            url: '/software',
-          },
-        ],
-      },
-    }),
+      payload.create({
+        collection: 'categories',
+        data: {
+          title: 'Software',
+          breadcrumbs: [
+            {
+              label: 'Software',
+              url: '/software',
+            },
+          ],
+        },
+      }),
 
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'Engineering',
-        breadcrumbs: [
-          {
-            label: 'Engineering',
-            url: '/engineering',
-          },
-        ],
-      },
-    }),
-  ])
+      payload.create({
+        collection: 'categories',
+        data: {
+          title: 'Engineering',
+          breadcrumbs: [
+            {
+              label: 'Engineering',
+              url: '/engineering',
+            },
+          ],
+        },
+      }),
+    ])
 
   payload.logger.info(`— Seeding articles...`)
 
@@ -330,6 +324,24 @@ export const seed = async ({
     },
     data: game2({ coverImage: image2Doc }),
   })
+
+  await Promise.all([
+    payload.update({
+      id: article1Doc.id,
+      collection: 'articles',
+      data: { games: [game1Doc.id] },
+    }),
+    payload.update({
+      id: article2Doc.id,
+      collection: 'articles',
+      data: { games: [game2Doc.id] },
+    }),
+    payload.update({
+      id: article3Doc.id,
+      collection: 'articles',
+      data: { games: [game1Doc.id, game2Doc.id] },
+    }),
+  ])
 
   payload.logger.info(`— Seeding reviews...`)
 

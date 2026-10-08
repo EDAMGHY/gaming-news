@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import { cn } from '@/utilities/ui'
 import React from 'react'
 
 interface Props {
@@ -8,22 +8,21 @@ interface Props {
 }
 
 export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
+  const { className } = props
 
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={48}
-      height={48}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx(className)}
-      src={'/assets/trt.png'}
-    />
+    <span
+      aria-label="Gaming News"
+      className={cn('inline-flex items-center gap-2.5 text-foreground', className)}
+      role="img"
+    >
+      <span className="grid size-9 place-items-center rounded-md border border-brand/60 bg-brand font-mono text-[0.7rem] font-black tracking-[-0.08em] text-brand-foreground shadow-[inset_0_-5px_0_hsl(var(--foreground)/0.12)]">
+        G/N
+      </span>
+      <span className="hidden text-[0.72rem] font-black uppercase leading-[0.95] tracking-[0.08em] sm:block">
+        Gaming
+        <span className="block text-brand">News</span>
+      </span>
+    </span>
   )
 }

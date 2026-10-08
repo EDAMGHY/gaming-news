@@ -51,22 +51,22 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 ## 3. Game Pages
 
 - [x] Build a games archive that lists published games.
-- [ ] Show cover, title, release date, platforms, genres, and developer/publisher on game cards. **Partial:** the data is queried, but the shared card does not render most game-specific fields.
+- [x] Show cover, title, release date, platforms, genres, and developer/publisher on game cards.
 - [x] Build a game detail page.
 - [x] Show cover, release date, platforms, genres, narrative tags, game length, developer, publisher, synopsis, screenshots, and related games when populated.
 - [x] Show reviews for the current game. **Verified:** the query matches the explicit game relationship, with regression coverage for zero, one, and multiple reviews.
-- [ ] Add related articles to game pages using an explicit game relationship or a reliable tagging rule.
+- [x] Add related articles to game pages using an explicit article-to-games relationship.
 - [ ] Add breadcrumbs and structured `VideoGame`/`BreadcrumbList` data.
 
 ## 4. Review Pages
 
 - [x] Build review archive and detail routes.
 - [x] Store a score, excerpt, game relationship, pros, cons, author, and body content in the CMS model.
-- [ ] Render the review score, excerpt, game, and useful summary information on review archive cards.
-- [ ] Render the stored pros and cons on review detail pages.
-- [ ] Add a clear verdict/summary box near the top of a review.
-- [ ] Display platform tested, hours played, review-copy disclosure, and game version/patch tested.
-- [ ] Ensure a valid score of `0` is still rendered instead of being hidden by truthy checks.
+- [x] Render the review score, excerpt, game, and useful summary information on review archive cards.
+- [x] Render the stored pros and cons on review detail pages.
+- [x] Add a clear verdict/summary box near the top of a review.
+- [x] Display platform tested, hours played, review-copy disclosure, and game version/patch tested.
+- [x] Ensure a valid score of `0` is still rendered instead of being hidden by truthy checks.
 - [ ] Add review structured data and an explicit scoring-policy link.
 
 ## 5. Article Pages
@@ -86,9 +86,9 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 - [ ] Configure and verify featured reviews. **Partial:** the block and seed configuration exist.
 - [ ] Configure and verify top reviews. **Partial:** the automatic block exists.
 - [ ] Configure and verify upcoming games. **Partial:** the automatic block and fallback query exist.
-- [ ] Ensure every homepage section has a valid archive/discovery link. **Partial:** some configured `link` fields are not rendered, and Featured Articles assumes an optional link is present.
-- [ ] Avoid empty homepage sections. **Partial:** Latest Articles and Category Browse hide when empty; other blocks need the same behavior.
-- [ ] Verify the homepage at mobile, tablet, laptop, and wide-desktop breakpoints.
+- [x] Ensure every homepage section has a valid archive/discovery link.
+- [x] Avoid empty homepage sections.
+- [x] Verify the homepage at mobile, tablet, laptop, and wide-desktop breakpoints. **Verified 2026-10-08:** manual browser QA at mobile, 768px tablet, and 1440px desktop plus the desktop/Pixel 7 overflow suite.
 
 ## 7. Search
 
@@ -192,7 +192,7 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 - [ ] Replace the generic admin welcome/onboarding instructions.
 - [ ] Choose a single seed workflow and clearly separate demo data from production content.
 - [x] Update the roadmap to reflect the removal of posts and the addition of game routes/search/homepage work.
-- [ ] Keep `current-state-and-issues.md` updated whenever an issue is found, fixed, reopened, or verified.
+- [x] Keep `current-state-and-issues.md` updated whenever an issue is found, fixed, reopened, or verified.
 
 ## 16. MVP Acceptance Criteria
 

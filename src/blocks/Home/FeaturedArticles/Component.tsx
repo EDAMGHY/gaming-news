@@ -5,11 +5,10 @@ import type { IFeaturedArticlesBlock } from '@/payload-types'
 
 import RichText from '@/components/RichText'
 import { isArticle } from '@/utilities/utils'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/Slider/Slider'
 import { FeaturedArticle } from './FeaturedArticle'
 import { SwiperSlide } from 'swiper/react'
+import { ContentSectionHeader } from '@/components/ContentSectionHeader'
 
 export const FeaturedArticlesBlock: React.FC<IFeaturedArticlesBlock> = ({
   articles: articleDocs,
@@ -21,25 +20,20 @@ export const FeaturedArticlesBlock: React.FC<IFeaturedArticlesBlock> = ({
 }) => {
   const articles = (articleDocs ?? []).filter(isArticle)
 
+  if (articles.length === 0) return null
+
   return (
     <div id={id || ''} block-id={blockType} className="container space-y-6">
-      <div className="flex justify-between items-end gap-4">
-        <div className="space-y-2">
-          {title && <h2 className="text-4xl font-bold">{title}</h2>}
-
-          {description && (
-            <RichText
-              className="text-muted-foreground mb-0"
-              data={description}
-              enableGutter={false}
-            />
-          )}
-        </div>
-
-        <Button variant="primary" asChild>
-          <Link href={link!}>See More</Link>
-        </Button>
-      </div>
+      <ContentSectionHeader
+        actionHref={link}
+        description={
+          description ? (
+            <RichText className="mb-0" data={description} enableGutter={false} />
+          ) : undefined
+        }
+        eyebrow="Editor picks"
+        title={title || 'Worth your time'}
+      />
       <Slider autoplay={false}>
         {articles.map((article) => (
           <SwiperSlide key={article.id}>

@@ -2,8 +2,8 @@ import React from 'react'
 import type { ITopReviewsBlock } from '@/payload-types'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { Header } from '@/components/Header/Header'
 import { TopReviewItem } from './TopReviewItem'
+import { ContentSectionHeader } from '@/components/ContentSectionHeader'
 
 export const TopReviewsBlock: React.FC<ITopReviewsBlock> = async ({
   title,
@@ -27,19 +27,20 @@ export const TopReviewsBlock: React.FC<ITopReviewsBlock> = async ({
 
   const reviews = res?.docs || []
 
+  if (reviews.length === 0) return null
+
   return (
     <section className="container py-6 lg:py-12">
-      <div className="mb-10 pb-8 border-b-2 border-brand/20">
-        <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3 mb-2">
-          <span className="h-12 w-1 rounded-full bg-brand" />
-          {title || 'Top Rated Reviews'}
-        </h2>
-        {description && <p className="text-muted-foreground max-w-2xl ml-4">{description}</p>}
-      </div>
+      <ContentSectionHeader
+        actionHref={link}
+        description={description}
+        eyebrow="Scoreboard"
+        title={title || 'Top rated reviews'}
+      />
 
-      <div className="grid grid-cols-1 gap-3">
-        {reviews.map((r) => (
-          <TopReviewItem key={r.id} {...r} />
+      <div className="divide-y divide-border border-y border-border">
+        {reviews.map((r, index) => (
+          <TopReviewItem key={r.id} rank={index + 1} {...r} />
         ))}
       </div>
     </section>

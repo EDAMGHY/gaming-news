@@ -50,8 +50,11 @@ export default async function Page({ searchParams }: Args) {
       id: true,
       title: true,
       slug: true,
+      heroImage: true,
       categories: true,
       meta: true,
+      publishedAt: true,
+      populatedAuthors: true,
     },
   })
 
@@ -97,7 +100,8 @@ export default async function Page({ searchParams }: Args) {
             </div>
             <h1 className="text-5xl lg:text-6xl font-bold text-foreground">Gaming Articles</h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              Discover in-depth articles, industry news, and gaming insights from our expert writers.
+              Discover in-depth articles, industry news, and gaming insights from our expert
+              writers.
             </p>
           </div>
         </div>
