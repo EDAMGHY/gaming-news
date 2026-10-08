@@ -99,6 +99,16 @@ For public content, make sure these are aligned:
 - Preserve existing user changes in a dirty worktree.
 - Use the roadmap Markdown files as the source of truth for what remains.
 
+## Git Review Workflow
+
+- Never commit or push automatically after completing a task or prompt.
+- After implementation and verification, stop and ask the project owner to review the changes.
+- Create a commit only after the project owner explicitly approves committing the reviewed changes.
+- Push a branch or create or update a pull request only after the project owner explicitly approves pushing.
+- Never commit or push implementation work directly to `master`.
+- When commit approval is given, use a task-specific branch with the `codex/` prefix and keep unrelated user changes out of the commit.
+- Do not merge a pull request unless the project owner explicitly asks.
+
 ## Documentation Files
 
 - `docs/roadmap/00-overview.md`: phase summary and product direction
