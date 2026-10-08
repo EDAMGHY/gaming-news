@@ -5,8 +5,13 @@ import configPromise from '@payload-config'
 import { Gamepad2, Newspaper } from 'lucide-react'
 
 import type { ICategoryBrowseBlock } from '@/payload-types'
+import { ContentSectionHeader } from '@/components/ContentSectionHeader'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const CategoryBrowseBlock: React.FC<ICategoryBrowseBlock> = async ({ title, description }) => {
+export const CategoryBrowseBlock: React.FC<ICategoryBrowseBlock> = async ({
+  title,
+  description,
+}) => {
   const payload = await getPayload({ config: configPromise })
 
   const [categoriesRes, genresRes] = await Promise.all([
@@ -21,53 +26,55 @@ export const CategoryBrowseBlock: React.FC<ICategoryBrowseBlock> = async ({ titl
 
   return (
     <section className="container py-6 lg:py-12">
-      <div className="mb-8 pb-8 border-b-2 border-brand/20">
-        <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3 mb-2">
-          <span className="h-12 w-1 rounded-full bg-brand" />
-          {title || 'Browse by Category'}
-        </h2>
-        {description && <p className="text-muted-foreground max-w-2xl ml-4">{description}</p>}
-      </div>
+      <ContentSectionHeader
+        description={description}
+        eyebrow="Discovery"
+        title={title || 'Browse by category'}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {categories.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-6">
-            <div className="flex items-center gap-2 mb-4 text-foreground">
-              <Newspaper size={20} className="text-brand" />
-              <h3 className="text-lg font-bold">Articles by topic</h3>
-            </div>
-            <div className="flex flex-wrap gap-2">
+          <Card className="border-border bg-card shadow-none">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Newspaper size={20} className="text-brand" />
+                Articles by topic
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <Link
                   key={category.id}
                   href={`/articles?category=${category.id}`}
-                  className="inline-block bg-brand/10 hover:bg-brand hover:text-white text-brand text-sm font-semibold px-4 py-2 rounded-full transition-colors"
+                  className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-brand-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 >
                   {category.title}
                 </Link>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
 
         {genres.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-6">
-            <div className="flex items-center gap-2 mb-4 text-foreground">
-              <Gamepad2 size={20} className="text-brand" />
-              <h3 className="text-lg font-bold">Games by genre</h3>
-            </div>
-            <div className="flex flex-wrap gap-2">
+          <Card className="border-border bg-card shadow-none">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Gamepad2 size={20} className="text-brand" />
+                Games by genre
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
               {genres.map((genre) => (
                 <Link
                   key={genre.id}
                   href={`/games?genre=${genre.id}`}
-                  className="inline-block bg-brand/10 hover:bg-brand hover:text-white text-brand text-sm font-semibold px-4 py-2 rounded-full transition-colors"
+                  className="inline-block rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand hover:text-brand-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 >
                   {genre.name}
                 </Link>
               ))}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </section>

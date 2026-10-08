@@ -1,48 +1,59 @@
 import { Media } from '@/components/Media'
 import { Game } from '@/payload-types'
-import { cn } from '@/utilities/ui'
 import { format } from 'date-fns'
-import { Calendar } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import React from 'react'
 import Link from 'next/link'
 
-export const UpcomingGame: React.FC<{ game: Game; featured?: boolean }> = ({ game, featured }) => {
+const platformLabels: Record<string, string> = {
+  pc: 'PC',
+  ps5: 'PS5',
+  ps4: 'PS4',
+  'xbox-series': 'Xbox Series',
+  'xbox-one': 'Xbox One',
+  switch: 'Switch',
+  'switch-2': 'Switch 2',
+  mobile: 'Mobile',
+}
+
+export const UpcomingGame: React.FC<{ game: Game; index: number }> = ({ game, index }) => {
   return (
     <Link
       href={`/games/${game.slug}`}
-      className={cn(
-        'group relative block h-full overflow-hidden rounded-lg border border-brand/20 transition-all hover:border-brand/60 hover:shadow-xl hover:-translate-y-1',
-        // Featured tiles take two columns / two rows where the grid allows it.
-        featured ? 'sm:col-span-2 sm:row-span-2' : 'col-span-1 row-span-1',
-      )}
+      className="group grid grid-cols-[4.25rem_1fr_auto] items-center gap-4 border-b border-border p-3 transition-colors last:border-b-0 hover:bg-brand/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand sm:grid-cols-[5.5rem_7rem_1fr_auto] sm:gap-6 sm:p-4"
     >
-      <Media
-        className="h-full w-full shrink-0"
-        fill
-        pictureClassName="relative block h-full w-full group-hover:scale-105 transition-transform duration-300"
-        imgClassName="object-cover"
-        resource={game.coverImage}
-        size={featured ? '66vw' : '33vw'}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-      <div className="absolute bottom-0 left-0 right-0 space-y-2 p-4 text-white lg:p-5">
-        <h3
-          className={cn(
-            'font-bold line-clamp-2 group-hover:text-brand transition-colors',
-            featured ? 'text-xl lg:text-3xl' : 'text-lg',
-          )}
-        >
-          {game.title}
-        </h3>
+      <div className="relative aspect-square overflow-hidden rounded-md bg-muted">
+        <Media
+          fill
+          imgClassName="object-cover transition-transform duration-300 group-hover:scale-105"
+          resource={game.coverImage}
+          size="88px"
+        />
+      </div>
+      <div className="hidden font-mono sm:block">
+        <span className="block text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground">
+          Slot {String(index + 1).padStart(2, '0')}
+        </span>
         {game.releaseDate && (
-          <div className="flex items-center gap-2 text-sm">
-            <Calendar size={16} className="text-brand flex-shrink-0" />
-            <time dateTime={game.releaseDate} className="text-white/90">
-              {format(new Date(game.releaseDate), 'PPP')}
-            </time>
-          </div>
+          <time className="mt-1 block text-sm font-semibold" dateTime={game.releaseDate}>
+            {format(new Date(game.releaseDate), 'MMM d')}
+          </time>
         )}
       </div>
+      <div className="min-w-0">
+        <h3 className="line-clamp-2 font-bold tracking-tight transition-colors group-hover:text-brand sm:text-lg">
+          {game.title}
+        </h3>
+        <p className="mt-1 line-clamp-1 font-mono text-[0.65rem] uppercase tracking-wider text-muted-foreground">
+          {(game.platforms ?? [])
+            .map((platform) => platformLabels[platform] ?? platform)
+            .join(' · ') || 'Platform TBA'}
+        </p>
+      </div>
+      <ArrowUpRight
+        aria-hidden="true"
+        className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand"
+      />
     </Link>
   )
 }

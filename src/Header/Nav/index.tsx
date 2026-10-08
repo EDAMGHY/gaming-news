@@ -19,13 +19,13 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
             key={i}
             {...link}
             appearance="link"
-            className="gaming-nav-item px-3 py-2 rounded-lg relative group text-sm md:text-base font-medium transition-all duration-300 hover:text-cyan-400"
+            className="gaming-nav-item group relative rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-brand md:text-base"
           />
         )
       })}
       <Link
         href="/search"
-        className="gaming-nav-item p-2 md:p-1.5 rounded-lg transition-all duration-300 hover:text-cyan-400 hover:bg-white/5 group"
+        className="gaming-nav-item group rounded-lg p-2 transition-all duration-300 hover:bg-brand/10 hover:text-brand md:p-1.5"
       >
         <span className="sr-only">Search</span>
         <SearchIcon className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />

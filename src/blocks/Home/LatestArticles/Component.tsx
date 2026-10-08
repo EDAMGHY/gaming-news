@@ -1,11 +1,10 @@
 import React from 'react'
-import Link from 'next/link'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
 import type { ILatestArticlesBlock } from '@/payload-types'
-import { Card } from '@/components/Card'
-import { Button } from '@/components/ui/button'
+import { ArticleCard } from '@/components/ContentCard'
+import { ContentSectionHeader } from '@/components/ContentSectionHeader'
 
 export const LatestArticlesBlock: React.FC<ILatestArticlesBlock> = async ({
   title,
@@ -30,30 +29,16 @@ export const LatestArticlesBlock: React.FC<ILatestArticlesBlock> = async ({
 
   return (
     <section className="container py-6 lg:py-12">
-      <header className="mb-10 flex items-start justify-between gap-6 pb-8 border-b-2 border-brand/20">
-        <div className="space-y-2 flex-1">
-          <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3">
-            <span className="h-12 w-1 rounded-full bg-brand" />
-            {title || 'Latest News'}
-          </h2>
-          {description && <p className="text-muted-foreground max-w-2xl ml-4">{description}</p>}
-        </div>
-        {link && (
-          <Button variant="primary" className="shrink-0" asChild>
-            <Link href={link}>View all</Link>
-          </Button>
-        )}
-      </header>
+      <ContentSectionHeader
+        actionHref={link}
+        description={description}
+        eyebrow="Fresh from the desk"
+        title={title || 'Latest news'}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         {articles.map((article) => (
-          <Card
-            key={article.id}
-            className="h-full"
-            doc={article}
-            relationTo="articles"
-            showCategories
-          />
+          <ArticleCard article={article} key={article.id} />
         ))}
       </div>
     </section>

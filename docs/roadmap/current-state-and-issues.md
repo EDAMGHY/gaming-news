@@ -1,6 +1,6 @@
 # Current State And Issue Register
 
-Last audited: **2026-10-06**
+Last audited: **2026-10-08**
 
 ## Purpose
 
@@ -22,6 +22,16 @@ When a new issue is discovered:
 - **P3 — Later enhancement:** useful work that should not displace MVP completion.
 
 ## Verification Snapshot
+
+The gaming content and homepage experience was verified on **2026-10-08** from branch
+`codex/gaming-content-homepage`.
+
+- `pnpm exec tsc --noEmit --incremental false`: **passed**.
+- `pnpm lint`: **passed with 0 errors and 34 warnings** (down from the 41-warning baseline).
+- `pnpm build`: **passed** on Next.js 16.3.8.
+- `pnpm test:int`: **passed, 4/4 tests**.
+- Production-preview Playwright run: **passed, 8/8 desktop/mobile route and overflow tests**.
+- Manual browser QA: homepage, typed cards, release rail, and review summary/pros/cons were inspected at mobile, 768px tablet, and 1440px desktop sizes.
 
 GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/gn-p0-001-004`.
 
@@ -99,24 +109,27 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 
 ### GN-P1-005 — Review pros/cons and archive identity are missing
 
-- **Status:** Open
+- **Status:** Verified
 - **Evidence:** pros/cons are modeled but not rendered. Review archive queries rating, but the shared Card does not display rating, excerpt, game, or platform.
 - **Impact:** reviews look like generic articles and fail the documented review acceptance criterion.
 - **Done when:** review cards and detail pages visibly present the score, verdict/excerpt, game, pros, cons, and required review context.
+- **Resolution:** Added a typed review card and detail-page verdict, test context, pros, cons, and disclosure treatments. Score rendering uses an explicit null/undefined check, so `0` remains visible. Verified in the production build and responsive browser QA.
 
 ### GN-P1-006 — Game page related-review query is semantically wrong
 
-- **Status:** Open
+- **Status:** Fixed
 - **Evidence:** `queryRelatedReviews` filters through `game.genres` instead of matching the current game relationship.
 - **Impact:** a game page can label reviews of other games as reviews of the current game.
 - **Done when:** the query matches `review.game` to the current game ID and tests cover games with zero, one, and multiple reviews.
+- **Resolution:** Game pages now query `review.game` by the current game ID. Focused zero/one/multiple relationship fixtures are still required before this issue can move to `Verified`.
 
 ### GN-P1-007 — Archive cards discard useful content-type data
 
-- **Status:** Open
+- **Status:** Verified
 - **Evidence:** the shared Card renders a generic image/title/description/category layout. Article/review archive selects omit hero images, and game-specific fields are ignored.
 - **Impact:** placeholders appear unnecessarily and games/reviews do not communicate why they are useful.
 - **Done when:** typed ArticleCard, ReviewCard, and GameCard variants expose the relevant image and metadata while sharing base shadcn styling.
+- **Resolution:** Replaced the universal card with typed Article, Review, and Game variants built on the shared shadcn Card primitives. Archive and homepage rendering was verified with representative published content at mobile and desktop sizes.
 
 ### GN-P1-008 — Game revalidation and redirect coverage are incomplete
 
@@ -160,6 +173,7 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 - **Status:** Open
 - **Evidence:** Media `alt` is not required; Logo uses `alt="Payload Logo"` while rendering the project asset.
 - **Done when:** editorial image requirements distinguish informative/decorative images, required alt text is enforced where appropriate, and logo text names the publication.
+- **Progress:** The public logo is now a text-based `Gaming News` wordmark with the correct accessible name. Editorial media validation remains open.
 
 ### GN-P2-002 — Mobile navigation needs accessible dialog behavior
 
@@ -175,15 +189,17 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 
 ### GN-P2-004 — Reduced motion coverage is incomplete
 
-- **Status:** Open
+- **Status:** Fixed
 - **Evidence:** only hero animations are disabled under `prefers-reduced-motion`; glow, shimmer, navigation slide, and other transitions remain active.
 - **Done when:** nonessential animations respect reduced-motion preferences throughout the public UI.
+- **Resolution:** The global reduced-motion rule now shortens nonessential animations and transitions across the public UI. A dedicated assistive-setting browser check is still required before marking this `Verified`.
 
 ### GN-P2-005 — Image optimization is inconsistent
 
 - **Status:** Open
 - **Evidence:** related-game cards use raw `<img>`; shared image defaults use quality 100 and broad generic `sizes` behavior.
 - **Done when:** all editorial images use the shared optimized path with route-specific sizes/quality and measured Core Web Vitals.
+- **Progress:** Related games now use the shared Media/Next Image path, typed cards provide route-specific responsive `sizes`, and same-origin Payload media URLs no longer trigger blocked image-optimizer self-fetches. Quality defaults and Core Web Vitals measurement remain open.
 
 ### GN-P2-006 — Archive facet queries do not scale
 
@@ -199,9 +215,10 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 
 ### GN-P2-008 — Generic visual identity
 
-- **Status:** Open
+- **Status:** Verified
 - **Evidence:** repeated cyan/purple gradients, glow effects, generic copy, and one universal card pattern resemble a gaming template more than a publication system.
 - **Done when:** a documented design direction covers typography, color, spacing, content-type cards, data presentation, motion, and responsive behavior using shared shadcn-based components.
+- **Resolution:** Introduced an ink/frost/cyan/amber editorial system, a compact display/mono hierarchy, typed shadcn cards, a release-rail data treatment, restrained motion, and responsive homepage layouts. The implementation was manually reviewed at mobile, tablet, and desktop sizes.
 
 ### GN-P2-009 — Editorial data completeness is not enforced
 

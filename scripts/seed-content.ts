@@ -624,6 +624,11 @@ async function seed() {
           heroImage: heroId,
           rating: tpl.rating,
           excerpt: tpl.excerpt,
+          platformTested: g.platforms?.[0],
+          hoursPlayed: 28 + rIdx * 14,
+          testedVersion: 'Launch build with the latest available patch',
+          disclosure:
+            'The review copy was provided by the publisher. The publisher had no editorial input.',
           pros: tpl.pros.map((text) => ({ text })),
           cons: tpl.cons.map((text) => ({ text })),
           content: lexical(tpl.body) as any,

@@ -13,10 +13,12 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { RelatedReviews } from '@/blocks/RelatedReviews/Component'
+import { RelatedArticles } from '@/blocks/RelatedArticles/Component'
 import { GameScreenshots } from '@/components/GameScreenshots'
 import { ArrowLeft, Gamepad2, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import { GameCard } from '@/components/ContentCard'
 
 const platformLabels: Record<string, string> = {
   pc: 'PC',
@@ -64,10 +66,10 @@ export default async function Game({ params: paramsPromise }: Args) {
 
   if (!game) return <PayloadRedirects url={url} />
 
-  const relatedReviews =
-    game.genres && Array.isArray(game.genres) && game.genres.length > 0
-      ? await queryRelatedReviews({ genres: game.genres })
-      : []
+  const [relatedReviews, relatedArticles] = await Promise.all([
+    queryRelatedReviews({ gameId: game.id }),
+    queryRelatedArticles({ gameId: game.id }),
+  ])
 
   return (
     <article className="pb-16">
@@ -245,31 +247,9 @@ export default async function Game({ params: paramsPromise }: Args) {
                   <p className="text-muted-foreground ml-16">You might also enjoy these games</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-                  {game.relatedGames.map((relatedGame, index) => {
+                  {game.relatedGames.map((relatedGame) => {
                     if (typeof relatedGame === 'string') return null
-                    return (
-                      <article
-                        key={index}
-                        className="border border-border rounded-xl overflow-hidden bg-card hover:cursor-pointer transition-all duration-300 hover:border-brand/60 hover:shadow-lg hover:-translate-y-1"
-                      >
-                        <div className="relative w-full h-48 overflow-hidden bg-muted">
-                          {relatedGame.coverImage && typeof relatedGame.coverImage !== 'string' && (
-                            <img
-                              src={relatedGame.coverImage.url || '/assets/placeholder.webp'}
-                              alt={relatedGame.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          )}
-                        </div>
-                        <div className="p-4 space-y-3">
-                          <a href={`/games/${relatedGame.slug}`} className="group/link">
-                            <h3 className="font-bold text-lg text-foreground group-hover/link:text-brand transition-colors line-clamp-2">
-                              {relatedGame.title}
-                            </h3>
-                          </a>
-                        </div>
-                      </article>
-                    )
+                    return <GameCard game={relatedGame} key={relatedGame.id} />
                   })}
                 </div>
               </div>
@@ -290,10 +270,22 @@ export default async function Game({ params: paramsPromise }: Args) {
                   Read what critics say about {game.title}
                 </p>
               </div>
-              <RelatedReviews
-                className="max-w-full"
-                docs={relatedReviews.filter((review) => typeof review === 'object') as any}
-              />
+              <RelatedReviews className="max-w-full" docs={relatedReviews} />
+            </div>
+          )}
+
+          {relatedArticles.length > 0 && (
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="h-1 w-12 rounded-full bg-brand" />
+                  <h2 className="text-3xl font-bold text-foreground">Latest coverage</h2>
+                </div>
+                <p className="text-muted-foreground ml-16">
+                  News, guides, and features about {game.title}
+                </p>
+              </div>
+              <RelatedArticles className="max-w-full" docs={relatedArticles} />
             </div>
           )}
         </div>
@@ -350,16 +342,8 @@ const queryGameBySlug = cache(async ({ slug }: { slug: string }) => {
   }
 })
 
-const queryRelatedReviews = cache(async ({ genres }: { genres: (string | { id: string })[] }) => {
+const queryRelatedReviews = cache(async ({ gameId }: { gameId: string }) => {
   const payload = await getPayload({ config: configPromise })
-
-  if (!genres || genres.length === 0) return []
-
-  const genreIds = genres
-    .map((g) => (typeof g === 'object' && g !== null ? g.id : g))
-    .filter(Boolean)
-
-  if (genreIds.length === 0) return []
 
   const reviews = await payload.find({
     collection: 'reviews',
@@ -368,21 +352,48 @@ const queryRelatedReviews = cache(async ({ genres }: { genres: (string | { id: s
     overrideAccess: false,
     pagination: false,
     where: {
-      and: [
-        {
-          'game.genres': {
-            in: genreIds,
-          },
-        },
-      ],
+      game: { equals: gameId },
     },
     select: {
       title: true,
       slug: true,
+      rating: true,
+      excerpt: true,
+      heroImage: true,
+      game: true,
+      platformTested: true,
+      hoursPlayed: true,
       meta: true,
       categories: true,
     },
   })
 
   return reviews.docs
+})
+
+const queryRelatedArticles = cache(async ({ gameId }: { gameId: string }) => {
+  const payload = await getPayload({ config: configPromise })
+  const articles = await payload.find({
+    collection: 'articles',
+    depth: 1,
+    draft: false,
+    limit: 6,
+    overrideAccess: false,
+    pagination: false,
+    sort: '-publishedAt',
+    where: {
+      games: { contains: gameId },
+    },
+    select: {
+      title: true,
+      slug: true,
+      heroImage: true,
+      meta: true,
+      categories: true,
+      publishedAt: true,
+      populatedAuthors: true,
+    },
+  })
+
+  return articles.docs
 })
