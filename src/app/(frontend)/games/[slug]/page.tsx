@@ -19,6 +19,7 @@ import { ArrowLeft, Gamepad2, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import { GameCard } from '@/components/ContentCard'
+import { queryReviewsByGame } from '@/utilities/queryReviewsByGame'
 
 const platformLabels: Record<string, string> = {
   pc: 'PC',
@@ -345,30 +346,7 @@ const queryGameBySlug = cache(async ({ slug }: { slug: string }) => {
 const queryRelatedReviews = cache(async ({ gameId }: { gameId: string }) => {
   const payload = await getPayload({ config: configPromise })
 
-  const reviews = await payload.find({
-    collection: 'reviews',
-    draft: false,
-    limit: 6,
-    overrideAccess: false,
-    pagination: false,
-    where: {
-      game: { equals: gameId },
-    },
-    select: {
-      title: true,
-      slug: true,
-      rating: true,
-      excerpt: true,
-      heroImage: true,
-      game: true,
-      platformTested: true,
-      hoursPlayed: true,
-      meta: true,
-      categories: true,
-    },
-  })
-
-  return reviews.docs
+  return queryReviewsByGame({ gameId, payload })
 })
 
 const queryRelatedArticles = cache(async ({ gameId }: { gameId: string }) => {

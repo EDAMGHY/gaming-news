@@ -43,6 +43,13 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 - Production dependency audit: reduced from **117 findings (4 critical)** to **28 findings (0 critical, 1 high)**. The remaining high advisory is the unpatched `braces` dependency in Payload's Sass/Chokidar toolchain and is tracked by GN-P2-011.
 - Docker: a clean pnpm/Node 22 standalone image built successfully; an ephemeral container returned **HTTP 200** for `/games` and was removed after the check.
 
+GN-P1-006 and GN-P1-012 were verified on **2026-10-08**.
+
+- `pnpm exec tsc --noEmit --incremental false`: **passed**.
+- Focused game-review and cron-access regression tests: **passed, 8/8 tests**.
+- `pnpm run test:int`: **passed, 12/12 tests**.
+- `pnpm build`: **passed** on Next.js 16.3.8, including static generation and sitemap postbuild.
+
 ## P0 — Launch Blockers
 
 ### GN-P0-001 — Vulnerable Next.js release
@@ -117,11 +124,11 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 
 ### GN-P1-006 — Game page related-review query is semantically wrong
 
-- **Status:** Fixed
+- **Status:** Verified
 - **Evidence:** `queryRelatedReviews` filters through `game.genres` instead of matching the current game relationship.
 - **Impact:** a game page can label reviews of other games as reviews of the current game.
 - **Done when:** the query matches `review.game` to the current game ID and tests cover games with zero, one, and multiple reviews.
-- **Resolution:** Game pages now query `review.game` by the current game ID. Focused zero/one/multiple relationship fixtures are still required before this issue can move to `Verified`.
+- **Resolution:** Game pages now query reviews with `game equals currentGame.id`. Regression tests cover zero, one, and multiple matching reviews and exclude a review belonging to a different same-genre game; typecheck, the 12-test integration suite, and the production build pass.
 
 ### GN-P1-007 — Archive cards discard useful content-type data
 
@@ -161,10 +168,11 @@ GN-P0-001 through GN-P0-004 were verified on **2026-10-06** from branch `codex/g
 
 ### GN-P1-012 — Cron authorization should fail closed
 
-- **Status:** Open
+- **Status:** Verified
 - **Evidence:** the job access check compares the Authorization header to `Bearer ${process.env.CRON_SECRET}` without first requiring a configured secret.
 - **Impact:** a missing production secret can create ambiguous authorization behavior.
 - **Done when:** unauthenticated job execution is denied whenever `CRON_SECRET` is absent/empty, with configuration validation and a focused test.
+- **Resolution:** Job access now validates that `CRON_SECRET` is present and non-empty before comparing the bearer token. Focused tests cover absent, empty, whitespace-only, valid, invalid, and authenticated-user paths; typecheck, the 12-test integration suite, and the production build pass.
 
 ## P2 — Accessibility, Mobile, Performance, And Maintainability
 

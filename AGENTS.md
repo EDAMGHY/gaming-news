@@ -99,6 +99,16 @@ For public content, make sure these are aligned:
 - Preserve existing user changes in a dirty worktree.
 - Use the roadmap Markdown files as the source of truth for what remains.
 
+## Required Git Workflow
+
+- Never make project changes, create commits, or push commits directly on `master`.
+- Before changing files for any task, create a task-specific branch from `master` using the `codex/` prefix, or switch to the existing task branch when continuing an open pull request.
+- Keep unrelated user changes intact and out of the task commit.
+- Commit every completed task to its task branch with a clear, scoped commit message.
+- Push the task branch and create a pull request targeting `master` after verification.
+- Report the branch name, commit, pull request URL, and verification results to the user.
+- Do not merge the pull request unless the user explicitly asks for it.
+
 ## Documentation Files
 
 - `docs/roadmap/00-overview.md`: phase summary and product direction

@@ -19,7 +19,7 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 - [x] Upgrade Next.js from the vulnerable `15.4.4` release to a supported patched release compatible with Payload. **Verified:** Next.js 16.3.8, React 19.3.0, and Payload 3.90.2 build and test successfully.
 - [x] Fix the TypeScript error in the shared card image resource.
 - [x] Produce a successful production build.
-- [x] Run updated integration and end-to-end tests in a disposable/test environment. **Verified:** 4 integration tests and 8 desktop/mobile E2E tests pass.
+- [x] Run updated integration and end-to-end tests in a disposable/test environment. **Verified:** 12 integration tests and 8 desktop/mobile E2E tests pass.
 - [x] Resolve or consciously baseline the current ESLint warnings. **Baseline:** 0 errors and 41 visible warnings, tracked by GN-P2-007.
 - [x] Choose one package manager, keep its lockfile, and make local, CI, and Docker usage consistent. **Choice:** pnpm 10.28.2.
 - [x] Fix Docker standalone-output configuration or remove the unsupported Docker path. **Verified:** clean image build and HTTP 200 from `/games` in an ephemeral container.
@@ -54,7 +54,7 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 - [x] Show cover, title, release date, platforms, genres, and developer/publisher on game cards.
 - [x] Build a game detail page.
 - [x] Show cover, release date, platforms, genres, narrative tags, game length, developer, publisher, synopsis, screenshots, and related games when populated.
-- [x] Show reviews for the current game using the explicit review-to-game relationship.
+- [x] Show reviews for the current game. **Verified:** the query matches the explicit game relationship, with regression coverage for zero, one, and multiple reviews.
 - [x] Add related articles to game pages using an explicit article-to-games relationship.
 - [ ] Add breadcrumbs and structured `VideoGame`/`BreadcrumbList` data.
 
@@ -172,7 +172,7 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 - [ ] Review Payload query depth and selected fields to avoid over-fetching.
 - [ ] Add route-level loading and error states.
 - [ ] Add rate limiting and spam protection for public forms before launch.
-- [ ] Ensure job/cron authorization denies requests safely when `CRON_SECRET` is missing.
+- [x] Ensure job/cron authorization denies requests safely when `CRON_SECRET` is missing. **Verified:** absent, empty, and whitespace-only secrets deny unauthenticated requests; valid bearer and authenticated-user paths are covered.
 
 ## 14. Content Requirements Before Launch
 
