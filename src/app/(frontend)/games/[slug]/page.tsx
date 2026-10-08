@@ -17,6 +17,7 @@ import { GameScreenshots } from '@/components/GameScreenshots'
 import { ArrowLeft, Gamepad2, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { format } from 'date-fns'
+import { queryReviewsByGame } from '@/utilities/queryReviewsByGame'
 
 const platformLabels: Record<string, string> = {
   pc: 'PC',
@@ -64,10 +65,7 @@ export default async function Game({ params: paramsPromise }: Args) {
 
   if (!game) return <PayloadRedirects url={url} />
 
-  const relatedReviews =
-    game.genres && Array.isArray(game.genres) && game.genres.length > 0
-      ? await queryRelatedReviews({ genres: game.genres })
-      : []
+  const relatedReviews = await queryRelatedReviews({ gameId: game.id })
 
   return (
     <article className="pb-16">
@@ -350,39 +348,8 @@ const queryGameBySlug = cache(async ({ slug }: { slug: string }) => {
   }
 })
 
-const queryRelatedReviews = cache(async ({ genres }: { genres: (string | { id: string })[] }) => {
+const queryRelatedReviews = cache(async ({ gameId }: { gameId: string }) => {
   const payload = await getPayload({ config: configPromise })
 
-  if (!genres || genres.length === 0) return []
-
-  const genreIds = genres
-    .map((g) => (typeof g === 'object' && g !== null ? g.id : g))
-    .filter(Boolean)
-
-  if (genreIds.length === 0) return []
-
-  const reviews = await payload.find({
-    collection: 'reviews',
-    draft: false,
-    limit: 6,
-    overrideAccess: false,
-    pagination: false,
-    where: {
-      and: [
-        {
-          'game.genres': {
-            in: genreIds,
-          },
-        },
-      ],
-    },
-    select: {
-      title: true,
-      slug: true,
-      meta: true,
-      categories: true,
-    },
-  })
-
-  return reviews.docs
+  return queryReviewsByGame({ gameId, payload })
 })

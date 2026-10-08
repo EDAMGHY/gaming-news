@@ -1,6 +1,6 @@
 # Gaming News Roadmap Overview
 
-Last audited against the codebase: **2026-10-06**
+Last audited against the codebase: **2026-10-08**
 
 ## Product Goal
 
@@ -37,6 +37,8 @@ The product should not compete only on publishing more headlines. Its strongest 
 - Homepage blocks exist for featured articles, latest articles, featured reviews, top reviews, upcoming games, and category/genre discovery.
 - Search indexes articles and reviews and routes those result types correctly.
 - Preview paths exist for pages, articles, reviews, and games.
+- Game pages match related reviews through the explicit game relationship.
+- Job/cron execution fails closed when no non-empty `CRON_SECRET` is configured.
 - Drafts, scheduled publishing, SEO, redirects, forms, and search plugins are configured.
 - The frontend already uses shadcn/Radix UI primitives for many controls.
 
@@ -49,7 +51,6 @@ The product should not compete only on publishing more headlines. Its strongest 
 - Sitemaps omit gaming detail pages and still reference a removed posts sitemap.
 - Review pages do not render the stored pros/cons, and archive cards do not show review-specific information.
 - Game cards do not expose the useful database fields already stored in Payload.
-- Game pages select related reviews by shared genre instead of the current game.
 - Game revalidation and review/game redirect coverage are incomplete.
 - Privacy and Terms content is not represented in the repository; About and Contact have seed support but must be verified in the active database.
 - The README, admin onboarding, legacy seed content, logo alt text, social image, tests, and some metadata still contain Payload-template leftovers.

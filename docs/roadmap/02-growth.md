@@ -56,7 +56,7 @@ Build a reader-facing decision layer around the existing games database.
 - [ ] Use categories for Guides, Features, Opinion, Interviews, Previews, and Industry reporting unless a separate content model becomes necessary.
 - [ ] Add evergreen lists only when they include a clear methodology and maintenance owner.
 - [ ] Add related articles to review pages.
-- [ ] Add accurate related reviews/articles to game pages.
+- [ ] Add accurate related reviews/articles to game pages. **Partial:** related reviews now match the explicit game relationship; related articles are still missing.
 - [ ] Add author profile pages with biography, role, beats, disclosures, and recent work.
 - [ ] Publish editorial, review scoring, corrections, ethics, affiliate, AI-use, and review-copy policies.
 - [ ] Add visible sourcing and correction notes to articles.
