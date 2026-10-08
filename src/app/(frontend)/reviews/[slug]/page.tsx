@@ -16,7 +16,19 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Check, Clock3, Gamepad2, Info, Minus, Wrench } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+const platformLabels: Record<string, string> = {
+  pc: 'PC',
+  ps5: 'PlayStation 5',
+  ps4: 'PlayStation 4',
+  'xbox-series': 'Xbox Series X|S',
+  'xbox-one': 'Xbox One',
+  switch: 'Nintendo Switch',
+  'switch-2': 'Nintendo Switch 2',
+  mobile: 'Mobile',
+}
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -62,7 +74,7 @@ export default async function Review({ params: paramsPromise }: Args) {
 
       <ReviewHero review={review} />
 
-      <div className="max-w-[48rem] flex flex-col items-center gap-8 mx-auto pt-12">
+      <div className="mx-auto flex max-w-[52rem] flex-col items-center gap-8 px-4 pt-10 sm:px-6 md:pt-14">
         {/* Back to Listings */}
         <Link
           href="/reviews"
@@ -73,6 +85,120 @@ export default async function Review({ params: paramsPromise }: Args) {
           </span>
           Back to all reviews
         </Link>
+
+        {(review.excerpt ||
+          review.platformTested ||
+          (review.hoursPlayed !== null && review.hoursPlayed !== undefined) ||
+          review.testedVersion) && (
+          <Card className="w-full overflow-hidden border-brand/30 bg-card shadow-none">
+            {review.excerpt && (
+              <CardHeader className="border-b border-border bg-brand/5">
+                <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-brand">
+                  Verdict
+                </p>
+                <CardTitle className="text-balance text-xl leading-8 sm:text-2xl">
+                  {review.excerpt}
+                </CardTitle>
+              </CardHeader>
+            )}
+            {(review.platformTested ||
+              (review.hoursPlayed !== null && review.hoursPlayed !== undefined) ||
+              review.testedVersion) && (
+              <CardContent className="grid gap-5 p-6 sm:grid-cols-3">
+                {review.platformTested && (
+                  <div>
+                    <Gamepad2 aria-hidden="true" className="mb-2 size-4 text-brand" />
+                    <p className="font-mono text-[0.62rem] uppercase tracking-wider text-muted-foreground">
+                      Platform
+                    </p>
+                    <p className="mt-1 text-sm font-semibold">
+                      {platformLabels[review.platformTested] ?? review.platformTested}
+                    </p>
+                  </div>
+                )}
+                {review.hoursPlayed !== null && review.hoursPlayed !== undefined && (
+                  <div>
+                    <Clock3 aria-hidden="true" className="mb-2 size-4 text-brand" />
+                    <p className="font-mono text-[0.62rem] uppercase tracking-wider text-muted-foreground">
+                      Time played
+                    </p>
+                    <p className="mt-1 text-sm font-semibold">{review.hoursPlayed} hours</p>
+                  </div>
+                )}
+                {review.testedVersion && (
+                  <div>
+                    <Wrench aria-hidden="true" className="mb-2 size-4 text-brand" />
+                    <p className="font-mono text-[0.62rem] uppercase tracking-wider text-muted-foreground">
+                      Version tested
+                    </p>
+                    <p className="mt-1 text-sm font-semibold">{review.testedVersion}</p>
+                  </div>
+                )}
+              </CardContent>
+            )}
+          </Card>
+        )}
+
+        {((review.pros && review.pros.length > 0) || (review.cons && review.cons.length > 0)) && (
+          <div className="grid w-full gap-4 md:grid-cols-2">
+            {review.pros && review.pros.length > 0 && (
+              <Card className="border-emerald-500/30 bg-emerald-500/[0.04] shadow-none">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Check aria-hidden="true" className="size-5 text-emerald-500" /> What works
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-sm leading-6">
+                    {review.pros.map((pro) => (
+                      <li className="flex gap-3" key={pro.id ?? pro.text}>
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 size-1.5 shrink-0 rounded-full bg-emerald-500"
+                        />
+                        {pro.text}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+            {review.cons && review.cons.length > 0 && (
+              <Card className="border-amber-500/30 bg-amber-500/[0.04] shadow-none">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Minus aria-hidden="true" className="size-5 text-amber-500" /> What misses
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 text-sm leading-6">
+                    {review.cons.map((con) => (
+                      <li className="flex gap-3" key={con.id ?? con.text}>
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 size-1.5 shrink-0 rounded-full bg-amber-500"
+                        />
+                        {con.text}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {review.disclosure && (
+          <aside className="flex w-full gap-3 rounded-lg border border-border bg-muted/40 p-4 text-sm leading-6 text-muted-foreground">
+            <Info aria-hidden="true" className="mt-1 size-4 shrink-0 text-brand" />
+            <div>
+              <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-foreground">
+                Review disclosure
+              </p>
+              <p className="mt-1">{review.disclosure}</p>
+            </div>
+          </aside>
+        )}
 
         {/* Game Info Card - Simplified to avoid duplication */}
         {review.game && typeof review.game === 'object' && (

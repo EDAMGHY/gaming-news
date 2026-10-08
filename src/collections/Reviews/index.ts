@@ -58,6 +58,10 @@ export const Reviews: CollectionConfig<'reviews'> = {
     heroImage: true,
     excerpt: true,
     game: true, // ✅ so referenced reviews include game basic fields
+    platformTested: true,
+    hoursPlayed: true,
+    testedVersion: true,
+    disclosure: true,
     meta: { image: true, description: true },
     createdAt: true,
   },
@@ -98,6 +102,51 @@ export const Reviews: CollectionConfig<'reviews'> = {
               max: 5,
               required: true,
               admin: { position: 'sidebar', step: 0.5 },
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'platformTested',
+                  label: 'Platform tested',
+                  type: 'select',
+                  admin: { width: '50%' },
+                  options: [
+                    { label: 'PC', value: 'pc' },
+                    { label: 'PS5', value: 'ps5' },
+                    { label: 'PS4', value: 'ps4' },
+                    { label: 'Xbox Series', value: 'xbox-series' },
+                    { label: 'Xbox One', value: 'xbox-one' },
+                    { label: 'Nintendo Switch', value: 'switch' },
+                    { label: 'Nintendo Switch 2', value: 'switch-2' },
+                    { label: 'Mobile', value: 'mobile' },
+                  ],
+                },
+                {
+                  name: 'hoursPlayed',
+                  label: 'Hours played',
+                  type: 'number',
+                  min: 0,
+                  admin: { width: '50%', step: 0.5 },
+                },
+              ],
+            },
+            {
+              name: 'testedVersion',
+              label: 'Version / patch tested',
+              type: 'text',
+              admin: {
+                description: 'For example: PC 1.6.2 or launch build with day-one patch.',
+              },
+            },
+            {
+              name: 'disclosure',
+              type: 'textarea',
+              admin: {
+                description:
+                  'Explain how the review copy was obtained and any relevant relationship.',
+                rows: 3,
+              },
             },
             {
               name: 'content',

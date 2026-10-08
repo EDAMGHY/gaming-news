@@ -14,11 +14,11 @@
   }
 
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 216 25% 97%;
+    --foreground: 225 49% 8%;
 
-    --card: 240 5% 96%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 49% 8%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -29,8 +29,8 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 24% 93%;
+    --muted-foreground: 216 13% 42%;
 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
@@ -38,11 +38,16 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 240 6% 80%;
+    --border: 216 18% 82%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.2rem;
+    --radius: 0.5rem;
+
+    --brand: 194 96% 31%;
+    --brand-foreground: 0 0% 100%;
+    --quest: 39 100% 64%;
+    --quest-foreground: 32 80% 22%;
 
     --success: 196 52% 74%;
     --warning: 34 89% 85%;
@@ -50,10 +55,10 @@
   }
 
   [data-theme='dark'] {
-    --background: 0 0% 0%;
+    --background: 225 49% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 0 0% 4%;
+    --card: 224 39% 11%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -74,9 +79,14 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 0, 0%, 15%, 0.8;
+    --border: 218 22% 24%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    --brand: 190 100% 63%;
+    --brand-foreground: 225 49% 8%;
+    --quest: 39 100% 64%;
+    --quest-foreground: 39 100% 85%;
 
     --success: 196 100% 14%;
     --warning: 34 51% 25%;
@@ -89,7 +99,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    @apply bg-background text-foreground min-h-[100vh] flex flex-col antialiased;
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.12) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
 }
 
@@ -119,7 +133,7 @@ html[data-theme='light'] {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, hsl(var(--brand) / 0.1), transparent);
   transform: translateX(-100%);
   transition: transform 0.5s ease;
 }
@@ -135,7 +149,7 @@ html[data-theme='light'] {
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #06b6d4, #a855f7);
+  background: hsl(var(--brand));
   transition: width 0.3s ease;
 }
 
@@ -144,12 +158,13 @@ html[data-theme='light'] {
 }
 
 .gaming-header-stuck {
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+  box-shadow: 0 12px 32px hsl(var(--foreground) / 0.06);
 }
 
 /* Glow animation */
 @keyframes glow-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
   }
   50% {
@@ -158,11 +173,14 @@ html[data-theme='light'] {
 }
 
 @keyframes neon-glow {
-  0%, 100% {
+  0%,
+  100% {
     text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
   }
   50% {
-    text-shadow: 0 0 20px rgba(6, 182, 212, 0.8), 0 0 30px rgba(168, 85, 247, 0.4);
+    text-shadow:
+      0 0 20px rgba(6, 182, 212, 0.8),
+      0 0 30px rgba(168, 85, 247, 0.4);
   }
 }
 
@@ -270,6 +288,15 @@ html[data-theme='light'] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
   .animate-hero-fade-up,
   .animate-hero-fade-up-delay,
   .animate-hero-ken-burns {

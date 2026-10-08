@@ -41,9 +41,12 @@ export const Articles: CollectionConfig<'articles'> = {
   defaultPopulate: {
     title: true,
     slug: true,
+    heroImage: true,
     categories: true,
     primaryCategory: true,
-    content: true,
+    games: true,
+    publishedAt: true,
+    populatedAuthors: true,
     meta: {
       image: true,
       description: true,
@@ -157,6 +160,17 @@ export const Articles: CollectionConfig<'articles'> = {
               },
               hasMany: true,
               relationTo: 'articles',
+            },
+            {
+              name: 'games',
+              type: 'relationship',
+              relationTo: 'games',
+              hasMany: true,
+              admin: {
+                description:
+                  'Games covered by this story. Used to surface this article on game pages.',
+                position: 'sidebar',
+              },
             },
             {
               name: 'categories',

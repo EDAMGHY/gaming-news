@@ -17,7 +17,12 @@ export const review2: (args: ReviewArgs) => RequiredDataFromCollectionSlug<'revi
     heroImage: heroImage.id,
     game: game,
     rating: 4.5,
-    excerpt: 'Helldivers 2 delivers intense cooperative gameplay with excellent gunplay mechanics and a compelling progression system that keeps you coming back.',
+    platformTested: 'ps5',
+    hoursPlayed: 48,
+    testedVersion: 'PS5 launch build with day-one patch',
+    disclosure: 'The review copy was provided by the publisher. No editorial input was given.',
+    excerpt:
+      'Helldivers 2 delivers intense cooperative gameplay with excellent gunplay mechanics and a compelling progression system that keeps you coming back.',
     content: {
       root: {
         type: 'root',
@@ -79,7 +84,8 @@ export const review2: (args: ReviewArgs) => RequiredDataFromCollectionSlug<'revi
     ],
     meta: {
       title: 'Helldivers 2 Review - Top-Tier Coop Shooter',
-      description: 'Our detailed review of Helldivers 2, exploring why this cooperative shooter stands out in the genre.',
+      description:
+        'Our detailed review of Helldivers 2, exploring why this cooperative shooter stands out in the genre.',
       image: heroImage.id,
     },
   }

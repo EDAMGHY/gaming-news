@@ -6,7 +6,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
-import { CardPostData } from '@/components/Card'
+import { ArticleCardData } from '@/components/ContentCard'
 import { siteConfig } from '@/config/site'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -77,7 +77,13 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       </div>
 
       {results.totalDocs > 0 ? (
-        <CollectionArchive articles={results.docs as unknown as (CardPostData & { relationTo: string })[]} />
+        <CollectionArchive
+          articles={
+            results.docs as unknown as (ArticleCardData & {
+              relationTo: 'articles' | 'reviews' | 'games'
+            })[]
+          }
+        />
       ) : (
         <div className="container">No results found.</div>
       )}

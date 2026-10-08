@@ -51,20 +51,18 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           'sticky top-0 left-0 z-40 transition-all duration-300 ease-in-out border-b',
           'border-transparent',
           isStuck
-            ? 'bg-background/80 backdrop-blur-xl shadow-lg border-brand/20 gaming-header-stuck'
-            : 'bg-gradient-to-b from-background/50 to-transparent',
+            ? 'bg-background/90 backdrop-blur-xl border-border gaming-header-stuck'
+            : 'bg-gradient-to-b from-ink/75 to-transparent',
         )}
         {...(theme ? { 'data-theme': theme } : {})}
       >
         <div className="container max-w-7xl">
           <div className="py-4 flex justify-between items-center">
-            {/* Logo with pulse animation */}
             <Link
               href="/"
-              className="shrink-0 group relative"
+              className="shrink-0 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg" />
-              <div className="relative hover:scale-105 transition-transform duration-300">
+              <div className="transition-opacity hover:opacity-75">
                 <Logo loading="eager" priority="high" />
               </div>
             </Link>
@@ -84,14 +82,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               <ThemeSelector />
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 rounded-lg hover:bg-white/5 transition-colors duration-200"
+                className="rounded-lg p-2 transition-colors duration-200 hover:bg-brand/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 aria-label="Toggle menu"
               >
-                {isMobileMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>

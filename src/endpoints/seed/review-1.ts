@@ -17,7 +17,12 @@ export const review1: (args: ReviewArgs) => RequiredDataFromCollectionSlug<'revi
     heroImage: heroImage.id,
     game: game,
     rating: 5,
-    excerpt: 'Baldurs Gate 3 stands as a monumental achievement in gaming, delivering an unparalleled experience with its deep storytelling and meaningful player choices.',
+    platformTested: 'pc',
+    hoursPlayed: 92,
+    testedVersion: 'PC 4.1.1 with current hotfixes',
+    disclosure: 'The review copy was provided by the publisher. No editorial input was given.',
+    excerpt:
+      'Baldurs Gate 3 stands as a monumental achievement in gaming, delivering an unparalleled experience with its deep storytelling and meaningful player choices.',
     content: {
       root: {
         type: 'root',
@@ -79,7 +84,8 @@ export const review1: (args: ReviewArgs) => RequiredDataFromCollectionSlug<'revi
     ],
     meta: {
       title: 'Baldurs Gate 3 Review - A Gaming Masterpiece',
-      description: 'Read our comprehensive review of Baldurs Gate 3, the RPG that revolutionizes interactive storytelling.',
+      description:
+        'Read our comprehensive review of Baldurs Gate 3, the RPG that revolutionizes interactive storytelling.',
       image: heroImage.id,
     },
   }

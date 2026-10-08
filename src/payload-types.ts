@@ -276,6 +276,10 @@ export interface Article {
     [k: string]: unknown;
   };
   relatedArticles?: (string | Article)[] | null;
+  /**
+   * Games covered by this story. Used to surface this article on game pages.
+   */
+  games?: (string | Game)[] | null;
   categories?: (string | Category)[] | null;
   meta?: {
     title?: string | null;
@@ -414,33 +418,6 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: string;
-  name?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "games".
  */
 export interface Game {
@@ -531,6 +508,33 @@ export interface GameLength {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: string;
+  name?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews".
  */
 export interface Review {
@@ -543,6 +547,16 @@ export interface Review {
    */
   excerpt?: string | null;
   rating: number;
+  platformTested?: ('pc' | 'ps5' | 'ps4' | 'xbox-series' | 'xbox-one' | 'switch' | 'switch-2' | 'mobile') | null;
+  hoursPlayed?: number | null;
+  /**
+   * For example: PC 1.6.2 or launch build with day-one patch.
+   */
+  testedVersion?: string | null;
+  /**
+   * Explain how the review copy was obtained and any relevant relationship.
+   */
+  disclosure?: string | null;
   content: {
     root: {
       type: string;
@@ -2123,6 +2137,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   primaryCategory?: T;
   content?: T;
   relatedArticles?: T;
+  games?: T;
   categories?: T;
   meta?:
     | T
@@ -2185,6 +2200,10 @@ export interface ReviewsSelect<T extends boolean = true> {
   heroImage?: T;
   excerpt?: T;
   rating?: T;
+  platformTested?: T;
+  hoursPlayed?: T;
+  testedVersion?: T;
+  disclosure?: T;
   content?: T;
   pros?:
     | T

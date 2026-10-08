@@ -7,6 +7,7 @@ import configPromise from '@payload-config'
 import { resolveWindow } from '@/utilities/utils'
 import { UpcomingGame } from './UpcomingGame'
 import RichText from '@/components/RichText'
+import { ContentSectionHeader } from '@/components/ContentSectionHeader'
 
 export const UpcomingGamesBlock: React.FC<IUpcomingGamesBlock> = async (block) => {
   const payload = await getPayload({ config: configPromise })
@@ -46,29 +47,25 @@ export const UpcomingGamesBlock: React.FC<IUpcomingGamesBlock> = async (block) =
     games = fallback?.docs || []
   }
 
+  if (games.length === 0) return null
+
   return (
     <section className="container py-6 lg:py-12">
-      <div className="mb-10 pb-8 border-b-2 border-brand/20">
-        <h2 className="text-4xl lg:text-5xl font-bold text-foreground flex items-center gap-3 mb-2">
-          <span className="h-12 w-1 rounded-full bg-brand" />
-          {block.title || 'Upcoming Releases'}
-        </h2>
-        {block.description && (
-          <RichText
-            className="text-muted-foreground max-w-2xl ml-4"
-            data={block.description}
-            enableGutter={false}
-          />
-        )}
-      </div>
+      <ContentSectionHeader
+        actionHref={block.link}
+        actionLabel="Explore games"
+        description={
+          block.description ? (
+            <RichText className="mb-0" data={block.description} enableGutter={false} />
+          ) : undefined
+        }
+        eyebrow="Release rail"
+        title={block.title || 'Next in the queue'}
+      />
 
-      <div className="grid grid-flow-dense grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[14rem] lg:auto-rows-[15rem] gap-6">
+      <div className="overflow-hidden rounded-xl border border-border bg-card/50">
         {games.map((game, index) => (
-          <UpcomingGame
-            key={game.id}
-            game={game}
-            featured={index % 6 === 0 || index % 6 === 4}
-          />
+          <UpcomingGame key={game.id} game={game} index={index} />
         ))}
       </div>
     </section>

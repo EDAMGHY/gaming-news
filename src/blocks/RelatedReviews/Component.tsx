@@ -2,19 +2,19 @@ import clsx from 'clsx'
 import React from 'react'
 import RichText from '@/components/RichText'
 
-import type { Review } from '@/payload-types'
-
-import { Card } from '../../components/Card'
+import { ReviewCard, type ReviewCardData } from '@/components/ContentCard'
 import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
 export type RelatedReviewsProps = {
   className?: string
-  docs?: Review[]
+  docs?: ReviewCardData[]
   introContent?: SerializedEditorState
 }
 
 export const RelatedReviews: React.FC<RelatedReviewsProps> = (props) => {
   const { className, docs, introContent } = props
+
+  if (!docs?.length) return null
 
   return (
     <div className={clsx('lg:container', className)}>
@@ -24,7 +24,7 @@ export const RelatedReviews: React.FC<RelatedReviewsProps> = (props) => {
         {docs?.map((doc, index) => {
           if (typeof doc === 'string') return null
 
-          return <Card key={index} doc={doc} relationTo="reviews" showCategories />
+          return <ReviewCard key={doc.id ?? index} review={doc} />
         })}
       </div>
     </div>

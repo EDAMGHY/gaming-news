@@ -5,28 +5,35 @@ import type { Review } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
-import { Rating } from '@/components/Rating/Rating'
+import { Badge } from '@/components/ui/badge'
 
 export const ReviewHero: React.FC<{
   review: Review
 }> = ({ review }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title, rating } = review
+  const { categories, game, heroImage, populatedAuthors, publishedAt, title, rating } = review
+  const gameTitle = typeof game === 'object' ? game.title : undefined
+  const hasRating = rating !== null && rating !== undefined
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
   return (
     <div className="relative">
       {/* Full-width hero image */}
-      <div className="w-full h-[70vh] md:h-[85vh] relative overflow-hidden group">
+      <div className="relative h-[68vh] min-h-[34rem] w-full overflow-hidden group md:h-[78vh]">
         {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500" resource={heroImage} />
+          <Media
+            fill
+            priority
+            imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500"
+            resource={heroImage}
+          />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#080c18] via-[#080c18]/55 to-black/20" />
       </div>
 
       {/* Content overlay */}
       <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
-        <div className="container pb-16 text-white space-y-6 pointer-events-auto">
+        <div className="container space-y-6 pb-10 text-white pointer-events-auto sm:pb-14">
           <div className="space-y-4">
             {/* Categories with brand styling */}
             {categories && categories.length > 0 && (
@@ -37,9 +44,12 @@ export const ReviewHero: React.FC<{
                     const titleToUse = categoryTitle || 'Untitled category'
 
                     return (
-                      <span key={index} className="inline-block bg-brand text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      <Badge
+                        key={index}
+                        className="border-white/20 bg-white/10 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-white backdrop-blur hover:bg-white/10"
+                      >
                         {titleToUse}
-                      </span>
+                      </Badge>
                     )
                   }
                   return null
@@ -48,7 +58,14 @@ export const ReviewHero: React.FC<{
             )}
 
             {/* Title */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight">{title}</h1>
+            {gameTitle && (
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-brand">
+                {gameTitle} review
+              </p>
+            )}
+            <h1 className="max-w-5xl text-balance text-4xl font-black leading-[0.98] tracking-[-0.055em] sm:text-5xl md:text-6xl lg:text-7xl">
+              {title}
+            </h1>
           </div>
 
           {/* Metadata */}
@@ -65,15 +82,22 @@ export const ReviewHero: React.FC<{
               <div className="flex items-center gap-3 border-l-2 border-brand pl-4">
                 <div>
                   <p className="text-white/70 text-xs uppercase tracking-wide">Published</p>
-                  <time dateTime={publishedAt} className="font-semibold">{formatDateTime(publishedAt)}</time>
+                  <time dateTime={publishedAt} className="font-semibold">
+                    {formatDateTime(publishedAt)}
+                  </time>
                 </div>
               </div>
             )}
-            {rating && (
+            {hasRating && (
               <div className="flex items-center gap-3 border-l-2 border-brand pl-4">
                 <div>
-                  <p className="text-white/70 text-xs uppercase tracking-wide">Rating</p>
-                  <Rating rating={rating} />
+                  <p className="text-white/70 text-xs uppercase tracking-wide">Score</p>
+                  <div className="flex items-end gap-2">
+                    <span className="font-mono text-3xl font-bold leading-none text-brand">
+                      {rating}
+                    </span>
+                    <span className="font-mono text-xs text-white/60">/ 5</span>
+                  </div>
                 </div>
               </div>
             )}
