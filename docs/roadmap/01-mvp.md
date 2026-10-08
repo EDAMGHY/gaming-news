@@ -20,8 +20,8 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 - [x] Fix the TypeScript error in the shared card image resource.
 - [x] Produce a successful production build.
 - [x] Run updated integration and end-to-end tests in a disposable/test environment. **Verified:** 12 integration tests and 8 desktop/mobile E2E tests pass.
-- [x] Resolve or consciously baseline the current ESLint warnings. **Baseline:** 0 errors and 41 visible warnings, tracked by GN-P2-007.
-- [x] Choose one package manager, keep its lockfile, and make local, CI, and Docker usage consistent. **Choice:** pnpm 10.28.2.
+- [x] Resolve or consciously baseline the current ESLint warnings. **Baseline:** 0 errors and 34 visible warnings, tracked by GN-P2-007.
+- [x] Choose one package manager, keep its lockfile, and make local, CI, and Docker usage consistent. **Verified:** pnpm 10.28.2 is pinned, and GitHub Actions installs it with the frozen lockfile before linting, type-checking, testing, and building.
 - [x] Fix Docker standalone-output configuration or remove the unsupported Docker path. **Verified:** clean image build and HTTP 200 from `/games` in an ephemeral container.
 
 ## 1. Clean Product Direction
