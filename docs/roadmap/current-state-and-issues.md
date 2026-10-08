@@ -50,6 +50,16 @@ GN-P1-006 and GN-P1-012 were verified on **2026-10-08**.
 - `pnpm run test:int`: **passed, 12/12 tests**.
 - `pnpm build`: **passed** on Next.js 16.3.8, including static generation and sitemap postbuild.
 
+The GitHub Actions CI implementation was verified locally on **2026-10-08** from branch
+`codex/ci-workflow` against a disposable MongoDB 8 service.
+
+- Workflow YAML and changed-file formatting: **passed**.
+- `pnpm typecheck`: **passed**.
+- `pnpm lint`: **passed with 0 errors and 34 tracked warnings**.
+- `pnpm test:int`: **passed, 12/12 tests**.
+- `pnpm build`: **passed**, including the sitemap postbuild.
+- Production standalone-server Playwright run: **passed, 8/8 desktop/mobile tests**.
+
 ## P0 — Launch Blockers
 
 ### GN-P0-001 — Vulnerable Next.js release
@@ -246,6 +256,15 @@ GN-P1-006 and GN-P1-012 were verified on **2026-10-08**.
 - **Evidence:** `pnpm audit --prod` reports one high-severity `braces` stack-exhaustion advisory through `@payloadcms/next > sass > chokidar`; the registry currently reports no patched release. All critical advisories and other high advisories found during GN-P0-001 were removed.
 - **Impact:** This is a build/tooling dependency path rather than the previously exposed Next.js runtime, but it should remain visible and be retested with Payload/Sass/Chokidar updates.
 - **Done when:** an upstream compatible release removes the advisory, the override is unnecessary, and build/tests continue to pass.
+
+### GN-P2-012 — Pull requests lack an automated quality gate
+
+- **Status:** Fixed
+- **Found:** 2026-10-08
+- **Evidence:** The repository had no GitHub Actions workflow, so pull requests could be merged without an automated lint, type, test, or production-build result.
+- **Impact:** Regressions in Payload integration, Next.js production output, or public desktop/mobile routes could reach `master` despite passing an incomplete local check.
+- **Done when:** pull requests and pushes to `master` run frozen pnpm installation, lint, type-checking, integration tests against disposable MongoDB, production build, and production-server Playwright tests; failed browser runs retain a diagnostic report; and the hosted workflow passes.
+- **Resolution:** Added a least-privilege, concurrency-cancelled GitHub Actions workflow with pnpm and Next.js caches, a MongoDB 8 service, all existing quality gates, the Next.js standalone runtime path, a stable clean-database readiness probe, and failure-only Playwright artifacts. Local parity verification passes; the first hosted pull-request run is pending.
 
 ## P3 — Differentiation Backlog
 
