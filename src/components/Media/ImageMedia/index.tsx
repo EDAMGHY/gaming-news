@@ -74,6 +74,9 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   return (
     <picture
       className={cn(
+        // next/image `fill` requires a positioned direct parent; span the same box the
+        // image would have filled (nearest positioned ancestor). Callers can override.
+        fill && 'absolute inset-0 block',
         pictureClassName, // ensure fill has a box
         fill && addClasses && 'relative block w-full aspect-video',
         // give placeholder a height; adjust to your design needs

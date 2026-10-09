@@ -34,7 +34,7 @@ export const GameHero: React.FC<{
           <Media
             fill
             priority
-            imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500"
+            imgClassName="object-cover group-hover:scale-105 transition-transform duration-500"
             resource={coverImage}
           />
         )}
