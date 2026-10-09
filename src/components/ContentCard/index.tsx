@@ -250,6 +250,9 @@ export function ReviewCard({ className, review }: { className?: string; review: 
               {review.hoursPlayed}h played
             </span>
           )}
+          <span className="ml-auto inline-flex items-center gap-1 text-foreground">
+            Read <ArrowUpRight aria-hidden="true" className="size-3.5" />
+          </span>
         </CardFooter>
       </CardRoot>
     </Link>
