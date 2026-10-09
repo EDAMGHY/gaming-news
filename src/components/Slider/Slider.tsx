@@ -116,16 +116,23 @@ export function Slider({
   React.useEffect(() => {
     const plugin = api?.plugins().autoplay
     if (!api || !plugin) return
-    if (shouldPlay) plugin.play()
-    else plugin.stop()
+
+    // The autoplay plugin skips its setup when everything fits on one page, and
+    // play() then throws. Embla also re-inits plugins (stopped) on resize, so
+    // re-apply the play state after every reInit.
+    const apply = () => {
+      if (shouldPlay && api.scrollSnapList().length > 1) plugin.play()
+      else plugin.stop()
+    }
+    apply()
 
     // Embla restarts autoplay after every drag; keep it stopped while paused.
     const onPointerUp = () => {
       if (!shouldPlay) plugin.stop()
     }
-    api.on('pointerUp', onPointerUp)
+    api.on('pointerUp', onPointerUp).on('reInit', apply)
     return () => {
-      api.off('pointerUp', onPointerUp)
+      api.off('pointerUp', onPointerUp).off('reInit', apply)
     }
   }, [api, shouldPlay])
 
