@@ -30,24 +30,10 @@ const platformLabels: Record<string, string> = {
   mobile: 'Mobile',
 }
 
+// Render on first visit instead of at build time so image builds never need the database.
+// The page is then cached, and the collection's revalidate hooks refresh it after edits.
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const reviews = await payload.find({
-    collection: 'reviews',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
-
-  const params = reviews.docs.map(({ slug }) => {
-    return { slug }
-  })
-
-  return params
+  return []
 }
 
 type Args = {
