@@ -13,7 +13,7 @@ export const AboutHero: Block = {
     {
       name: 'badge',
       type: 'text',
-      defaultValue: 'About Gaming News',
+      defaultValue: 'About Save Point',
       admin: { description: 'Small pill label above the heading' },
     },
     {

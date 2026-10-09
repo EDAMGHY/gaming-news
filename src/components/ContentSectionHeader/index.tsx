@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui/button'
+import { ButtonLink } from '@/components/ui/button-link'
 import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 export function ContentSectionHeader({
@@ -22,7 +21,7 @@ export function ContentSectionHeader({
         <p className="mb-3 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-brand">
           {eyebrow}
         </p>
-        <h2 className="text-balance text-3xl font-bold tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+        <h2 className="text-balance text-3xl font-bold tracking-[-0.02em] sm:text-4xl lg:text-5xl">
           {title}
         </h2>
         {description && (
@@ -32,11 +31,9 @@ export function ContentSectionHeader({
         )}
       </div>
       {actionHref && (
-        <Button asChild className="w-fit gap-2" variant="outline">
-          <Link href={actionHref}>
-            {actionLabel} <ArrowRight aria-hidden="true" className="size-4" />
-          </Link>
-        </Button>
+        <ButtonLink className="w-fit" href={actionHref} variant="outline">
+          {actionLabel} <ArrowRight aria-hidden="true" />
+        </ButtonLink>
       )}
     </header>
   )

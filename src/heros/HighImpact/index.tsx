@@ -47,7 +47,7 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
             <RichText
               className={[
                 'mb-8 animate-hero-fade-up',
-                '[&_:is(h1,h2,h3)]:max-w-[13ch] [&_:is(h1,h2,h3)]:text-balance [&_:is(h1,h2,h3)]:text-[3rem] [&_:is(h1,h2,h3)]:font-black [&_:is(h1,h2,h3)]:leading-[0.94] [&_:is(h1,h2,h3)]:tracking-[-0.06em] sm:[&_:is(h1,h2,h3)]:text-6xl md:[&_:is(h1,h2,h3)]:text-7xl lg:[&_:is(h1,h2,h3)]:text-[5.4rem]',
+                '[&_:is(h1,h2,h3)]:max-w-[13ch] [&_:is(h1,h2,h3)]:text-balance [&_:is(h1,h2,h3)]:text-[3rem] [&_:is(h1,h2,h3)]:font-black [&_:is(h1,h2,h3)]:leading-[0.94] [&_:is(h1,h2,h3)]:tracking-[-0.025em] sm:[&_:is(h1,h2,h3)]:text-6xl md:[&_:is(h1,h2,h3)]:text-7xl lg:[&_:is(h1,h2,h3)]:text-[5.4rem]',
                 '[&_p]:mt-6 [&_p]:max-w-[38rem] [&_p]:text-base [&_p]:leading-7 [&_p]:text-white/70 sm:[&_p]:text-lg',
                 '[&_a]:text-white [&_a]:underline [&_a]:decoration-brand [&_a]:underline-offset-4',
               ].join(' ')}

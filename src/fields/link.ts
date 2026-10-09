@@ -2,17 +2,28 @@ import type { Field, GroupField } from 'payload'
 
 import deepMerge from '@/utilities/deepMerge'
 
-export type LinkAppearances = 'default' | 'outline'
+export type LinkAppearances =
+  | 'default'
+  | 'secondary'
+  | 'inverse'
+  | 'accent'
+  | 'soft'
+  | 'outline'
+  | 'ghost'
+  | 'glass'
+  | 'link'
 
+/** Mirrors the `variant`s of `buttonVariants` in `src/components/ui/button.tsx`. */
 export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
-  default: {
-    label: 'Default',
-    value: 'default',
-  },
-  outline: {
-    label: 'Outline',
-    value: 'outline',
-  },
+  default: { label: 'Primary (red)', value: 'default' },
+  secondary: { label: 'Secondary (grey)', value: 'secondary' },
+  inverse: { label: 'Inverse (high contrast)', value: 'inverse' },
+  accent: { label: 'Accent (yellow)', value: 'accent' },
+  soft: { label: 'Soft (tinted)', value: 'soft' },
+  outline: { label: 'Outline', value: 'outline' },
+  ghost: { label: 'Ghost', value: 'ghost' },
+  glass: { label: 'Glass (on images)', value: 'glass' },
+  link: { label: 'Text link', value: 'link' },
 }
 
 type LinkType = (options?: {
@@ -118,7 +129,7 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
   }
 
   if (appearances !== false) {
-    let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
+    let appearanceOptionsToUse = Object.values(appearanceOptions)
 
     if (appearances) {
       appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])

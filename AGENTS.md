@@ -36,6 +36,21 @@ The codebase still contains generic Payload template leftovers:
 
 When making changes, prefer completing the gaming-specific product path instead of extending the old generic blog path.
 
+## Brand
+
+The publication is named **Save Point** (`src/config/site.ts`). Tagline: "What's worth playing, and why."
+
+- Mark: four face-button dots in a diamond (`src/components/Logo/Logo.tsx`). Each dot is a content-type glyph color, used consistently for nav, card labels and footer links: `glyph-news` (red) for articles, `glyph-review` (yellow) for reviews, `glyph-game` (blue) for games, `glyph-guide` (green) for guides. Non-content pages use a neutral grey dot.
+- Palette tokens live in `src/app/(frontend)/globals.css`: cabinet black `#141118` (dark surface), console grey `#ECEAF0` (light surface), `brand` = coin red (actions), `quest` = score yellow (review scores).
+- Type: Anybody (`font-display`, h1–h3, condensed; wide for the wordmark), Schibsted Grotesk (`font-sans`, body), Martian Mono (`font-mono`, labels/data).
+- Buttons and button-styled links share one recipe, `buttonVariants` in `src/components/ui/button.tsx`. Use `<Button>` for actions and `<ButtonLink>` (`src/components/ui/button-link.tsx`) for navigation; never hand-style a button with one-off classes.
+  - Variants: `primary` (main action), `secondary`, `inverse`, `accent` (score yellow, sparingly), `soft`, `outline`, `ghost`, `glass` (on images and dark heroes), `destructive`, `link`. `default` is a deprecated alias of `primary` kept for saved CMS data.
+  - Sizes: `xs`, `sm`, `default`, `lg`, `xl`, `icon-sm`, `icon`, `icon-lg`. `<Button loading>` shows a spinner and disables the button.
+  - CMS link `appearance` options in `src/fields/link.ts` mirror these variants. On dark surfaces, pass the appearance through `appearanceOnDark` (`src/components/Link/onDark.ts`).
+- Carousels use `<Slider>` (`src/components/Slider/Slider.tsx`), built on the shadcn Carousel (`src/components/ui/carousel.tsx`, Embla). Each child is one slide; pick a `size` (`full`, `wide`, `card`, `compact`), pass a `label`, and opt into `autoplay` (ms). Pagination is the "save slot" bar, where the current page fills in coin red while autoplaying. Swiper has been removed; don't add another carousel library.
+- Do not reintroduce cyan/fuchsia neon gradients, glow effects or grid backgrounds.
+- Header (`src/Header`): the primary sections News/Reviews/Games are defined in code (`src/Header/sections.ts`) and open shadcn `NavigationMenu` panels fed by `getHeaderFeed.ts` (latest articles, latest scored reviews, platforms, genres). The logo mark acts as a controller: the dot of the hovered/current section stays lit (`header[data-lit]`). CMS `header.navItems` only add secondary links (About, etc.); entries that duplicate a primary section or home are ignored. Search is a ⌘K / `/` command palette (`SearchPalette.tsx`) with live results from `/api/games` and `/api/search`. Mobile uses a "pause menu" sheet (`MobileMenu.tsx`).
+
 ## Implementation Priorities
 
 Follow this order unless the user asks otherwise:
