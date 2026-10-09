@@ -51,6 +51,7 @@ export default async function Page({ searchParams }: Args) {
       title: true,
       slug: true,
       heroImage: true,
+      games: true,
       categories: true,
       meta: true,
       publishedAt: true,

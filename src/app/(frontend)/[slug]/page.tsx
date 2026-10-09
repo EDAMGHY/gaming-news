@@ -7,6 +7,7 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 
 import { RenderBlocks } from '@/blocks/RenderBlocks'
+import { HomeHero } from '@/heros/HomeHero'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
@@ -71,7 +72,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <RenderHero {...hero} />
+      {slug === 'home' ? <HomeHero hero={hero} layout={layout} /> : <RenderHero {...hero} />}
       <RenderBlocks blocks={layout} />
     </article>
   )

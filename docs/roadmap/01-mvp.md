@@ -166,6 +166,7 @@ The MVP should be small, but it must build successfully, be secure, and not feel
 
 ## 13. Performance And Reliability
 
+- [ ] Verify production media persistence. **Partial:** game artwork now uses validated RAWG URLs with local editorial overrides, new local uploads retain only an original and admin thumbnail, and the standalone Docker path prepares a writable `/app/public/media` mount; the Dokploy volume import and container-restart check remain.
 - [ ] Replace the unoptimized related-game `<img>` with the shared Media/Next Image component.
 - [ ] Use responsive `sizes` values appropriate to each card/hero instead of a generic fallback.
 - [ ] Avoid loading up to 1,000 full facet records per archive request; replace with a scalable facet/count strategy.

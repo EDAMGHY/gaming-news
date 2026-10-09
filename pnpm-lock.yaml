@@ -128,6 +128,9 @@ importers:
       lucide-react:
         specifier: ^0.475.0
         version: 0.475.0(react@19.3.0)
+      mongodb:
+        specifier: 6.20.0
+        version: 6.20.0(@aws-sdk/credential-providers@3.985.0)
       next:
         specifier: 16.3.8
         version: 16.3.8(@babel/core@7.29.0)(@playwright/test@1.55.1)(@types/node@22.12.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.77.4)

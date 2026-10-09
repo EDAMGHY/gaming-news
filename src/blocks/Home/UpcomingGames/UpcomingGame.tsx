@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import { ArrowUpRight } from 'lucide-react'
 import React from 'react'
 import Link from 'next/link'
+import { getGameCover } from '@/utilities/gameMedia'
 
 const platformLabels: Record<string, string> = {
   pc: 'PC',
@@ -17,6 +18,8 @@ const platformLabels: Record<string, string> = {
 }
 
 export const UpcomingGame: React.FC<{ game: Game; index: number }> = ({ game, index }) => {
+  const coverImage = getGameCover(game)
+
   return (
     <Link
       href={`/games/${game.slug}`}
@@ -26,7 +29,7 @@ export const UpcomingGame: React.FC<{ game: Game; index: number }> = ({ game, in
         <Media
           fill
           imgClassName="object-cover transition-transform duration-300 group-hover:scale-105"
-          resource={game.coverImage}
+          resource={coverImage}
           size="88px"
         />
       </div>

@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { cn } from '@/utilities/ui'
+import { getGameCover, type GameImageSource } from '@/utilities/gameMedia'
 import { format } from 'date-fns'
 import { ArrowUpRight, CalendarDays, Clock3, Gamepad2, Newspaper } from 'lucide-react'
 import Link from 'next/link'
@@ -25,6 +26,7 @@ export type ArticleCardData = Partial<
     | 'categories'
     | 'heroImage'
     | 'id'
+    | 'games'
     | 'meta'
     | 'populatedAuthors'
     | 'publishedAt'
@@ -56,6 +58,7 @@ export type GameCardData = Partial<
     Game,
     | 'coverImage'
     | 'developer'
+    | 'externalCoverUrl'
     | 'genres'
     | 'id'
     | 'meta'
@@ -105,7 +108,7 @@ const CardImage = ({
 }: {
   alt: string
   className?: string
-  image?: MediaType
+  image?: GameImageSource
   sizes: string
 }) => (
   <div className={cn('relative overflow-hidden bg-muted', className)}>
@@ -129,7 +132,12 @@ export function ArticleCard({
   article: ArticleCardData
   className?: string
 }) {
-  const image = getImage(article.heroImage, article.meta?.image)
+  const linkedGame = article.games?.find(
+    (game): game is Game => typeof game === 'object' && game !== null,
+  )
+  const image =
+    getImage(article.heroImage, article.meta?.image) ||
+    (linkedGame ? getGameCover(linkedGame) : undefined)
   const categories = getCategoryNames(article.categories)
   const description = article.meta?.description?.replace(/\s/g, ' ')
   const author = article.populatedAuthors?.find((item) => item.name)?.name
@@ -179,7 +187,11 @@ export function ArticleCard({
 }
 
 export function ReviewCard({ className, review }: { className?: string; review: ReviewCardData }) {
-  const image = getImage(review.heroImage, review.meta?.image)
+  const linkedGame =
+    typeof review.game === 'object' && review.game !== null ? review.game : undefined
+  const image =
+    getImage(review.heroImage, review.meta?.image) ||
+    (linkedGame ? getGameCover(linkedGame) : undefined)
   const game = getGameName(review.game)
   const hasRating = review.rating !== null && review.rating !== undefined
 
@@ -245,7 +257,7 @@ export function ReviewCard({ className, review }: { className?: string; review: 
 }
 
 export function GameCard({ game, className }: { game: GameCardData; className?: string }) {
-  const image = getImage(game.coverImage, game.meta?.image)
+  const image = getGameCover(game) || getImage(game.meta?.image)
   const genres = getGenreNames(game.genres)
   const platforms = game.platforms ?? []
 

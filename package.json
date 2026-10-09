@@ -17,9 +17,14 @@
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "seed:games": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-games.ts",
+    "seed:editorial": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-editorial-content.ts",
     "seed:content": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-content.ts",
     "seed:about": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/seed-about.ts",
     "clean:duplicates": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/remove-duplicates.ts",
+    "content:reset": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/reset-public-content.ts",
+    "media:rawg:migrate": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/migrate-game-media-to-rawg.ts",
+    "media:rawg:cleanup": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/migrate-game-media-to-rawg.ts --cleanup",
+    "media:rawg:rollback": "cross-env NODE_OPTIONS=--no-deprecation pnpm exec tsx scripts/migrate-game-media-to-rawg.ts --rollback",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
@@ -61,6 +66,7 @@
     "geist": "^1.3.0",
     "graphql": "^16.8.2",
     "lucide-react": "^0.475.0",
+    "mongodb": "6.20.0",
     "next": "16.3.8",
     "next-sitemap": "^4.2.3",
     "node-fetch": "^3.3.2",
@@ -102,7 +108,7 @@
     "vitest": "3.2.3"
   },
   "engines": {
-    "node": "^18.20.2 || >=20.9.0",
+    "node": ">=22.12.0",
     "pnpm": "^9 || ^10"
   },
   "pnpm": {

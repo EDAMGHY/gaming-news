@@ -37,6 +37,10 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   let src: StaticImageData | string | undefined = srcFromProps
   let isPlaceholder = false
 
+  if (!src && typeof resource === 'string' && /^https:\/\//i.test(resource)) {
+    src = resource
+  }
+
   // If no src passed, try resource
   if (!src && resource && typeof resource === 'object') {
     const { alt: altFromResource, height: fullHeight, url, width: fullWidth, updatedAt } = resource

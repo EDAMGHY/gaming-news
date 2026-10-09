@@ -20,6 +20,7 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { GameCard } from '@/components/ContentCard'
 import { queryReviewsByGame } from '@/utilities/queryReviewsByGame'
+import { getGameScreenshots } from '@/utilities/gameMedia'
 
 const platformLabels: Record<string, string> = {
   pc: 'PC',
@@ -71,6 +72,7 @@ export default async function Game({ params: paramsPromise }: Args) {
     queryRelatedReviews({ gameId: game.id }),
     queryRelatedArticles({ gameId: game.id }),
   ])
+  const screenshots = getGameScreenshots(game)
 
   return (
     <article className="pb-16">
@@ -148,9 +150,9 @@ export default async function Game({ params: paramsPromise }: Args) {
           </div>
 
           {/* Screenshots Gallery */}
-          {game.screenshots && Array.isArray(game.screenshots) && game.screenshots.length > 0 && (
+          {screenshots.length > 0 && (
             <div className="space-y-6">
-              <GameScreenshots screenshots={game.screenshots} gameTitle={game.title} />
+              <GameScreenshots screenshots={screenshots} gameTitle={game.title} />
             </div>
           )}
 
@@ -321,6 +323,8 @@ const queryGameBySlug = cache(async ({ slug }: { slug: string }) => {
         publisher: true,
         platforms: true,
         coverImage: true,
+        externalCoverUrl: true,
+        externalScreenshots: true,
         screenshots: true,
         genres: true,
         narrativeTags: true,

@@ -345,54 +345,6 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    square?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    medium?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    large?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    xlarge?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    og?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
   };
 }
 /**
@@ -423,11 +375,29 @@ export interface Category {
 export interface Game {
   id: string;
   title: string;
+  /**
+   * Optional local cover override. When set, it takes priority over the RAWG cover.
+   */
   coverImage?: (string | null) | Media;
   /**
-   * Game screenshots and images
+   * RAWG-hosted cover URL. Must use https://media.rawg.io/media/.
+   */
+  externalCoverUrl?: string | null;
+  /**
+   * Optional local screenshot overrides. These appear before external screenshots.
    */
   screenshots?: (string | Media)[] | null;
+  /**
+   * RAWG-hosted screenshots. Local screenshots appear first in the gallery.
+   */
+  externalScreenshots?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  rawgId?: number | null;
+  rawgSlug?: string | null;
   releaseDate?: string | null;
   platforms?: ('pc' | 'ps5' | 'ps4' | 'xbox-series' | 'xbox-one' | 'switch' | 'switch-2' | 'mobile')[] | null;
   genres?: (string | Genre)[] | null;
@@ -2020,66 +1990,6 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        square?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        medium?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        large?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        xlarge?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        og?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
       };
 }
 /**
@@ -2167,7 +2077,16 @@ export interface ArticlesSelect<T extends boolean = true> {
 export interface GamesSelect<T extends boolean = true> {
   title?: T;
   coverImage?: T;
+  externalCoverUrl?: T;
   screenshots?: T;
+  externalScreenshots?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
+  rawgId?: T;
+  rawgSlug?: T;
   releaseDate?: T;
   platforms?: T;
   genres?: T;
