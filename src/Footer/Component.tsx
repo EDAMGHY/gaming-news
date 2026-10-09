@@ -55,8 +55,22 @@ export async function Footer() {
       </div>
 
       <div className="border-t border-border py-6">
-        <div className="container text-center text-xs text-muted-foreground">
+        <div className="container flex flex-col items-center justify-center gap-2 text-center text-xs text-muted-foreground sm:flex-row sm:gap-4">
           <p>© {new Date().getFullYear()} Gaming News. All rights reserved.</p>
+          <span aria-hidden="true" className="hidden sm:inline">
+            ·
+          </span>
+          <p>
+            Game data and images by{' '}
+            <a
+              className="font-medium text-foreground underline-offset-4 transition-colors hover:text-brand hover:underline"
+              href="https://rawg.io"
+              rel="noreferrer"
+              target="_blank"
+            >
+              RAWG
+            </a>
+          </p>
         </div>
       </div>
     </footer>

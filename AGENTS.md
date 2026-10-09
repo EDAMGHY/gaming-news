@@ -104,9 +104,11 @@ For public content, make sure these are aligned:
 - Never make project changes, create commits, or push commits directly on `master`.
 - Before changing files for any task, create a task-specific branch from `master` using the `codex/` prefix, or switch to the existing task branch when continuing an open pull request.
 - Keep unrelated user changes intact and out of the task commit.
-- Commit every completed task to its task branch with a clear, scoped commit message.
-- Push the task branch and create a pull request targeting `master` after verification.
-- Report the branch name, commit, pull request URL, and verification results to the user.
+- Treat implementation and Git publication as separate phases. Implementation requests authorize local file changes and verification only.
+- After implementation and verification, leave all changes uncommitted and provide the changed-file list, diff summary, and verification results for user review.
+- Never commit, push, create a pull request, or update an existing pull request until the user has reviewed the current changes and explicitly authorized those Git actions.
+- Approval applies only to the reviewed state. If material changes are made afterward, present the updated diff and obtain approval again before publishing.
+- After explicit approval, commit the reviewed task to its task branch with a clear, scoped commit message, push it, create or update the pull request targeting `master`, and report the branch, commit, pull request URL, and verification results.
 - Do not merge the pull request unless the user explicitly asks for it.
 
 ## Documentation Files

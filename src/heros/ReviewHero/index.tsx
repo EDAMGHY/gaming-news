@@ -6,12 +6,16 @@ import type { Review } from '@/payload-types'
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
 import { Badge } from '@/components/ui/badge'
+import { getGameCover } from '@/utilities/gameMedia'
 
 export const ReviewHero: React.FC<{
   review: Review
 }> = ({ review }) => {
   const { categories, game, heroImage, populatedAuthors, publishedAt, title, rating } = review
   const gameTitle = typeof game === 'object' ? game.title : undefined
+  const image =
+    (heroImage && typeof heroImage !== 'string' ? heroImage : undefined) ||
+    (typeof game === 'object' ? getGameCover(game) : undefined)
   const hasRating = rating !== null && rating !== undefined
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
@@ -20,12 +24,12 @@ export const ReviewHero: React.FC<{
     <div className="relative">
       {/* Full-width hero image */}
       <div className="relative h-[68vh] min-h-[34rem] w-full overflow-hidden group md:h-[78vh]">
-        {heroImage && typeof heroImage !== 'string' && (
+        {image && (
           <Media
             fill
             priority
             imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500"
-            resource={heroImage}
+            resource={image}
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#080c18] via-[#080c18]/55 to-black/20" />

@@ -1,31 +1,45 @@
 import type { Metadata } from 'next'
 
-import type { Media, Page, Article, Config } from '../payload-types'
+import type { Media, Page, Article, Game, Review, Config } from '../payload-types'
 
 import { mergeOpenGraph } from './mergeOpenGraph'
 import { getServerSideURL } from './getURL'
 import { siteConfig } from '@/config/site'
 
-const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
+const toAbsoluteURL = (url: string, serverUrl: string): string =>
+  /^https:\/\//i.test(url) ? url : serverUrl + url
+
+const getImageURL = (
+  image?: Media | Config['db']['defaultIDType'] | null,
+  externalFallback?: string | null,
+) => {
   const serverUrl = getServerSideURL()
 
   let url = serverUrl + '/website-template-OG.webp'
 
   if (image && typeof image === 'object' && 'url' in image) {
-    const ogUrl = image.sizes?.og?.url
-
-    url = ogUrl ? serverUrl + ogUrl : serverUrl + image.url
+    if (image.url) url = toAbsoluteURL(image.url, serverUrl)
+  } else if (externalFallback) {
+    url = toAbsoluteURL(externalFallback, serverUrl)
   }
 
   return url
 }
 
 export const generateMeta = async (args: {
-  doc: Partial<Page> | Partial<Article> | null
+  doc: Partial<Page> | Partial<Article> | Partial<Game> | Partial<Review> | null
 }): Promise<Metadata> => {
   const { doc } = args
 
-  const ogImage = getImageURL(doc?.meta?.image)
+  const externalCoverUrl =
+    doc && 'externalCoverUrl' in doc && typeof doc.externalCoverUrl === 'string'
+      ? doc.externalCoverUrl
+      : doc && 'game' in doc && typeof doc.game === 'object' && doc.game
+        ? doc.game.externalCoverUrl
+        : doc && 'games' in doc
+          ? doc.games?.find((game) => typeof game === 'object')?.externalCoverUrl
+          : undefined
+  const ogImage = getImageURL(doc?.meta?.image, externalCoverUrl)
 
   const editorialTitle = doc?.meta?.title?.replace(/\s*\|\s*Payload Website Template/gi, '').trim()
   const title = editorialTitle ? editorialTitle + ` | ${siteConfig.name}` : siteConfig.name

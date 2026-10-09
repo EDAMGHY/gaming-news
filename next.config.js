@@ -22,6 +22,13 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+      {
+        hostname: 'media.rawg.io',
+        pathname: '/media/**',
+        port: '',
+        protocol: 'https',
+        search: '',
+      },
     ],
   },
   webpack: (webpackConfig) => {

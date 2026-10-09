@@ -45,6 +45,7 @@ The product should not compete only on publishing more headlines. Its strongest 
 ## Main Current Gaps
 
 - The former Next.js security, Card typing, build-verification, and package-manager/Docker launch blockers are verified as resolved; see GN-P0-001 through GN-P0-004.
+- RAWG-referenced game artwork, local editorial uploads, and an optimized standalone Docker image are configured; the Dokploy persistent-volume import and container-restart check remain before the media path is verified.
 - Dependency maintenance still includes one upstream high-severity `braces` advisory with no patched release, tracked as GN-P2-011.
 - Search does not include games, has no pagination, and has query-state issues.
 - Detail-page Open Graph URLs and fallback social images are incorrect.

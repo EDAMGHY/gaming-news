@@ -5,11 +5,16 @@ import type { Article } from '@/payload-types'
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
 import { formatRelativeDate } from '@/utilities/date'
+import { getGameCover } from '@/utilities/gameMedia'
 
 export const ArticleHero: React.FC<{
   article: Article
 }> = ({ article }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title } = article
+  const { categories, games, heroImage, populatedAuthors, publishedAt, title } = article
+  const linkedGame = games?.find((game) => typeof game === 'object' && game !== null)
+  const image =
+    (heroImage && typeof heroImage !== 'string' ? heroImage : undefined) ||
+    (linkedGame && typeof linkedGame === 'object' ? getGameCover(linkedGame) : undefined)
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
@@ -18,8 +23,13 @@ export const ArticleHero: React.FC<{
     <div className="relative">
       {/* Full-width hero image */}
       <div className="w-full h-[70vh] md:h-[85vh] relative overflow-hidden group">
-        {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500" resource={heroImage} />
+        {image && (
+          <Media
+            fill
+            priority
+            imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500"
+            resource={image}
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
       </div>
@@ -37,7 +47,10 @@ export const ArticleHero: React.FC<{
                     const titleToUse = categoryTitle || 'Untitled category'
 
                     return (
-                      <span key={index} className="inline-block bg-brand text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      <span
+                        key={index}
+                        className="inline-block bg-brand text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+                      >
                         {titleToUse}
                       </span>
                     )
@@ -65,7 +78,9 @@ export const ArticleHero: React.FC<{
               <div className="flex items-center gap-3 border-l-2 border-brand pl-4">
                 <div>
                   <p className="text-white/70 text-xs uppercase tracking-wide">Published</p>
-                  <time dateTime={publishedAt} className="font-semibold">{formatRelativeDate(publishedAt)}</time>
+                  <time dateTime={publishedAt} className="font-semibold">
+                    {formatRelativeDate(publishedAt)}
+                  </time>
                 </div>
               </div>
             )}

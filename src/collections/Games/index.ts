@@ -13,6 +13,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { validateRawgImageUrl } from '../../utilities/gameMedia'
 
 export const Games: CollectionConfig<'games'> = {
   slug: 'games',
@@ -47,6 +48,19 @@ export const Games: CollectionConfig<'games'> = {
       name: 'coverImage',
       type: 'upload',
       relationTo: 'media',
+      admin: {
+        description:
+          'Optional local cover override. When set, it takes priority over the RAWG cover.',
+      },
+    },
+
+    {
+      name: 'externalCoverUrl',
+      type: 'text',
+      validate: validateRawgImageUrl,
+      admin: {
+        description: 'RAWG-hosted cover URL. Must use https://media.rawg.io/media/.',
+      },
     },
 
     {
@@ -55,7 +69,44 @@ export const Games: CollectionConfig<'games'> = {
       relationTo: 'media',
       hasMany: true,
       admin: {
-        description: 'Game screenshots and images',
+        description:
+          'Optional local screenshot overrides. These appear before external screenshots.',
+      },
+    },
+
+    {
+      name: 'externalScreenshots',
+      type: 'array',
+      admin: {
+        description: 'RAWG-hosted screenshots. Local screenshots appear first in the gallery.',
+      },
+      fields: [
+        {
+          name: 'url',
+          type: 'text',
+          required: true,
+          validate: validateRawgImageUrl,
+        },
+      ],
+    },
+
+    {
+      name: 'rawgId',
+      type: 'number',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
+
+    {
+      name: 'rawgSlug',
+      type: 'text',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
       },
     },
 

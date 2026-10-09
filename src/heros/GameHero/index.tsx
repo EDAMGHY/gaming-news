@@ -5,6 +5,7 @@ import type { Game } from '@/payload-types'
 import { Media } from '@/components/Media'
 import { format } from 'date-fns'
 import { Gamepad2 } from 'lucide-react'
+import { getGameCover } from '@/utilities/gameMedia'
 
 const platformLabels: Record<string, string> = {
   pc: 'PC',
@@ -22,14 +23,20 @@ export const GameHero: React.FC<{
 }> = ({ game }) => {
   if (!game) return null
 
-  const { coverImage, releaseDate, title, platforms, developer, publisher } = game
+  const { releaseDate, title, platforms, developer, publisher } = game
+  const coverImage = getGameCover(game)
 
   return (
     <div className="relative">
       {/* Full-width hero image */}
       <div className="w-full h-[70vh] md:h-[85vh] relative overflow-hidden group">
-        {coverImage && typeof coverImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500" resource={coverImage} />
+        {coverImage && (
+          <Media
+            fill
+            priority
+            imgClassName="-z-10 object-cover group-hover:scale-105 transition-transform duration-500"
+            resource={coverImage}
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
       </div>
@@ -76,7 +83,9 @@ export const GameHero: React.FC<{
             {(developer || publisher) && (
               <div className="border-l-2 border-brand pl-4">
                 <p className="text-white/70 text-xs uppercase tracking-wide mb-1">Developer</p>
-                <p className="text-lg font-semibold">{[developer, publisher].filter(Boolean).join(' / ')}</p>
+                <p className="text-lg font-semibold">
+                  {[developer, publisher].filter(Boolean).join(' / ')}
+                </p>
               </div>
             )}
           </div>

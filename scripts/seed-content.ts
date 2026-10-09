@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import fetch from 'node-fetch'
 import payload from 'payload'
+import { isAllowedRawgImageUrl } from '../src/utilities/gameMedia'
 
 /**
  * Additive content seed for the Gaming News homepage.
@@ -44,6 +45,7 @@ type PlatformValue =
 
 interface RAWGGame {
   id: number
+  slug: string
   name: string
   released: string
   background_image: string
@@ -148,13 +150,21 @@ async function downloadImage(imageUrl: string): Promise<Buffer> {
   return Buffer.from(await response.arrayBuffer())
 }
 
-async function uploadImage(
+async function getOrCreateEditorialImage(
   label: string,
   imageUrl: string,
   altText: string,
 ): Promise<string | null> {
   try {
-    if (!imageUrl) return null
+    if (!isAllowedRawgImageUrl(imageUrl)) return null
+
+    const existing = await payload.find({
+      collection: 'media',
+      limit: 1,
+      where: { alt: { equals: altText } },
+    })
+    if (existing.docs[0]) return String(existing.docs[0].id)
+
     const imageBuffer = await downloadImage(imageUrl)
     const fileName = `${label.replace(/[^\w]/g, '-').replace(/-+/g, '-')}-${Date.now()}-${Math.random()
       .toString(36)
@@ -299,7 +309,7 @@ async function seed() {
     // --- Upcoming games -----------------------------------------------------
     console.log('\n🎮 Seeding upcoming games...')
     const now = Date.now()
-    const createdGames: Array<{ id: string; title: string; coverImageId: string | null }> = []
+    const createdGames: Array<{ id: string; title: string; editorialImageId: string | null }> = []
 
     for (const game of CURATED_GAMES) {
       const slug = slugify(game.title)
@@ -312,10 +322,22 @@ async function seed() {
       if (existing.docs.length) {
         console.log(`  ⏭️  Skipping existing game: ${game.title}`)
         const doc: any = existing.docs[0]
+        const externalCoverUrl = isAllowedRawgImageUrl(doc.externalCoverUrl)
+          ? doc.externalCoverUrl
+          : null
+        const editorialImageId = doc.coverImage
+          ? String(doc.coverImage.id ?? doc.coverImage)
+          : externalCoverUrl
+            ? await getOrCreateEditorialImage(
+                `${game.title}-editorial`,
+                externalCoverUrl,
+                `${game.title} editorial image`,
+              )
+            : null
         createdGames.push({
           id: String(doc.id),
           title: game.title,
-          coverImageId: doc.coverImage ? String(doc.coverImage.id ?? doc.coverImage) : null,
+          editorialImageId,
         })
         continue
       }
@@ -327,16 +349,21 @@ async function seed() {
         console.warn(`  ⚠️  RAWG lookup failed for "${game.search}"`)
       }
 
-      const coverImageId = rawg?.background_image
-        ? await uploadImage(game.title, rawg.background_image, `${game.title} cover image`)
+      const externalCoverUrl = isAllowedRawgImageUrl(rawg?.background_image)
+        ? rawg.background_image
+        : undefined
+      const externalScreenshotUrls = (rawg?.short_screenshots || [])
+        .map((shot) => shot.image)
+        .filter(isAllowedRawgImageUrl)
+        .filter((url, index, urls) => urls.indexOf(url) === index)
+        .slice(0, 4)
+      const editorialImageId = externalCoverUrl
+        ? await getOrCreateEditorialImage(
+            `${game.title}-editorial`,
+            externalCoverUrl,
+            `${game.title} editorial image`,
+          )
         : null
-
-      const screenshotIds: string[] = []
-      for (const shot of (rawg?.short_screenshots || []).slice(0, 4)) {
-        if (!shot.image) continue
-        const id = await uploadImage(game.title, shot.image, `${game.title} screenshot`)
-        if (id) screenshotIds.push(id)
-      }
 
       const platforms = [
         ...new Set(
@@ -357,8 +384,10 @@ async function seed() {
           releaseDate,
           platforms: platforms.length ? platforms : ['pc'],
           genres: genreIds,
-          coverImage: coverImageId,
-          screenshots: screenshotIds,
+          rawgId: rawg?.id,
+          rawgSlug: rawg?.slug,
+          externalCoverUrl,
+          externalScreenshots: externalScreenshotUrls.map((url) => ({ url })),
           developer: game.developer,
           publisher: game.publisher,
           synopsis: game.synopsis,
@@ -366,19 +395,18 @@ async function seed() {
           meta: {
             title: game.title,
             description: game.synopsis,
-            image: coverImageId,
           },
         },
       })
-      createdGames.push({ id: String(created.id), title: game.title, coverImageId })
+      createdGames.push({ id: String(created.id), title: game.title, editorialImageId })
       console.log(`  ✅ ${game.title} (releases ${releaseDate.slice(0, 10)})`)
     }
 
     const gameCover = (i: number) =>
-      createdGames.find((g) => g.coverImageId)?.coverImageId
-        ? createdGames.filter((g) => g.coverImageId)[
-            i % createdGames.filter((g) => g.coverImageId).length
-          ].coverImageId
+      createdGames.find((g) => g.editorialImageId)?.editorialImageId
+        ? createdGames.filter((g) => g.editorialImageId)[
+            i % createdGames.filter((g) => g.editorialImageId).length
+          ].editorialImageId
         : null
 
     // --- Articles -----------------------------------------------------------

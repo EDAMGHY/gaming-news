@@ -236,6 +236,11 @@ Alternatively, you can use [Docker](https://www.docker.com) to spin up this temp
 
 That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
 
+For a production container backed by MongoDB Atlas, RAWG-referenced game artwork, and a durable
+local editorial-media volume, follow the
+[production deployment guide](./docs/deployment.md). It documents the required environment,
+secret-safe image build, runtime command, media behavior, and launch checks.
+
 ### Seed
 
 To seed the database with a few pages, posts, and projects you can click the 'seed database' link from the admin panel.

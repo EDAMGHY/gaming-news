@@ -1,6 +1,6 @@
 # Current State And Issue Register
 
-Last audited: **2026-10-08**
+Last audited: **2026-10-09**
 
 ## Purpose
 
@@ -50,12 +50,38 @@ GN-P1-006 and GN-P1-012 were verified on **2026-10-08**.
 - `pnpm run test:int`: **passed, 12/12 tests**.
 - `pnpm build`: **passed** on Next.js 16.3.8, including static generation and sitemap postbuild.
 
+The media and Docker deployment path was checked on **2026-10-09** from branch
+`codex/cloudinary-docker-deploy`.
+
+- `pnpm exec tsc --noEmit --incremental false`: **passed**.
+- `pnpm lint`: **passed with 0 errors and 33 existing warnings**.
+- `pnpm build`: **passed** with MongoDB Atlas available during static generation.
+- `pnpm test:int`: **passed, 16/16 tests**, including RAWG URL validation and media-resolution coverage.
+- `pnpm audit --prod`: **28 findings (0 critical, 1 high, 20 moderate, 7 low)**; the high-severity `braces` advisory remains the existing GN-P2-011 baseline.
+- RAWG migration dry run: **385/408 games matched automatically; 23 ambiguous games remained untouched; no database records, reports, or files changed**.
+- Docker: the clean standalone image built successfully, ran as UID/GID `1001:1001`, returned **HTTP 200** for `/games`, wrote to a mounted media volume, and retained the test file across a container replacement. The temporary containers, volume, and image were removed afterward.
+- The follow-up media design stores RAWG cover/screenshot URLs on games, retains Payload uploads as editorial overrides, and keeps local uploads on a Dokploy persistent volume.
+- Remaining manual check: apply the reviewed RAWG migration, import retained editorial media into the real Dokploy volume, and exercise an admin upload on that deployment.
+
+The editorial content store was intentionally reset and reseeded on **2026-10-09**.
+
+- A full MongoDB Atlas dump and a 2.2 GB archive of all 22,909 previous media files were created under ignored `content-reset-backups/` before deletion.
+- Articles, reviews, games, media, their version histories, and search records were cleared; stale relationships were removed from 48 retained page/taxonomy/system documents.
+- The active `public/media` directory and `media` collection are empty.
+- The RAWG September–October 2026 preview evaluated 110 records. Clean-catalogue rules rejected 85 adult, demo/playtest, bundle, duplicate, unsupported, incomplete, or very-low-interest entries.
+- **25 games are published** (12 September, 13 October) with 25 valid external covers, 122 external screenshots, supported platform mappings, and no local game artwork.
+- The fresh editorial library contains **3 published articles and 4 published reviews**, all linked only to games released by October 9. Cards, heroes, and SEO fall back to the linked games' RAWG covers, so the media collection remains empty.
+- Homepage featured blocks reference all three articles and four reviews; the media-free homepage hero now uses a responsive editorial layout backed by the linked games' RAWG artwork, with local-free fallbacks when no artwork is available.
+- The homepage hero was visually verified at 390 px mobile, 768 px tablet, and 1440 px desktop widths; artwork crops, actions, headline contrast, lead-story treatment, and the transition into homepage content all render correctly.
+- Post-reset verification passed clean TypeScript, 16/16 integration tests, lint with 0 errors and 33 existing warnings, and the Next.js 16.3.8 production build plus sitemap generation.
+- Runtime smoke tests returned HTTP 200 for the homepage, article/review archives, and representative article/review detail routes; both detail pages rendered linked RAWG image URLs.
+
 ## P0 — Launch Blockers
 
 ### GN-P0-001 — Vulnerable Next.js release
 
 - **Status:** Verified
-- **Evidence:** `package.json` pins Next.js `15.4.4`. The official React Server Components advisory identifies affected Next.js 15 releases and lists patched releases.
+- **Evidence:** `package.json` now pins Next.js `16.3.8` as part of the verified compatible stack upgrade.
 - **Risk:** A production App Router deployment can be exposed to critical server-side vulnerabilities.
 - **Done when:** Next.js/React/Payload packages are upgraded as a compatible set to a currently supported patched release, the production build and tests pass, and deployed secrets are rotated if an affected version was publicly exposed.
 - **Resolution:** Upgraded the compatible stack to Next.js 16.3.8, React 19.3.0, and Payload 3.90.2; patched direct and transitive dependencies; and passed typecheck, build, integration, and E2E verification. If an affected build was publicly deployed, its secrets must still be rotated operationally before release.
@@ -83,6 +109,15 @@ GN-P1-006 and GN-P1-012 were verified on **2026-10-08**.
 - **Risk:** local, CI, and container installs can resolve different dependency trees; Docker production builds/runs can fail.
 - **Done when:** one package manager and lockfile are authoritative, CI/Docker use it, and the chosen deployment path is exercised successfully.
 - **Resolution:** Standardized on pnpm 10.28.2, removed npm/Yarn lockfiles, aligned local/Docker installs, enabled Next standalone output, and verified a clean Node 22 image plus an HTTP 200 container smoke test.
+
+### GN-P0-005 — Production uploads depend on ephemeral container storage
+
+- **Status:** Fixed
+- **Found:** 2026-10-08
+- **Evidence:** The `media` collection writes uploads to `public/media`, which lives inside the application container and is not durable across image replacements or horizontal replicas.
+- **Risk:** Editorial images and videos uploaded in production can disappear during a deploy, restart, or reschedule.
+- **Done when:** production media uses durable cloud storage, public image/video rendering uses the stored remote URL, and upload/resize/delete plus container-restart behavior is verified against the live storage account.
+- **Resolution:** Game covers and screenshots now support validated RAWG URLs with local editorial overrides, future game seeds no longer duplicate API artwork into Payload, local uploads retain only their original and admin thumbnail, and the lean container prepares `/app/public/media` for a Dokploy persistent volume. The migration is dry-run-first, reversible before cleanup, and archives files before deletion. A deployed volume persistence check remains before this issue can be marked `Verified`.
 
 ## P1 — MVP Correctness, SEO, And Trust
 
