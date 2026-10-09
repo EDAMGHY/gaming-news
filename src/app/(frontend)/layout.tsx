@@ -47,7 +47,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="relative min-h-screen">
+      {/* Extensions (e.g. ColorZilla) add attributes to <body> before hydration */}
+      <body className="relative min-h-screen" suppressHydrationWarning>
         <Providers>
           <AdminBar
             adminBarProps={{
