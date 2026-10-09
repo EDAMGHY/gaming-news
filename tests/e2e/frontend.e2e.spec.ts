@@ -16,7 +16,7 @@ test.describe('Public gaming routes', () => {
       const response = await page.goto(route.path)
 
       expect(response?.status()).toBeLessThan(500)
-      await expect(page).toHaveTitle(/Gaming News/)
+      await expect(page).toHaveTitle(/Save Point/)
       expect(pageErrors, `Client errors while loading ${route.path}`).toEqual([])
       await expect(page.getByRole('heading', { level: 1, name: route.heading })).toBeVisible()
 
