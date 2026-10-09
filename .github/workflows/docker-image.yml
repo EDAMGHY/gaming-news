@@ -1,0 +1,70 @@
+name: Docker image
+
+# Builds the production image on GitHub's runners (the Dokploy server does not have enough memory
+# to run `next build`) and publishes it to GHCR. Runs only after CI passes on master.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker-image-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+jobs:
+  publish:
+    name: Build and publish image
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out tested commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare image tags
+        id: meta
+        run: |
+          image="$(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')"
+          sha="${{ github.event.workflow_run.head_sha || github.sha }}"
+          echo "tags=${image}:latest,${image}:sha-${sha::7}" >> "$GITHUB_OUTPUT"
+
+      # The build needs no database or secrets: content routes render on first request.
+      # NEXT_PUBLIC_SERVER_URL is a repository variable because it is compiled into the client bundle.
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          build-args: |
+            NEXT_PUBLIC_SERVER_URL=${{ vars.NEXT_PUBLIC_SERVER_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trigger Dokploy deployment
+        env:
+          DOKPLOY_DEPLOY_WEBHOOK: ${{ secrets.DOKPLOY_DEPLOY_WEBHOOK }}
+        if: ${{ env.DOKPLOY_DEPLOY_WEBHOOK != '' }}
+        run: curl --fail --silent --show-error -X POST "$DOKPLOY_DEPLOY_WEBHOOK"

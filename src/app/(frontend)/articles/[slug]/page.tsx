@@ -17,24 +17,10 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
+// Render on first visit instead of at build time so image builds never need the database.
+// The page is then cached, and the collection's revalidate hooks refresh it after edits.
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const articles = await payload.find({
-    collection: 'articles',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
-
-  const params = articles.docs.map(({ slug }) => {
-    return { slug }
-  })
-
-  return params
+  return []
 }
 
 type Args = {
@@ -112,7 +98,6 @@ const queryArticleBySlug = cache(async ({ slug }: { slug: string }) => {
       },
     },
   })
-  console.log('resultresultresult', result)
 
   return result.docs?.[0] || null
 })

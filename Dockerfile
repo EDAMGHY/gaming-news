@@ -27,9 +27,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# NEXT_PUBLIC_* values are compiled into the client bundle. The optional build
-# secret supplies the remaining build-time environment without copying it into
-# an image layer. Platforms that inject build-time env vars can omit the secret.
+# NEXT_PUBLIC_* values are compiled into the client bundle. The build does not
+# need the database or other secrets (content routes render on first request);
+# the optional env_file secret is only for builds that want extra build-time env.
 ARG NEXT_PUBLIC_SERVER_URL
 RUN --mount=type=secret,id=env_file,target=/app/.env,required=false \
   if [ -n "${NEXT_PUBLIC_SERVER_URL:-}" ]; then export NEXT_PUBLIC_SERVER_URL; fi; \

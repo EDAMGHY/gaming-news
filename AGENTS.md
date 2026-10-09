@@ -102,7 +102,8 @@ For public content, make sure these are aligned:
 ## Required Git Workflow
 
 - Never make project changes, create commits, or push commits directly on `master`.
-- Before changing files for any task, create a task-specific branch from `master` using the `codex/` prefix, or switch to the existing task branch when continuing an open pull request.
+- Before changing files for any task, create a task-specific branch from `master`, or switch to the existing task branch when continuing an open pull request.
+- Name branches `<type>/<short-description>` in kebab-case, where `<type>` describes the change (`feature/`, `fix/`, `deploy/`, `docs/`, `refactor/`, `chore/`), for example `feature/game-search-filters` or `fix/review-score-rounding`. Do not use tool or agent names such as `codex/` or `claude/` as the prefix.
 - Keep unrelated user changes intact and out of the task commit.
 - Treat implementation and Git publication as separate phases. A request to build, fix, or change the project authorizes local file changes and verification only; it does not authorize a commit, push, or pull request.
 - After implementation and verification, stop with the changes uncommitted and provide the user with the changed-file list, a concise diff summary, and all verification results so they can review the work.

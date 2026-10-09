@@ -4,20 +4,58 @@ This app runs as one Next.js/Payload container. MongoDB Atlas stores content, RA
 provide game covers and screenshots, and a Dokploy persistent volume stores the much smaller set of
 editorial uploads. The production image pins Node.js 22.22 and runs as UID/GID `1001`.
 
-## Required environment
+## How deploys work
 
-Set these values for both the build and runtime container:
+The Dokploy server (about 3.7 GB RAM, roughly half used by Dokploy itself) cannot run `next build`,
+which peaks at several GB. Images are therefore built on GitHub's runners and Dokploy only pulls and
+runs them:
 
-```dotenv
-DATABASE_URI=mongodb+srv://...
-PAYLOAD_SECRET=...
-NEXT_PUBLIC_SERVER_URL=https://news.example.com
-CRON_SECRET=...
-PREVIEW_SECRET=...
-```
+1. A push to `master` runs the `CI` workflow.
+2. When CI passes, `.github/workflows/docker-image.yml` builds the Dockerfile and pushes
+   `ghcr.io/edamghy/gaming-news:latest` plus an immutable `sha-<commit>` tag.
+3. If the `DOKPLOY_DEPLOY_WEBHOOK` secret is set, the workflow calls it and Dokploy redeploys the
+   new image.
 
-`NEXT_PUBLIC_SERVER_URL` must be the final public origin with no trailing slash. It is compiled into
-the client bundle, so changing it requires a new image build.
+The build never connects to MongoDB. Article, review, and page routes render on their first request
+and are then cached; the collection revalidate hooks refresh them after edits. The homepage renders
+per request. Production and local development can share the same MongoDB Atlas cluster, so no
+database import is needed for deploys.
+
+## GitHub setup (once)
+
+In the repository settings:
+
+- **Variables → Actions:** `NEXT_PUBLIC_SERVER_URL=https://news.example.com` (final public origin,
+  no trailing slash). It is compiled into the client bundle, so changing it requires a new image.
+- **Secrets → Actions (optional):** `DOKPLOY_DEPLOY_WEBHOOK`, the deploy webhook URL from the Dokploy
+  application's Deployments tab.
+
+After the first publish, open the package on GitHub (Profile → Packages → `gaming-news`) and set its
+visibility to **Public** so Dokploy can pull it without credentials. The image contains only built
+application code; no secrets are passed to the build. To keep it private instead, add a GHCR
+registry in Dokploy with a GitHub personal access token that has `read:packages`.
+
+A build can also be started manually from Actions → Docker image → Run workflow.
+
+## Dokploy setup (once)
+
+1. In the application's **General → Provider**, choose **Docker** and set the image to
+   `ghcr.io/edamghy/gaming-news:latest`.
+2. In **Environment**, set the runtime values:
+
+   ```dotenv
+   DATABASE_URI=mongodb+srv://...
+   PAYLOAD_SECRET=...
+   NEXT_PUBLIC_SERVER_URL=https://news.example.com
+   CRON_SECRET=...
+   PREVIEW_SECRET=...
+   ```
+
+3. In **Advanced → Volumes**, keep the persistent volume mounted at `/app/public/media`.
+4. In **Domains**, route the domain to container port `3000`.
+5. Copy the deploy webhook URL into the `DOKPLOY_DEPLOY_WEBHOOK` GitHub secret.
+
+To roll back, set the image tag to an earlier `sha-<commit>` and redeploy.
 
 `RAWG_API_KEY` is needed only by `seed:games`, `seed:content`, and the game-media migration. Public
 requests use the RAWG IDs and image URLs already stored in MongoDB and do not consume API requests.
@@ -27,21 +65,14 @@ requests use the RAWG IDs and image URLs already stored in MongoDB and do not co
 `public/media` remains outside Git and the Docker build context. This keeps deploys small and avoids
 baking mutable uploads into an application image.
 
-In Dokploy, create a persistent volume mounted at:
-
-```text
-/app/public/media
-```
-
-The directory must be writable by UID/GID `1001`. A Docker-managed named volume inherits the
-directory ownership prepared by the image. For a host bind mount, set the host directory owner to
-`1001:1001` before starting the container.
+The `/app/public/media` directory must be writable by UID/GID `1001`. A Docker-managed named volume
+inherits the directory ownership prepared by the image. For a host bind mount, set the host directory
+owner to `1001:1001` before starting the container.
 
 For a local production smoke test:
 
 ```bash
 docker build \
-  --secret id=env_file,src=.env.production \
   --build-arg NEXT_PUBLIC_SERVER_URL=https://news.example.com \
   --tag gaming-news:latest \
   .
