@@ -49,6 +49,7 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'slot-fill': 'slot-fill linear forwards',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -95,27 +96,34 @@ const config = {
         brand: {
           DEFAULT: 'hsl(var(--brand))',
           foreground: 'hsl(var(--brand-foreground))',
-          50: '#ecf9ff',
-          100: '#d4efff',
-          200: '#b2e5ff',
-          300: '#7dd6ff',
-          400: '#40bcff',
-          500: '#1499ff',
-          600: '#0077ff',
-          700: '#005fff',
-          800: '#004fd4', // DEFAULT
-          900: '#0844a0',
-          950: '#0a2a61',
+          50: '#fff0f2',
+          100: '#ffdde2',
+          200: '#ffc0ca',
+          300: '#ff93a3',
+          400: '#ff5267',
+          500: '#f52c47',
+          600: '#d3243f',
+          700: '#b01a34',
+          800: '#931a31',
+          900: '#7d1a2f',
+          950: '#460915',
         },
-        ink: '#0B1020',
+        ink: '#141118',
+        glyph: {
+          news: 'hsl(var(--glyph-news) / <alpha-value>)',
+          review: 'hsl(var(--glyph-review) / <alpha-value>)',
+          game: 'hsl(var(--glyph-game) / <alpha-value>)',
+          guide: 'hsl(var(--glyph-guide) / <alpha-value>)',
+        },
         quest: {
           DEFAULT: 'hsl(var(--quest))',
           foreground: 'hsl(var(--quest-foreground))',
         },
       },
       fontFamily: {
-        mono: ['var(--font-geist-mono)'],
-        sans: ['var(--font-geist-sans)'],
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {
@@ -125,6 +133,10 @@ const config = {
         'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
+        },
+        'slot-fill': {
+          from: { transform: 'scaleX(0)' },
+          to: { transform: 'scaleX(1)' },
         },
       },
       typography: () => ({

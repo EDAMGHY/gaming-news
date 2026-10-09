@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 
 import { cn } from '@/utilities/ui'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
+import { Anybody, Martian_Mono, Schibsted_Grotesk } from 'next/font/google'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
@@ -17,28 +16,39 @@ import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 import { siteConfig } from '@/config/site'
 
+const display = Anybody({
+  axes: ['wdth'],
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-display',
+})
+
+const sans = Schibsted_Grotesk({
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
+
+const mono = Martian_Mono({
+  axes: ['wdth'],
+  display: 'swap',
+  subsets: ['latin'],
+  variable: '--font-mono',
+})
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html className={cn(display.variable, sans.variable, mono.variable)} lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
+        <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="relative min-h-screen">
-        {/* Global background pattern */}
-        <div
-          aria-hidden="true"
-          className="global-pattern pointer-events-none fixed inset-0 -z-10 opacity-20"
-          style={{
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'top left',
-            backgroundSize: 'cover',
-          }}
-        />
-
+      {/* Extensions (e.g. ColorZilla) add attributes to <body> before hydration */}
+      <body className="relative min-h-screen" suppressHydrationWarning>
         <Providers>
           <AdminBar
             adminBarProps={{

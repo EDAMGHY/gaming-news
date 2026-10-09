@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { ReviewCard } from '@/components/ContentCard'
 import { ContentSectionHeader } from '@/components/ContentSectionHeader'
+import { Slider } from '@/components/Slider/Slider'
 
 function isReview(v: Review | string | null | undefined): v is Review {
   return !!v && typeof v === 'object' && 'id' in v
@@ -43,11 +44,12 @@ export const FeaturedReviewsBlock: React.FC<IFeaturedReviewsBlock> = async ({
         title={title || 'Featured reviews'}
       />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      {/* Offset from Featured Stories' 8s autoplay so the two rows don't advance in lockstep */}
+      <Slider autoplay={9000} label={title || 'Featured reviews'} size="card">
         {docs.map((r) => (
           <ReviewCard key={r.id} review={r} />
         ))}
-      </div>
+      </Slider>
     </section>
   )
 }

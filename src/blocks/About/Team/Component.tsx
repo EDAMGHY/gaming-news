@@ -11,7 +11,7 @@ const initials = (name: string) =>
     .join('')
 
 const accentMap: Record<string, string> = {
-  brand: 'from-brand-500 to-cyan-400',
+  brand: 'from-brand-500 to-quest',
   fuchsia: 'from-fuchsia-500 to-purple-500',
   amber: 'from-amber-400 to-orange-500',
   emerald: 'from-emerald-400 to-teal-500',
@@ -51,7 +51,7 @@ export const AboutTeamBlock: React.FC<IAboutTeamBlock> = ({ heading, subheading,
                   </div>
                 )}
                 <h3 className="mt-5 text-lg font-semibold text-foreground">{member.name}</h3>
-                <div className="text-sm font-medium text-brand-400">{member.role}</div>
+                <div className="text-sm font-medium text-brand">{member.role}</div>
                 {member.bio && <p className="mt-3 text-sm text-muted-foreground">{member.bio}</p>}
               </div>
             )

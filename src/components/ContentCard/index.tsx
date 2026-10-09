@@ -12,7 +12,7 @@ import {
 import { cn } from '@/utilities/ui'
 import { getGameCover, type GameImageSource } from '@/utilities/gameMedia'
 import { format } from 'date-fns'
-import { ArrowUpRight, CalendarDays, Clock3, Gamepad2, Newspaper } from 'lucide-react'
+import { ArrowUpRight, CalendarDays, Clock3, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 
 type CardMeta = {
@@ -123,7 +123,7 @@ const CardImage = ({
 )
 
 const cardClassName =
-  'group flex h-full flex-col overflow-hidden border-border/70 bg-card/90 shadow-none transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-brand/60 hover:shadow-[0_18px_48px_-28px_hsl(var(--brand)/0.65)] focus-within:ring-2 focus-within:ring-brand focus-within:ring-offset-2 focus-within:ring-offset-background'
+  'group flex h-full flex-col overflow-hidden border-border/70 bg-card/90 shadow-none transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-foreground/25 hover:shadow-[0_18px_40px_-24px_hsl(270_14%_8%/0.45)] focus-within:ring-2 focus-within:ring-brand focus-within:ring-offset-2 focus-within:ring-offset-background'
 
 export function ArticleCard({
   article,
@@ -156,8 +156,8 @@ export function ArticleCard({
         />
         <CardHeader className="gap-3 space-y-0 p-5 pb-3">
           <div className="flex min-h-6 flex-wrap items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5 text-brand">
-              <Newspaper aria-hidden="true" className="size-3.5" /> Story
+            <span className="inline-flex items-center gap-1.5 text-foreground">
+              <span aria-hidden="true" className="size-2 rounded-full bg-glyph-news" /> Story
             </span>
             {categories[0] && <span>· {categories[0]}</span>}
             {article.publishedAt && (
@@ -166,7 +166,7 @@ export function ArticleCard({
               </time>
             )}
           </div>
-          <CardTitle className="text-balance text-xl font-bold leading-tight tracking-[-0.025em] transition-colors group-hover:text-brand">
+          <CardTitle className="text-balance text-xl font-extrabold leading-[1.1] tracking-[-0.015em] transition-colors group-hover:text-brand">
             {article.title}
           </CardTitle>
         </CardHeader>
@@ -208,12 +208,12 @@ export function ReviewCard({ className, review }: { className?: string; review: 
           sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
         />
         {hasRating && (
-          <div className="absolute right-4 top-4 grid size-16 place-items-center rounded-lg border border-white/20 bg-ink/90 text-center text-white shadow-xl backdrop-blur">
+          <div className="absolute right-4 top-4 grid size-16 place-items-center rounded-md bg-quest text-center text-ink shadow-[inset_0_-3px_0_hsl(270_14%_8%/0.2),0_10px_30px_-10px_hsl(270_14%_8%/0.6)]">
             <div>
-              <span className="block font-mono text-2xl font-bold leading-none">
+              <span className="block font-display text-[1.75rem] font-black leading-none">
                 {review.rating}
               </span>
-              <span className="font-mono text-[0.62rem] uppercase tracking-wider text-white/60">
+              <span className="font-mono text-[0.55rem] uppercase tracking-wider text-ink/70">
                 out of 5
               </span>
             </div>
@@ -221,12 +221,12 @@ export function ReviewCard({ className, review }: { className?: string; review: 
         )}
         <CardHeader className="gap-3 space-y-0 p-5 pb-3">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge className="border-quest/40 bg-quest/15 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-quest-foreground hover:bg-quest/15">
-              Review
-            </Badge>
+            <span className="inline-flex items-center gap-1.5 font-mono text-[0.68rem] uppercase tracking-[0.16em]">
+              <span aria-hidden="true" className="size-2 rounded-full bg-glyph-review" /> Review
+            </span>
             {game && <span className="text-sm font-medium text-muted-foreground">{game}</span>}
           </div>
-          <CardTitle className="text-balance text-xl font-bold leading-tight tracking-[-0.025em] transition-colors group-hover:text-brand">
+          <CardTitle className="text-balance text-xl font-extrabold leading-[1.1] tracking-[-0.015em] transition-colors group-hover:text-brand">
             {review.title}
           </CardTitle>
         </CardHeader>
@@ -250,6 +250,9 @@ export function ReviewCard({ className, review }: { className?: string; review: 
               {review.hoursPlayed}h played
             </span>
           )}
+          <span className="ml-auto inline-flex items-center gap-1 text-foreground">
+            Read <ArrowUpRight aria-hidden="true" className="size-3.5" />
+          </span>
         </CardFooter>
       </CardRoot>
     </Link>
@@ -271,7 +274,12 @@ export function GameCard({ game, className }: { game: GameCardData; className?: 
           sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
         />
         <CardHeader className="gap-3 space-y-0 p-5 pb-3">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              aria-label="Game"
+              className="size-2 rounded-full bg-glyph-game"
+              role="img"
+            />
             {genres.slice(0, 2).map((genre) => (
               <Badge
                 className="font-mono text-[0.65rem] uppercase tracking-wider"
@@ -282,7 +290,7 @@ export function GameCard({ game, className }: { game: GameCardData; className?: 
               </Badge>
             ))}
           </div>
-          <CardTitle className="text-balance text-xl font-bold leading-tight tracking-[-0.025em] transition-colors group-hover:text-brand">
+          <CardTitle className="text-balance text-xl font-extrabold leading-[1.1] tracking-[-0.015em] transition-colors group-hover:text-brand">
             {game.title}
           </CardTitle>
         </CardHeader>

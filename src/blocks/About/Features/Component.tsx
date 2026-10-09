@@ -31,7 +31,7 @@ export const AboutFeaturesBlock: React.FC<IAboutFeaturesBlock> = ({
                   key={i}
                   className="flex gap-5 rounded-2xl border border-brand/15 bg-gradient-to-br from-brand/[0.04] to-transparent p-6 transition-colors duration-300 hover:border-brand/30"
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-cyan-400 text-white">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand text-brand-foreground">
                     <Icon className="h-6 w-6" />
                   </div>
                   <div>
@@ -54,13 +54,13 @@ export const AboutFeaturesBlock: React.FC<IAboutFeaturesBlock> = ({
                   {...(wrapperProps as { href: string })}
                   className="group relative flex flex-col rounded-2xl border border-brand/15 bg-background p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-brand-400 transition-colors duration-300 group-hover:bg-brand group-hover:text-white">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10 text-brand transition-colors duration-300 group-hover:bg-brand group-hover:text-brand-foreground">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-foreground">{item.title}</h3>
                   <p className="mt-2 flex-1 text-sm text-muted-foreground">{item.description}</p>
                   {item.href && (
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       Explore
                       <ArrowRight className="h-4 w-4" />
                     </span>

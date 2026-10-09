@@ -1,12 +1,12 @@
 export const siteConfig = {
-  name: 'Gaming News',
-  description: 'Latest gaming news, reviews, and game database',
+  name: 'Save Point',
+  description: "What's worth playing, and why. Independent gaming news, reviews, and a game database.",
   url: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   twitter: {
-    creator: '@gamingnews', // Update this with actual Twitter handle
+    creator: '@savepoint', // Update this with the real handle once registered
   },
   openGraph: {
-    siteName: 'Gaming News',
+    siteName: 'Save Point',
     type: 'website' as const,
   },
 }

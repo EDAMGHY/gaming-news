@@ -16,12 +16,12 @@ export const AboutHeroBlock: React.FC<IAboutHeroBlock> = ({
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-24 left-1/2 h-72 w-[42rem] max-w-[90vw] -translate-x-1/2 rounded-full bg-brand/20 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-quest/10 blur-3xl" />
       </div>
 
       <div className="container py-20 md:py-28 text-center">
         {badge && (
-          <span className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-sm font-medium text-brand-400">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-sm font-medium text-brand">
             <Gamepad2 className="h-4 w-4" />
             {badge}
           </span>
@@ -29,7 +29,7 @@ export const AboutHeroBlock: React.FC<IAboutHeroBlock> = ({
 
         <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-foreground md:text-6xl">
           {headingLead}{' '}
-          <span className="bg-gradient-to-r from-brand-500 to-cyan-400 bg-clip-text text-transparent">
+          <span className="text-brand">
             {headingHighlight}
           </span>
         </h1>
@@ -46,8 +46,8 @@ export const AboutHeroBlock: React.FC<IAboutHeroBlock> = ({
               <CMSLink
                 key={i}
                 {...item.link}
-                appearance={i === 0 ? 'default' : 'outline'}
-                className="px-6 py-3"
+                appearance={i === 0 ? 'primary' : 'outline'}
+                size="lg"
               />
             ))}
           </div>

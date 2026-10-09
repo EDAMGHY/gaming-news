@@ -24,7 +24,7 @@ export const AboutStoryBlock: React.FC<IAboutStoryBlock> = ({
       <div className="grid items-center gap-12 md:grid-cols-2">
         <div>
           {eyebrow && (
-            <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-brand-400">
+            <span className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-brand">
               <Target className="h-4 w-4" />
               {eyebrow}
             </span>
@@ -39,13 +39,13 @@ export const AboutStoryBlock: React.FC<IAboutStoryBlock> = ({
 
         {quote && (
           <div className="relative">
-            <div className="rounded-2xl border border-brand/20 bg-gradient-to-br from-brand/10 via-background to-cyan-500/5 p-8 md:p-10">
+            <div className="rounded-2xl border border-brand/20 bg-gradient-to-br from-brand/10 via-background to-quest/5 p-8 md:p-10">
               <blockquote className="text-xl font-medium leading-relaxed text-foreground md:text-2xl">
                 &ldquo;{quote}&rdquo;
               </blockquote>
               {(quoteAuthor || quoteRole) && (
                 <div className="mt-6 flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-r from-brand-500 to-cyan-400 font-bold text-white">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand font-bold text-brand-foreground">
                     {initials(quoteAuthor) || '★'}
                   </div>
                   <div>

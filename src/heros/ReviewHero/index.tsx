@@ -67,7 +67,7 @@ export const ReviewHero: React.FC<{
                 {gameTitle} review
               </p>
             )}
-            <h1 className="max-w-5xl text-balance text-4xl font-black leading-[0.98] tracking-[-0.055em] sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="max-w-5xl text-balance text-4xl font-black leading-[0.98] tracking-[-0.025em] sm:text-5xl md:text-6xl lg:text-7xl">
               {title}
             </h1>
           </div>

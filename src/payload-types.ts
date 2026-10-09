@@ -206,7 +206,9 @@ export interface Page {
             /**
              * Choose how the link should be rendered.
              */
-            appearance?: ('default' | 'outline') | null;
+            appearance?:
+              | ('default' | 'secondary' | 'inverse' | 'accent' | 'soft' | 'outline' | 'ghost' | 'glass' | 'link')
+              | null;
           };
           id?: string | null;
         }[]
@@ -625,7 +627,7 @@ export interface CallToActionBlock {
           /**
            * Choose how the link should be rendered.
            */
-          appearance?: ('default' | 'outline') | null;
+          appearance?: ('default' | 'accent' | 'glass' | 'outline') | null;
         };
         id?: string | null;
       }[]
@@ -683,7 +685,9 @@ export interface ContentBlock {
           /**
            * Choose how the link should be rendered.
            */
-          appearance?: ('default' | 'outline') | null;
+          appearance?:
+            | ('default' | 'secondary' | 'inverse' | 'accent' | 'soft' | 'outline' | 'ghost' | 'glass' | 'link')
+            | null;
         };
         id?: string | null;
       }[]

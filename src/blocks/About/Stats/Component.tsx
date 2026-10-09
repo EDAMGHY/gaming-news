@@ -34,7 +34,7 @@ export const AboutStatsBlock: React.FC<IAboutStatsBlock> = async ({ autoCounts, 
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {items.map((stat, i) => (
             <div key={i} className="text-center">
-              <div className="bg-gradient-to-r from-brand-500 to-cyan-400 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
+              <div className="font-display text-4xl font-black text-brand md:text-5xl">
                 {stat.value}
               </div>
               <div className="mt-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">

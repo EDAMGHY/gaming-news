@@ -1,4 +1,3 @@
-'use client'
 import React from 'react'
 
 import type { IFeaturedArticlesBlock } from '@/payload-types'
@@ -7,7 +6,6 @@ import RichText from '@/components/RichText'
 import { isArticle } from '@/utilities/utils'
 import { Slider } from '@/components/Slider/Slider'
 import { FeaturedArticle } from './FeaturedArticle'
-import { SwiperSlide } from 'swiper/react'
 import { ContentSectionHeader } from '@/components/ContentSectionHeader'
 
 export const FeaturedArticlesBlock: React.FC<IFeaturedArticlesBlock> = ({
@@ -34,11 +32,9 @@ export const FeaturedArticlesBlock: React.FC<IFeaturedArticlesBlock> = ({
         eyebrow="Editor picks"
         title={title || 'Worth your time'}
       />
-      <Slider autoplay={false}>
+      <Slider autoplay={8000} label={title || 'Editor picks'} size="card">
         {articles.map((article) => (
-          <SwiperSlide key={article.id}>
-            <FeaturedArticle {...article} />
-          </SwiperSlide>
+          <FeaturedArticle key={article.id} {...article} />
         ))}
       </Slider>
     </div>
